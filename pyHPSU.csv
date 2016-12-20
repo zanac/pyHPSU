@@ -1,0 +1,38 @@
+"command";"description";"label";"command";"divisor"
+"t_gdc";"Viene visualizzata la temperatura corrente (di mandata) del generatore di calore.";"T-GDC";"31 00 FA 01 D6 00 00";10
+"h2o_bar";"Viene visualizzata la pressione idrica corrente espressa in bar.";"Pressione Acqua";"31 00 FA C0 B4 00 00";20
+"t_gdc_nom";"Viene visualizzata la temperatura nominale corrente del generatore di calore in °C con un valore decimale.";"T-GDC nom";"31 00 02 00 00 00 00";10
+"t_ext";"Viene visualizzata la temperatura esterna corrente in °C con un valore decimale.";"T-Esterna";"61 00 FA 0A 0C 00 00";10
+"t_acs";"Viene visualizzata la temperatura corrente del bollitore di acqua calda in °C con un valore decimale. Se non fosse attivata alcuna funzione acqua calda, sarebbe visualizzato '- - -'.";"T-ACS";"31 00 0E 00 00 00 00";10
+"t_acs_nom";"Viene visualizzata la temperatura nominale corrente per l'approntamento di acqua calda in °C con un valore decimale. Se non fosse attivata alcuna funzione acqua calda, sarebbe visualizzato '- - -'. Il valore nominale corrente qui è sempre il valore massimo di tutte le richieste rilevanti per questo circuito dell'acqua calda.";"T-ACS nom";"31 00 03 00 00 00 00";10
+"t_ritorno";"Viene visualizzata la temperatura di ritorno corrente del generatore di calore in °C con un valore decimale. Se non è collegato il relativo sensore al generatore di calore, viene visualizzato "- - -".";"T-ritorno";"31 00 16 00 00 00 00";10
+"Flusso volumetrico";"";"Flusso volumetrico";"31 00 FA 01 DA 00 00";1
+"t_circ_risc";"Viene visualizzata la temperatura del circuito di riscaldamento diretto in °C con un valore decimale.";"Temp. Circ. Riscald";"C1 00 0F 00 00 00 00";10
+"t_circ_risc_nom";"Viene visualizzata la temperatura nominale (di mandata) del circuito di riscaldamento diretto in °C con un valore decimale.";"Temp. Circ Risc Nom";"61 00 04 00 00 00 00";10
+"status_pompa";"Indicazione dello stato attuale della pompa di circolazione per riscaldamento interna del ROTEX HPSU compact.";"Status pompa";"31 00 FA 0A 8C 00 00";1
+"t_oper_comp";"Viene visualizzato il tempo di funzionamento del compressore espresso in ore.";"Tempo oper comp";"31 00 FA 06 A5 00 00";1
+"t_oper_pompa";"Viene visualizzato il tempo di funzionamento della pompa.";"Tempo per pompa";"31 00 FA 06 A4 00 00";1
+"posmix";"Viene visualizzata la direzione di flusso nella valvola a 3 vie HZ: Riscaldamento ambiente WW: Produzione di acqua calda";"PosMix";"31 00 FA 06 9B 00 00";1
+"qboh";"Viene visualizzata la quantità di calore del riscaldamento di riserva per l'approntamento di acqua calda in kWh.";"Qboh";"31 00 FA 09 1C 00 00";1
+"qchhp";"Viene visualizzata la quantità di calore del riscaldamento di riserva per la modalità di riscaldamento in kWh.";"Qchhp";"31 00 FA 09 20 00 00";1
+"qsc";"Viene visualizzata la quantità di calore della pompa di calore per la modalità di raffreddamento in kWh.";"Qsc";"31 00 FA 06 A6 00 00";1
+"qch";"Viene visualizzata la quantità di calore della pompa di calore per la modalità di riscaldamento in kWh.";"Qch";"31 00 FA 06 A7 00 00";1
+"qwp";"Viene visualizzata l'intera quantità di calore della pompa di calore in kWh.";"QWP";"31 00 FA 09 30 00 00";1
+"qdhw";"Viene visualizzata la quantità di calore per l'approntamento di acqua calda in kWh.";"Qdhw";"31 00 FA 09 2C 00 00";1
+"sw_vers_01";"";"Versione SW 1";"31 00 FA 01 99 00 00";1
+"sw_vers_02";"";"Versione SW 2";"31 00 FA C0 B4 00 00";1
+"sw_vers_03";"";"Versione SW 3";"31 00 FA 02 4B 00 00";1
+"mode_01";"Modo Rotex";"Modo ?";"31 00 FA 01 12 00 00";1
+"tvbh2";"Temperatura di mandata attuale riscaldamento (tV,BH).";"TVBH2 [°C]";"31 00 FA C1 02";10
+"tliq2";"Temperatura corrente del refrigerante (tliq2).";"Tliq2 [°C]";"31 00 FA C1 03";10
+"tr2";"Temperatura di ritorno attuale riscaldamento, sensore secondario (tR2).";"TR2 [°C]";"31 00 FA C1 04";10
+"ta2";"Temperatura esterna attuale (misurata dalla sonda della pompa di calore esterna).";"TA2 [°C]";"31 00 FA C1 05";10
+"tdhw2";"Temperatura dell'acqua calda attuale nel bollitore dell'acqua calda, sensore secondario (tDHW2).";"Tdhw2 [°C]";"31 00 FA C1 06";10
+"quiet";"Indica lo stato di funzionamento silenzioso.";"quiet";"31 00 FA C1 07";1
+"mode";"Modalità attuale della pompa di calore:\n: riscaldare\n: Raffreddare\n: Produzione di acqua calda\n: Funzione scongelamento attiva";"Mode";"31 00 FA C0 F6";1
+"pump";"Potenza attuale della pompa di circolazione per riscaldamento interna in %.";"Pump";"31 00 FA C0 F7";1
+"ext";"Modalità energetica attuale della pompa di calore:\nLT: Funzione EVU attiva e tariffa ridotta.\nHT: Funzione EVU attiva e tariffa normale.\nSGN: SMART GRID - Funzione attiva, funzionamento\nnormale.\nSG1: SMART GRID - Funzione attiva, lancio,\ncorrente più cara.\nSG2: SMART GRID - Funzione attiva, funzionamento\naumentato, corrente più conveniente.\nSG3: SMART GRID - Funzione attiva, comando di attivazione e funzionamento aumentato, corrente più conveniente. '- - -': Nessuna modalità esterna attiva, la pompa di calore funziona in modo normale.";"Ext";"31 00 FA C0 F8";1
+"ehs";"Potenza attuale del Backup-Heater (BUH) in kW.";"EHS";"31 00 FA C0 F9";1
+"rt";"Parametro [Room thermostat] = Off: - - - Parametro [Room thermostat] = On: – : Richiesta di calore – : Nessuna richiesta di calore";"RT";"31 00 FA C0 FA";1
+"bpv";"Posizione attuale della valvola di miscelazione 3UVB1 (100 % = A, 0 % = B).";"BPV";"31 00 FA C0 FB";1
+
