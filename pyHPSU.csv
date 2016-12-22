@@ -1,24 +1,24 @@
 "name";"description";"label";"command";"divisor"
 "t_gdc";"Temperatura corrente (di mandata) del generatore di calore.";"T-GDC";"31 00 FA 01 D6 00 00";10
-"h2o_bar";"Viene visualizzata la pressione idrica corrente espressa in bar.";"Pressione Acqua";"31 00 FA C0 B4 00 00";20
-"t_gdc_nom";"Viene visualizzata la temperatura nominale corrente del generatore di calore in °C con un valore decimale.";"T-GDC nom";"31 00 02 00 00 00 00";10
-"t_ext";"Viene visualizzata la temperatura esterna corrente in °C con un valore decimale.";"T-Esterna";"61 00 FA 0A 0C 00 00";10
-"t_acs";"Viene visualizzata la temperatura corrente del bollitore di acqua calda in °C con un valore decimale. Se non fosse attivata alcuna funzione acqua calda, sarebbe visualizzato '- - -'.";"T-ACS";"31 00 0E 00 00 00 00";10
-"t_acs_nom";"Viene visualizzata la temperatura nominale corrente per l'approntamento di acqua calda in °C con un valore decimale. Se non fosse attivata alcuna funzione acqua calda, sarebbe visualizzato '- - -'. Il valore nominale corrente qui è sempre il valore massimo di tutte le richieste rilevanti per questo circuito dell'acqua calda.";"T-ACS nom";"31 00 03 00 00 00 00";10
-"t_ritorno";"Viene visualizzata la temperatura di ritorno corrente del generatore di calore in °C con un valore decimale. Se non è collegato il relativo sensore al generatore di calore, viene visualizzato "- - -".";"T-ritorno";"31 00 16 00 00 00 00";10
+"h2o_bar";"Pressione idrica corrente espressa in bar.";"Pressione Acqua";"31 00 FA C0 B4 00 00";20
+"t_gdc_nom";"Temperatura nominale corrente del generatore di calore in °C con un valore decimale.";"T-GDC nom";"31 00 02 00 00 00 00";10
+"t_ext";"Temperatura esterna corrente in °C con un valore decimale.";"T-Esterna";"61 00 FA 0A 0C 00 00";10
+"t_acs";"Temperatura corrente del bollitore di acqua calda in °C con un valore decimale. Se non fosse attivata alcuna funzione acqua calda, sarebbe visualizzato '- - -'.";"T-ACS";"31 00 0E 00 00 00 00";10
+"t_acs_nom";"Temperatura nominale corrente per l'approntamento di acqua calda in °C con un valore decimale. Se non fosse attivata alcuna funzione acqua calda, sarebbe visualizzato '- - -'. Il valore nominale corrente qui è sempre il valore massimo di tutte le richieste rilevanti per questo circuito dell'acqua calda.";"T-ACS nom";"31 00 03 00 00 00 00";10
+"t_ritorno";"Temperatura di ritorno corrente del generatore di calore in °C con un valore decimale. Se non è collegato il relativo sensore al generatore di calore, viene visualizzato "- - -".";"T-ritorno";"31 00 16 00 00 00 00";10
 "Flusso volumetrico";"";"Flusso volumetrico";"31 00 FA 01 DA 00 00";1
-"t_circ_risc";"Viene visualizzata la temperatura del circuito di riscaldamento diretto in °C con un valore decimale.";"Temp. Circ. Riscald";"C1 00 0F 00 00 00 00";10
-"t_circ_risc_nom";"Viene visualizzata la temperatura nominale (di mandata) del circuito di riscaldamento diretto in °C con un valore decimale.";"Temp. Circ Risc Nom";"61 00 04 00 00 00 00";10
-"status_pompa";"Indicazione dello stato attuale della pompa di circolazione per riscaldamento interna del ROTEX HPSU compact.";"Status pompa";"31 00 FA 0A 8C 00 00";1
-"t_oper_comp";"Viene visualizzato il tempo di funzionamento del compressore espresso in ore.";"Tempo oper comp";"31 00 FA 06 A5 00 00";1
-"t_oper_pompa";"Viene visualizzato il tempo di funzionamento della pompa.";"Tempo per pompa";"31 00 FA 06 A4 00 00";1
-"posmix";"Viene visualizzata la direzione di flusso nella valvola a 3 vie HZ: Riscaldamento ambiente WW: Produzione di acqua calda";"PosMix";"31 00 FA 06 9B 00 00";1
-"qboh";"Viene visualizzata la quantità di calore del riscaldamento di riserva per l'approntamento di acqua calda in kWh.";"Qboh";"31 00 FA 09 1C 00 00";1
-"qchhp";"Viene visualizzata la quantità di calore del riscaldamento di riserva per la modalità di riscaldamento in kWh.";"Qchhp";"31 00 FA 09 20 00 00";1
-"qsc";"Viene visualizzata la quantità di calore della pompa di calore per la modalità di raffreddamento in kWh.";"Qsc";"31 00 FA 06 A6 00 00";1
-"qch";"Viene visualizzata la quantità di calore della pompa di calore per la modalità di riscaldamento in kWh.";"Qch";"31 00 FA 06 A7 00 00";1
-"qwp";"Viene visualizzata l'intera quantità di calore della pompa di calore in kWh.";"QWP";"31 00 FA 09 30 00 00";1
-"qdhw";"Viene visualizzata la quantità di calore per l'approntamento di acqua calda in kWh.";"Qdhw";"31 00 FA 09 2C 00 00";1
+"t_circ_risc";"Temperatura del circuito di riscaldamento diretto in °C con un valore decimale.";"Temp. Circ. Riscald";"C1 00 0F 00 00 00 00";10
+"t_circ_risc_nom";"Temperatura nominale (di mandata) del circuito di riscaldamento diretto in °C con un valore decimale.";"Temp. Circ Risc Nom";"61 00 04 00 00 00 00";10
+"status_pompa";"Stato attuale della pompa di circolazione per riscaldamento interna del ROTEX HPSU compact.";"Status pompa";"31 00 FA 0A 8C 00 00";1
+"t_oper_comp";"Tempo di funzionamento del compressore espresso in ore.";"Tempo oper comp";"31 00 FA 06 A5 00 00";1
+"t_oper_pompa";"Tempo di funzionamento della pompa.";"Tempo per pompa";"31 00 FA 06 A4 00 00";1
+"posmix";"Direzione di flusso nella valvola a 3 vie HZ: Riscaldamento ambiente WW: Produzione di acqua calda";"PosMix";"31 00 FA 06 9B 00 00";1
+"qboh";"Quantità di calore del riscaldamento di riserva per l'approntamento di acqua calda in kWh.";"Qboh";"31 00 FA 09 1C 00 00";1
+"qchhp";"Quantità di calore del riscaldamento di riserva per la modalità di riscaldamento in kWh.";"Qchhp";"31 00 FA 09 20 00 00";1
+"qsc";"Quantità di calore della pompa di calore per la modalità di raffreddamento in kWh.";"Qsc";"31 00 FA 06 A6 00 00";1
+"qch";"Quantità di calore della pompa di calore per la modalità di riscaldamento in kWh.";"Qch";"31 00 FA 06 A7 00 00";1
+"qwp";"Intera quantità di calore della pompa di calore in kWh.";"QWP";"31 00 FA 09 30 00 00";1
+"qdhw";"Quantità di calore per l'approntamento di acqua calda in kWh.";"Qdhw";"31 00 FA 09 2C 00 00";1
 "sw_vers_01";"";"Versione SW 1";"31 00 FA 01 99 00 00";1
 "sw_vers_02";"";"Versione SW 2";"31 00 FA C0 B4 00 00";1
 "sw_vers_03";"";"Versione SW 3";"31 00 FA 02 4B 00 00";1
