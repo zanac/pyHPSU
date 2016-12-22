@@ -1,5 +1,5 @@
 "name";"description";"label";"command";"divisor"
-"t_gdc";"Viene visualizzata la temperatura corrente (di mandata) del generatore di calore.";"T-GDC";"31 00 FA 01 D6 00 00";10
+"t_gdc";"Temperatura corrente (di mandata) del generatore di calore.";"T-GDC";"31 00 FA 01 D6 00 00";10
 "h2o_bar";"Viene visualizzata la pressione idrica corrente espressa in bar.";"Pressione Acqua";"31 00 FA C0 B4 00 00";20
 "t_gdc_nom";"Viene visualizzata la temperatura nominale corrente del generatore di calore in °C con un valore decimale.";"T-GDC nom";"31 00 02 00 00 00 00";10
 "t_ext";"Viene visualizzata la temperatura esterna corrente in °C con un valore decimale.";"T-Esterna";"61 00 FA 0A 0C 00 00";10
