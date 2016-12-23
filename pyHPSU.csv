@@ -6,7 +6,7 @@ t_ext;Temperatura esterna corrente in °C con un valore decimale.;T-Esterna;61 0
 t_acs;Temperatura corrente del bollitore di acqua calda in °C con un valore decimale. Se non fosse attivata alcuna funzione acqua calda, sarebbe visualizzato '- - -'.;T-ACS;31 00 0E 00 00 00 00;180;d;10
 t_acs_nom;Temperatura nominale corrente per l'approntamento di acqua calda in °C con un valore decimale. Se non fosse attivata alcuna funzione acqua calda, sarebbe visualizzato '- - -'. Il valore nominale corrente qui è sempre il valore massimo di tutte le richieste rilevanti per questo circuito dell'acqua calda.;T-ACS nom;31 00 03 00 00 00 00;180;d;10
 t_ritorno;"Temperatura di ritorno corrente del generatore di calore in °C con un valore decimale. Se non è collegato il relativo sensore al generatore di calore, viene visualizzato - - -"".""";T-ritorno;31 00 16 00 00 00 00;180;d;10
-Flusso volumetrico;;Flusso volumetrico;31 00 FA 01 DA 00 00;180;lh;1
+flusso_volumetrico;;Flusso volumetrico;31 00 FA 01 DA 00 00;180;lh;1
 t_circ_risc;Temperatura del circuito di riscaldamento diretto in °C con un valore decimale.;Temp. Circ. Riscald;C1 00 0F 00 00 00 00;600;;10
 t_circ_risc_nom;Temperatura nominale (di mandata) del circuito di riscaldamento diretto in °C con un valore decimale.;Temp. Circ Risc Nom;61 00 04 00 00 00 00;300;;10
 status_pompa;Stato attuale della pompa di circolazione per riscaldamento interna del ROTEX HPSU compact.;Status pompa;31 00 FA 0A 8C 00 00;180;;1
