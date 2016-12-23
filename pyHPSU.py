@@ -30,6 +30,7 @@ def main(argv):
     port = None
     driver = None
     verbose = "1"
+    help = False
     output_type = "JSON"
     try:
         opts, args = getopt.getopt(argv,"hc:p:d:v:o:", ["cmd=", "port=", "driver=", "verbose=", "output_type"])
@@ -45,16 +46,12 @@ def main(argv):
 
     for opt, arg in opts:
         if opt == '-h':
-            print "Command Name - Description"
-            for cmd in commands:
-                print "%12s - %s" % (cmd['name'], cmd['desc'])
-            sys.exit(0)
+            help = True
         if opt in ("-d", "--driver"):
             driver = arg.upper()
         elif opt == "-p":
             port = arg
         elif opt in ("-c", "--cmd"):
-            mode = "GET"
             cmdAppend = None
             for c in commands:
                 if c["name"] == arg:
@@ -70,12 +67,27 @@ def main(argv):
             output_type = arg.upper()
             if output_type not in ["JSON", "CSV"]:
                 print "Error, please specify a correct output_type [JSON, CSV]"
+
+    locale.setlocale(locale.LC_ALL, '')
+    
+    if help:
+        if len(cmd) == 0:
+            print "List available commands:"
+            strCommands = ""
+            for cmd in commands:
+                strCommands = ("%s%s " % (strCommands, cmd['name']))
+            print strCommands
+        else:
+            for c in cmd:
+                for cc in commands:
+                    if c["name"] == cc["name"]:
+                        print "%12s - %s" % (c['name'], c['desc'])
+        sys.exit(0)
     
     if not driver:
         print "Error, please specify driver [ELM327 or PYCAN, EMU]"
         sys.exit(9)
-
-    locale.setlocale(locale.LC_ALL, '')
+            
     
     hpsu = HPSU(driver, port)
     
