@@ -14,7 +14,7 @@ class CanELM327(object):
             self.ser.close()
             self.ser.open()
         except serial.SerialException:
-            print "Error opening serial %s" % portstr
+            print("Error opening serial %s" % portstr)
             sys.exit(9)
 
         if init:
@@ -22,7 +22,7 @@ class CanELM327(object):
                         
             rc = self.sendCommand("AT PP 2F ON")
             if rc != "OK":
-                print "Error sending AT PP 2F ON (rc:%s)" % rc
+                print("Error sending AT PP 2F ON (rc:%s)" % rc)
                 sys.exit(9)
             
             """rc = self.sendCommand("AT D")
@@ -32,7 +32,7 @@ class CanELM327(object):
             
             rc = self.sendCommand("AT SP C")
             if rc != "OK":
-                print "Error sending AT SP C (rc:%s)" % rc
+                print("Error sending AT SP C (rc:%s)" % rc)
                 sys.exit(9)
 
     def sendCommand(self, cmd):
@@ -46,12 +46,12 @@ class CanELM327(object):
     def sendCommandWithID(self, cmd):
         rc = self.sendCommand("ATSH"+cmd["receiver_id"])
         if rc != "OK":
-            print "Error setting ID %s (rc:%s)" % (cmd["receiver_id"], rc)
+            print("Error setting ID %s (rc:%s)" % (cmd["receiver_id"], rc))
             sys.exit(9)
         
         rc = self.sendCommand(cmd["command"])
         if rc[0:1] != cmd["command"][0:1]:
-            print "Error sending cmd %s (rc:%s)" % (cmd["command"], rc)
+            print("Error sending cmd %s (rc:%s)" % (cmd["command"], rc))
             sys.exit(9)
         
         return rc

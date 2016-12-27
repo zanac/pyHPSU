@@ -21,13 +21,13 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv,"hc:p:d:v:o:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type"])
     except getopt.GetoptError:
-        print 'pyHPSU.py -d DRIVER -c COMMAND'
-        print ' '
-        print '           -d  --driver           driver name: [ELM327, PYCAN, EMU]'
-        print '           -p  --port             port (eg COM or /dev/tty*, only for ELM327 driver)'
-        print '           -o  --output_type      output type: [JSON, CSV]   default JSON'
-        print '           -c  --cmd              command: [see commands domain]'
-        print '           -v  --verbose          verbosity: [1, 2]   default 1'
+        print('pyHPSU.py -d DRIVER -c COMMAND')
+        print(' ')
+        print('           -d  --driver           driver name: [ELM327, PYCAN, EMU]')
+        print('           -p  --port             port (eg COM or /dev/tty*, only for ELM327 driver)')
+        print('           -o  --output_type      output type: [JSON, CSV]   default JSON')
+        print('           -c  --cmd              command: [see commands domain]')
+        print('           -v  --verbose          verbosity: [1, 2]   default 1')
         sys.exit(2)
 
     for opt, arg in opts:
@@ -44,7 +44,7 @@ def main(argv):
         elif opt in ("-o", "--output_type"):
             output_type = arg.upper()
             if output_type not in ["JSON", "CSV"]:
-                print "Error, please specify a correct output_type [JSON, CSV]"
+                print("Error, please specify a correct output_type [JSON, CSV]")
 
     locale.setlocale(locale.LC_ALL, '')
         
@@ -52,18 +52,18 @@ def main(argv):
     
     if help:
         if len(cmd) == 0:
-            print "List available commands:"
+            print("List available commands:")
             strCommands = ""
             for cmd in hpsu.listCommands:
                 strCommands = ("%s%s " % (strCommands, cmd['name']))
-            print strCommands
+            print(strCommands)
         else:
             for c in hpsu.commands:
-                print "%12s - %s" % (c['name'], c['desc'])
+                print("%12s - %s" % (c['name'], c['desc']))
         sys.exit(0)
 
     if not driver:
-        print "Error, please specify driver [ELM327 or PYCAN, EMU]"
+        print("Error, please specify driver [ELM327 or PYCAN, EMU]")
         sys.exit(9)        
 
     arrResponse = []        
@@ -75,11 +75,11 @@ def main(argv):
         arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"]})
 
     if output_type == "JSON":
-        print arrResponse
+        print(arrResponse)
     elif output_type == "CSV":
-        print "csv"
+        print("csv")
         for r in arrResponse:
-            print "%s\t%s\t%s" % (r["timestamp"], r["name"], r["resp"])
+            print("%s\t%s\t%s" % (r["timestamp"], r["name"], r["resp"]))
 
 if __name__ == "__main__":
    main(sys.argv[1:])
