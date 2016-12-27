@@ -6,18 +6,44 @@ from canpi import CanPI
 import datetime
 import locale
 import sys
+import csv
 
 
 class HPSU(object):
+    commands = []
+    listCommands = []
     UM_DEGREE = "d"
     UM_BOOLEAN = "b"
     UM_PERCENT = "perc"
 
-    def __init__(self, driver=None, port=None):
-        self.can = None
-        if driver not in ["ELM327", "PYCAN", "EMU"]:
-            print "Error, please select a correct driver!"
-            sys.exit(9)
+    def __init__(self, driver=None, port=None, cmd=None):
+        self.can = None            
+        self.commands = []
+        self.listCommands = []
+        with open('pyHPSU.csv', 'rU') as csvfile:
+            pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
+            next(pyHPSUCSV, None) # skip the header
+
+            for row in pyHPSUCSV:
+                name = row[0]
+                desc = row[1]
+                label = row[2]
+                command = row[3]
+                receiver_id = row[4]
+                um = row[5]
+                div = row[6]
+                
+                c = {"name":name,
+                     "desc":desc,
+                     "label":label,
+                     "command":command,
+                     "receiver_id":receiver_id,
+                     "um":um,
+                     "div":div}
+                
+                self.listCommands.append(c)
+                if name in cmd:
+                    self.commands.append(c)
         
         if driver == "ELM327":
             self.can = CanELM327()
@@ -29,7 +55,7 @@ class HPSU(object):
 
 
     def initInterface(self, portstr=None, baudrate=38400, init=False):
-        self.can.initInterface(portstr=portstr, baudrate=baudrate,init=init)
+        self.can.initInterface(portstr=portstr, baudrate=baudrate,init=True)
     
     def sendCommand(self, cmd):
         return self.can.sendCommandWithID(cmd)

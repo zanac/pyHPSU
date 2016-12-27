@@ -19,27 +19,16 @@ class CanELM327(object):
 
         if init:
             rc = self.sendCommand("ATE0")
-            if rc != "OK":
-                print "Error sending ATE0 (rc:%s)" % rc
-                sys.exit(9)
-            
-            rc = self.sendCommand("AT PP 2F SV 19")
-            rc = "OK"
-            if rc != "OK":
-                print "Error sending AT PP 2F SV 19 (rc:%s)" % rc
-                sys.exit(9)
-            
+                        
             rc = self.sendCommand("AT PP 2F ON")
-            rc = "OK"
             if rc != "OK":
                 print "Error sending AT PP 2F ON (rc:%s)" % rc
                 sys.exit(9)
             
-            rc = self.sendCommand("AT D")
-            rc = "OK"
+            """rc = self.sendCommand("AT D")
             if rc != "OK":
                 print "Error sending AT D (rc:%s)" % rc
-                sys.exit(9)
+                sys.exit(9)"""
             
             rc = self.sendCommand("AT SP C")
             if rc != "OK":
@@ -51,18 +40,19 @@ class CanELM327(object):
         time.sleep(50.0 / 1000.0)
         ser_read = self.ser.read(size=100)
         rc = ser_read[:-3]
+        rc = rc.replace("\r", "").replace("\n", "").strip()
         return rc
     
     def sendCommandWithID(self, cmd):
         rc = self.sendCommand("ATSH"+cmd["receiver_id"])
         if rc != "OK":
-            return "Error setting ID %s (rc:%s)" % (cmd["receiver_id"], rc)
+            print "Error setting ID %s (rc:%s)" % (cmd["receiver_id"], rc)
+            sys.exit(9)
         
         rc = self.sendCommand(cmd["command"])
-        #rc = "32 10 FA 01 D6 01 0C"
-        #rc = "32 10 02 01 01 00 00"
-        if rc[0:1] != cmd[0:1]:
-            return "Error sending cmd %s (rc:%s)" % (cmd["command"], rc)
+        if rc[0:1] != cmd["command"][0:1]:
+            print "Error sending cmd %s (rc:%s)" % (cmd["command"], rc)
+            sys.exit(9)
         
         return rc
     
