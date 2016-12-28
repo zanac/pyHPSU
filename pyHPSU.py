@@ -47,6 +47,7 @@ def main(argv):
                 print("Error, please specify a correct output_type [JSON, CSV]")
 
     locale.setlocale(locale.LC_ALL, '')
+    #locale.getdefaultlocale()[0].split('_')[0].upper()
         
     hpsu = HPSU(driver=driver, port=port, cmd=cmd)
     
@@ -58,8 +59,10 @@ def main(argv):
                 strCommands = ("%s%s " % (strCommands, cmd['name']))
             print(strCommands)
         else:
+            print("%12s - %-10s - %s" % ('COMMAND', 'LABEL', 'DESCRIPTION'))
+            print("%12s---%-10s---%s" % ('------------', '----------', '---------------------------------------------------'))
             for c in hpsu.commands:
-                print("%12s - %s" % (c['name'], c['desc']))
+                print("%12s - %-10s - %s" % (c['name'], c['label'], c['desc']))
         sys.exit(0)
 
     if not driver:

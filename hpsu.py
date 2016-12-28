@@ -7,7 +7,7 @@ import datetime
 import locale
 import sys
 import csv
-
+import os.path
 
 class HPSU(object):
     commands = []
@@ -20,18 +20,35 @@ class HPSU(object):
         self.can = None            
         self.commands = []
         self.listCommands = []
-        with open('pyHPSU.csv', 'rU') as csvfile:
+        
+        LANG_CODE = locale.getdefaultlocale()[0].split('_')[0].upper()
+        hpsuDict = {}
+        
+        commands_hpsu = 'commands_hpsu_%s.csv' % LANG_CODE
+        if not os.path.isfile(commands_hpsu):
+            commands_hpsu = 'commands_hpsu_%s.csv' % "EN"
+
+        with open(commands_hpsu, 'rU') as csvfile:
+            pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
+            next(pyHPSUCSV, None) # skip the header
+            for row in pyHPSUCSV:
+                name = row[0]
+                label = row[1]
+                desc = row[2]
+                hpsuDict.update({name:{"label":label, "desc":desc}})
+            
+        with open('commands_hpsu.csv', 'rU') as csvfile:
             pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
             next(pyHPSUCSV, None) # skip the header
 
             for row in pyHPSUCSV:
                 name = row[0]
-                desc = row[1]
-                label = row[2]
-                command = row[3]
-                receiver_id = row[4]
-                um = row[5]
-                div = row[6]
+                command = row[1]
+                receiver_id = row[2]
+                um = row[3]
+                div = row[4]
+                label = hpsuDict[name]["label"]
+                desc = hpsuDict[name]["desc"]
                 
                 c = {"name":name,
                      "desc":desc,
