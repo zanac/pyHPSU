@@ -54,10 +54,10 @@ def main(argv):
     if help:
         if len(cmd) == 0:
             print("List available commands:")
-            strCommands = ""
+            print("%12s - %-10s" % ('COMMAND', 'LABEL'))
+            print("%12s---%-10s" % ('------------', '----------'))
             for cmd in hpsu.listCommands:
-                strCommands = ("%s%s " % (strCommands, cmd['name']))
-            print(strCommands)
+                print("%12s - %-10s" % (cmd['name'], cmd['label']))
         else:
             print("%12s - %-10s - %s" % ('COMMAND', 'LABEL', 'DESCRIPTION'))
             print("%12s---%-10s---%s" % ('------------', '----------', '---------------------------------------------------'))
