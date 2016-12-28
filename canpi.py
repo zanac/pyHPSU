@@ -17,8 +17,8 @@ class CanPI(object):
         time.sleep(50.0 / 1000.0)
         timeout = 2
         rc = self.bus.recv(timeout)
-        print "::::::::::::::::::::::::::"
-        print str(rc)
+        print ("::::::::::::::::::::::::::")
+        print (str(rc))
         #todo convertire rc in stringa hex
         
         return rc

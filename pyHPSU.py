@@ -33,7 +33,7 @@ def main(argv):
     for opt, arg in opts:
         if opt in ("-h", "--help"):
             help = True
-        if opt in ("-d", "--driver"):
+        elif opt in ("-d", "--driver"):
             driver = arg.upper()
         elif opt in ("-p", "--port"):
             port = arg
@@ -77,12 +77,8 @@ def main(argv):
     if output_type == "JSON":
         print(arrResponse)
     elif output_type == "CSV":
-        print("csv")
         for r in arrResponse:
             print("%s\t%s\t%s" % (r["timestamp"], r["name"], r["resp"]))
 
 if __name__ == "__main__":
-   main(sys.argv[1:])
-
-
-
+    main(sys.argv[1:])
