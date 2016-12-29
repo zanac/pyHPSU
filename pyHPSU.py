@@ -1,15 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# v 0.0.2 by Vanni Brutto (Zanac)
+# v 0.0.3 by Vanni Brutto (Zanac)
 #todo: 
 # output json/csv
 # 
 # utilizzare la formattazione del locale corrente (se ho settato Italy devo vedere date giuste, punti/virgole giusti)
 # monitor mode (sniff)
+# tcp_con = serial.serial_for_url('socket://<my_ip>:<my_port>')
+#
+#Lo script di lettura e pubblicazione deve essere facilmente schedulabile in modo controllato:
+#- frequenza di aggiornamento (l'ideale sarebbe poterla personalizzare per singola variabile ma lasciamo stare)
 
-import serial, sys, getopt, time, locale
+
+import serial, sys, getopt, time, locale, importlib
 from hpsu import HPSU
-    
     
 def main(argv): 
     cmd = []
@@ -18,8 +22,10 @@ def main(argv):
     verbose = "1"
     help = False
     output_type = "JSON"
+    cloud_plugin = None
+
     try:
-        opts, args = getopt.getopt(argv,"hc:p:d:v:o:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type"])
+        opts, args = getopt.getopt(argv,"hc:p:d:v:o:u:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload="])
     except getopt.GetoptError:
         print('pyHPSU.py -d DRIVER -c COMMAND')
         print(' ')
@@ -28,6 +34,7 @@ def main(argv):
         print('           -o  --output_type      output type: [JSON, CSV]   default JSON')
         print('           -c  --cmd              command: [see commands domain]')
         print('           -v  --verbose          verbosity: [1, 2]   default 1')
+        print('           -u  --upload           upload on cloud: [_PLUGIN_]')
         sys.exit(2)
 
     for opt, arg in opts:
@@ -43,11 +50,17 @@ def main(argv):
             verbose = arg
         elif opt in ("-o", "--output_type"):
             output_type = arg.upper()
-            if output_type not in ["JSON", "CSV"]:
-                print("Error, please specify a correct output_type [JSON, CSV]")
+            if output_type not in ["JSON", "CSV", "CLOUD"]:
+                print("Error, please specify a correct output_type [JSON, CSV, CLOUD]")
+                sys.exit(9)
+        elif opt in ("-u", "--upload"):
+            cloud_plugin = arg.upper()
+            if cloud_plugin not in ["EMONCMS"]:
+                print("Error, please specify a correct plugin")
+                sys.exit(9)
 
-    locale.setlocale(locale.LC_ALL, '')
-    #locale.getdefaultlocale()[0].split('_')[0].upper()
+    if verbose == "2":
+        locale.setlocale(locale.LC_ALL, '')
         
     hpsu = HPSU(driver=driver, port=port, cmd=cmd)
     
@@ -72,9 +85,9 @@ def main(argv):
     arrResponse = []        
     for c in hpsu.commands:
         rc = hpsu.sendCommand(c)
-        response = hpsu.parseCommand(cmd=c, response=rc)
+        response = hpsu.parseCommand(cmd=c, response=rc, verbose=verbose)
         resp = hpsu.umConversion(cmd=c, response=response, verbose=verbose)
-            
+
         arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"]})
 
     if output_type == "JSON":
@@ -82,6 +95,15 @@ def main(argv):
     elif output_type == "CSV":
         for r in arrResponse:
             print("%s\t%s\t%s" % (r["timestamp"], r["name"], r["resp"]))
+    elif output_type == "CLOUD":
+        if not cloud_plugin:
+            print ("Error, please specify a cloud_plugin")
+            sys.exit(9)
+
+        module = importlib.import_module("plugins.cloud")
+        cloud = module.Cloud(plugin=cloud_plugin)
+        cloud.pushValues(vars=arrResponse)
+        
 
 if __name__ == "__main__":
     main(sys.argv[1:])

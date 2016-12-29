@@ -77,7 +77,11 @@ class HPSU(object):
     def sendCommand(self, cmd):
         return self.can.sendCommandWithID(cmd)
         
-    def parseCommand(self, cmd, response):
+    def timestamp(self):
+        epoch = datetime.datetime.utcfromtimestamp(0)
+        return (datetime.datetime.now() - epoch).total_seconds() * 1000.0
+        
+    def parseCommand(self, cmd, response, verbose):
         hexValues = [int(r, 16) for r in response.split(" ")]
         
         if hexValues[2] == 0xfa:
@@ -85,7 +89,13 @@ class HPSU(object):
         else:
             resp = float(hexValues[3]*0x100+hexValues[4]) / int(cmd["div"])
         
-        timestamp = datetime.datetime.now().isoformat()
+        if verbose == "2":
+            timestamp = datetime.datetime.now().isoformat()
+        else:
+            if sys.version_info >= (3, 0):
+                timestamp = datetime.datetime.now().timestamp()
+            else:
+                timestamp = self.timestamp()
         return {"resp":resp, "timestamp":timestamp}
     
     def umConversion(self, cmd, response, verbose):
