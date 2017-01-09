@@ -3,6 +3,7 @@
 from canelm327 import CanELM327
 from canemu import CanEMU
 from canpi import CanPI
+from cantcp import CanTCP
 import datetime
 import locale
 import sys
@@ -15,6 +16,7 @@ class HPSU(object):
     UM_DEGREE = "d"
     UM_BOOLEAN = "b"
     UM_PERCENT = "perc"
+    driver = None
 
     def __init__(self, driver=None, port=None, cmd=None):
         self.can = None            
@@ -59,20 +61,30 @@ class HPSU(object):
                      "div":div}
                 
                 self.listCommands.append(c)
-                if name in cmd:
+                if (name in cmd) or (len(cmd) == 0):
                     self.commands.append(c)
         
-        if driver == "ELM327":
+        self.driver = driver
+        if self.driver == "ELM327":
             self.can = CanELM327()
-            self.initInterface(port)
-        elif driver == "EMU":
+        elif self.driver == "EMU":
             self.can = CanEMU()        
-        elif driver == "PYCAN":
+        elif self.driver == "PYCAN":
             self.can = CanPI()
+        elif self.driver == "TCP":
+            self.can = CanTCP()
+        else:
+            print("Error selecting driver %s" % self.driver)
+            sys.exit(9)
+
+        self.initInterface(port)
 
 
     def initInterface(self, portstr=None, baudrate=38400, init=False):
-        self.can.initInterface(portstr=portstr, baudrate=baudrate,init=True)
+        if self.driver == "ELM327":
+            self.can.initInterface(portstr=portstr, baudrate=baudrate,init=True)
+        elif self.driver == "TCP":
+            self.can.initInterface()
     
     def sendCommand(self, cmd):
         return self.can.sendCommandWithID(cmd)
@@ -112,5 +124,7 @@ class HPSU(object):
         elif cmd["um"] == HPSU.UM_PERCENT:
             if verbose == "2":
                 resp = "%s%%" % int(response["resp"])
+        else:
+            resp = str(response["resp"])
         
         return resp

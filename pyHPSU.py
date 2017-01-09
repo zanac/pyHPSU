@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# v 0.0.3 by Vanni Brutto (Zanac)
+# v 0.0.4 by Vanni Brutto (Zanac)
 #todo: 
-# output json/csv
 # 
 # utilizzare la formattazione del locale corrente (se ho settato Italy devo vedere date giuste, punti/virgole giusti)
 # monitor mode (sniff)
@@ -14,6 +13,8 @@
 
 import serial, sys, getopt, time, locale, importlib
 from hpsu import HPSU
+
+SocketPort = 7060
     
 def main(argv): 
     cmd = []
@@ -29,9 +30,9 @@ def main(argv):
     except getopt.GetoptError:
         print('pyHPSU.py -d DRIVER -c COMMAND')
         print(' ')
-        print('           -d  --driver           driver name: [ELM327, PYCAN, EMU]')
+        print('           -d  --driver           driver name: [ELM327, PYCAN, EMU, TCP]')
         print('           -p  --port             port (eg COM or /dev/tty*, only for ELM327 driver)')
-        print('           -o  --output_type      output type: [JSON, CSV]   default JSON')
+        print('           -o  --output_type      output type: [JSON, CSV, CLOUD] default JSON')
         print('           -c  --cmd              command: [see commands domain]')
         print('           -v  --verbose          verbosity: [1, 2]   default 1')
         print('           -u  --upload           upload on cloud: [_PLUGIN_]')

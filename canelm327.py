@@ -13,6 +13,8 @@ class CanELM327(object):
             self.ser = serial.Serial(portstr, baudrate, timeout=1)
             self.ser.close()
             self.ser.open()
+            self.ser.flushInput()  #flush input buffer, discarding all its contents
+            self.ser.flushOutput() #flush output buffer, aborting current output and discard all that is in buffer
         except serial.SerialException:
             print("Error opening serial %s" % portstr)
             sys.exit(9)
@@ -47,12 +49,12 @@ class CanELM327(object):
         rc = self.sendCommand("ATSH"+cmd["receiver_id"])
         if rc != "OK":
             print("Error setting ID %s (rc:%s)" % (cmd["receiver_id"], rc))
-            sys.exit(9)
+            return "KO"
         
         rc = self.sendCommand(cmd["command"])
         if rc[0:1] != cmd["command"][0:1]:
             print("Error sending cmd %s (rc:%s)" % (cmd["command"], rc))
-            sys.exit(9)
+            return "KO"
         
         return rc
     
