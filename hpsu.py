@@ -71,7 +71,7 @@ class HPSU(object):
             self.can = CanEMU()        
         elif self.driver == "PYCAN":
             self.can = CanPI()
-        elif self.driver == "TCP":
+        elif self.driver == "HPSUD":
             self.can = CanTCP()
         else:
             print("Error selecting driver %s" % self.driver)
@@ -83,7 +83,7 @@ class HPSU(object):
     def initInterface(self, portstr=None, baudrate=38400, init=False):
         if self.driver == "ELM327":
             self.can.initInterface(portstr=portstr, baudrate=baudrate,init=True)
-        elif self.driver == "TCP":
+        elif self.driver == "HPSUD":
             self.can.initInterface()
     
     def sendCommand(self, cmd):

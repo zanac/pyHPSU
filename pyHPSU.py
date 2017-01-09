@@ -30,7 +30,7 @@ def main(argv):
     except getopt.GetoptError:
         print('pyHPSU.py -d DRIVER -c COMMAND')
         print(' ')
-        print('           -d  --driver           driver name: [ELM327, PYCAN, EMU, TCP]')
+        print('           -d  --driver           driver name: [ELM327, PYCAN, EMU, HPSUD]')
         print('           -p  --port             port (eg COM or /dev/tty*, only for ELM327 driver)')
         print('           -o  --output_type      output type: [JSON, CSV, CLOUD] default JSON')
         print('           -c  --cmd              command: [see commands domain]')
