@@ -11,7 +11,7 @@
 #- frequenza di aggiornamento (l'ideale sarebbe poterla personalizzare per singola variabile ma lasciamo stare)
 
 
-import serial, sys, getopt, time, locale, importlib
+import serial, sys, getopt, time, locale, importlib, time
 from hpsu import HPSU
 
 SocketPort = 7060
@@ -96,6 +96,7 @@ def main(argv):
                 arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"]})
             else:
                 i += 1
+                time.sleep(1.0)
 
     if output_type == "JSON":
         print(arrResponse)
