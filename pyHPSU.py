@@ -80,16 +80,22 @@ def main(argv):
         sys.exit(0)
 
     if not driver:
-        print("Error, please specify driver [ELM327 or PYCAN, EMU]")
+        print("Error, please specify driver [ELM327 or PYCAN, EMU, HPSUD]")
         sys.exit(9)        
 
     arrResponse = []        
     for c in hpsu.commands:
-        rc = hpsu.sendCommand(c)
-        response = hpsu.parseCommand(cmd=c, response=rc, verbose=verbose)
-        resp = hpsu.umConversion(cmd=c, response=response, verbose=verbose)
+        i = 1
+        while i <= 3:
+            rc = hpsu.sendCommand(c)
+            if rc != "KO":
+                i = 4
+                response = hpsu.parseCommand(cmd=c, response=rc, verbose=verbose)
+                resp = hpsu.umConversion(cmd=c, response=response, verbose=verbose)
 
-        arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"]})
+                arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"]})
+            else:
+                i += 1
 
     if output_type == "JSON":
         print(arrResponse)
