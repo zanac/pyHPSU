@@ -36,7 +36,7 @@ class CanEMU(object):
             {"name":"tvbh2","resp":"22 0A FA C1 02 01 3B"},
             {"name":"tliq2","resp":"22 0A FA C1 03 01 36"},
             {"name":"tr2","resp":"22 0A FA C1 04 00 FA"},
-            {"name":"ta2","resp":"22 0A FA C1 05 00 4B"},
+            {"name":"ta2","resp":"22 0A FA C1 05 ff 4B"},
             {"name":"tdhw2","resp":"22 0A FA C1 06 01 C3"},
             {"name":"quiet","resp":"22 0A FA C1 07 00 00"},
             {"name":"mode","resp":"22 0A FA C0 F6 00 01"},

@@ -93,13 +93,18 @@ class HPSU(object):
         epoch = datetime.datetime.utcfromtimestamp(0)
         return (datetime.datetime.now() - epoch).total_seconds() * 1000.0
         
+    def toSigned(self, n):
+        n = n & 0xffff
+        return (n ^ 0x8000) - 0x8000
+        
+        
     def parseCommand(self, cmd, response, verbose):
         hexValues = [int(r, 16) for r in response.split(" ")]
         
         if hexValues[2] == 0xfa:
-            resp = float(hexValues[5]*0x100+hexValues[6]) / int(cmd["div"])
+            resp = float(self.toSigned(hexValues[5]*0x100+hexValues[6])) / int(cmd["div"])
         else:
-            resp = float(hexValues[3]*0x100+hexValues[4]) / int(cmd["div"])
+            resp = float(self.toSigned(hexValues[3]*0x100+hexValues[4])) / int(cmd["div"])
         
         if verbose == "2":
             timestamp = datetime.datetime.now().isoformat()
