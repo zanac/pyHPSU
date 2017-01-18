@@ -1,0 +1,37 @@
+name;label;description
+t_hs;T-GDC;Temperatura corrente (di mandata) del generatore di calore.
+t_hs_set;T-GDC nom;Temperatura nominale corrente del generatore di calore in C con un valore decimale.
+water_pressure;Pressione Acqua;Pressione idrica corrente espressa in bar.
+t_ext;T-Esterna;Temperatura esterna corrente in C con un valore decimale.
+t_dhw;T-ACS;Temperatura corrente del bollitore di acqua calda in C con un valore decimale. Se non fosse attivata alcuna funzione acqua calda, sarebbe visualizzato '- - -'.
+t_dhw_set;T-ACS nom;Temperatura nominale corrente per l'approntamento di acqua calda in C con un valore decimale. Se non fosse attivata alcuna funzione acqua calda, sarebbe visualizzato '- - -'. Il valore nominale corrente qui e' sempre il valore massimo di tutte le richieste rilevanti per questo circuito dell'acqua calda.
+t_return;T-ritorno;"Temperatura di ritorno corrente del generatore di calore in C con un valore decimale. Se non e' collegato il relativo sensore al generatore di calore, viene visualizzato - - -""."""
+flow_rate;Flusso volumetrico;Valore filtrato del flusso di volume corrente.
+t_hc;Temp. Circ. Riscald;Temperatura del circuito di riscaldamento diretto in C con un valore decimale.
+t_hc_set;Temp. Circ Risc Nom;Temperatura nominale (di mandata) del circuito di riscaldamento diretto in C con un valore decimale.
+status_pump;Status pompa;Stato attuale della pompa di circolazione per riscaldamento interna del ROTEX HPSU compact.
+runtime_comp;Tempo oper comp;Tempo di funzionamento del compressore espresso in ore.
+runtime_pump;Tempo per pompa;Tempo di funzionamento della pompa.
+posmix;PosMix;Direzione di flusso nella valvola a 3 vie HZ: Riscaldamento ambiente WW: Produzione di acqua calda
+qboh;Qboh;Quantita' di calore del riscaldamento di riserva per l'approntamento di acqua calda in kWh.
+qchhp;Qchhp;Quantita' di calore del riscaldamento di riserva per la modalita' di riscaldamento in kWh.
+qsc;Qsc;Quantita' di calore della pompa di calore per la modalita' di raffreddamento in kWh.
+qch;Qch;Quantita' di calore della pompa di calore per la modalita' di riscaldamento in kWh.
+qwp;QWP;Intera quantita' di calore della pompa di calore in kWh.
+qdhw;Qdhw;Quantita' di calore per l'approntamento di acqua calda in kWh.
+sw_vers_01;Versione SW 1;
+sw_vers_02;Versione SW 2;
+sw_vers_03;Versione SW 3;
+mode_01;Modo ?;Modo Rotex
+tvbh2;TVBH2 [C];Temperatura di mandata attuale riscaldamento (tV,BH).
+tliq2;Tliq2 [C];Temperatura corrente del refrigerante (tliq2).
+tr2;TR2 [C];Temperatura di ritorno attuale riscaldamento, sensore secondario (tR2).
+ta2;TA2 [C];Temperatura esterna attuale (misurata dalla sonda della pompa di calore esterna).
+tdhw2;Tdhw2 [C];Temperatura dell'acqua calda attuale nel bollitore dell'acqua calda, sensore secondario (tDHW2).
+quiet;quiet;Indica lo stato di funzionamento silenzioso.
+mode;Mode;Modalita' attuale della pompa di calore:\n: riscaldare\n: Raffreddare\n: Produzione di acqua calda\n: Funzione scongelamento attiva
+pump;Pump;Potenza attuale della pompa di circolazione per riscaldamento interna in %.
+ext;Ext;Modalita' energetica attuale della pompa di calore:\nLT: Funzione EVU attiva e tariffa ridotta.\nHT: Funzione EVU attiva e tariffa normale.\nSGN: SMART GRID - Funzione attiva, funzionamento\nnormale.\nSG1: SMART GRID - Funzione attiva, lancio,\ncorrente piu' cara.\nSG2: SMART GRID - Funzione attiva, funzionamento\naumentato, corrente piu' conveniente.\nSG3: SMART GRID - Funzione attiva, comando di attivazione e funzionamento aumentato, corrente piu' conveniente. '- - -': Nessuna modalita' esterna attiva, la pompa di calore funziona in modo normale.
+ehs;EHS;Potenza attuale del Backup-Heater (BUH) in kW.
+rt;RT;Parametro [Room thermostat] = Off: - - - Parametro [Room thermostat] = On: Richiesta di calore : Nessuna richiesta di calore
+bpv;BPV;Posizione attuale della valvola di miscelazione 3UVB1 (100 % = A, 0 % = B).

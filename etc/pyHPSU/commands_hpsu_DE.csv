@@ -1,0 +1,37 @@
+name;label;description
+t_hs;T-WE;Angezeigt wird die aktuelle Vorlauftemperatur (TVBH) des Wärmeerzeugers in C.
+t_hs_set;T-WE Soll;Angezeigt wird die aktuelle Vorlauf-Solltemperatur des Wärmeerzeugers in C
+water_pressure;Wasserdruck;Angezeigt wird der aktuelle Wasserdruck in bar.
+t_ext;T-Aussen;Angezeigt wird die gemittelte Außentemperatur in C.
+t_dhw;T-WW;Angezeigt wird die aktuelle Temperatur des Warmwasserspeichers in C. Sollte keine Warmwasserfunktion aktiviert sein, wird --- angezeigt.
+t_dhw_set;T-WW Soll;Angezeigt wird die aktuelle Warmwasser-Solltemperatur in C. Sollte keine Warmwasserfunktion aktiviert sein, wird --- angezeigt. Der aktuelle Sollwert ist hier immer der Maximalwert aller für diesen Warmwasserkreis relevanten Anforderungen.
+t_return;T-Rücklauf;Angezeigt wird die aktuelle Rücklauftemperatur des Wärmeerzeugers in C. Ist kein entsprechender Sensor am Wärmeerzeuger angeschlossen, wird --- angezeigt.
+flow_rate;Durchfluss;Angezeigt wird der gefilterte Wert des aktuellen Volumenstroms in Liter pro Stunde.
+t_hc;T-HK;Angezeigt wird die Vorlauftemperatur des direkten Heizkreises in C.
+t_hc_set;T-HK Soll;Angezeigt wird die Vorlauf-Solltemperatur des direkten Heizkreises in C.
+status_pump;Status Kesselpumpe;Angezeigt wird der aktuelle Status der internen Heizungsumwälzpumpe der ROTEX HPSU compact.
+runtime_comp;Laufzeit Kompr;Angezeigt wird die Laufzeit des Kältemittelverdichters in h.
+runtime_pump;Laufzeit Pumpe;Angezeigt wird die Laufzeit der internen Heizungsumwälzpumpe in h.
+posmix;Mischer Position;Angezeigt wird die aktuelle Stellung des 3-Wege-Umschaltventils 3UV DHW. 0 %: Stellung A (Raumheizung) 100 %: Stellung B (Warmwasserbereitung)
+qboh;EHS für DHW;Angezeigt wird die Wärmemenge des zusätzlichen Wärmeerzeugers für die Warmwasserbereitung in kWh.
+qchhp;EHS für CH;Angezeigt wird die Wärmemenge des zusätzlichen Wärmeerzeugers für den Heizbetrieb in kWh.
+qsc;Energie Kühlung;Angezeigt wird die Wärmemenge der Wärmepumpe für den Kühlbetrieb in kWh.
+qch;Energie Heizung;Angezeigt wird die Wärmemenge der Wärmepumpe für den Heizbetrieb in kWh.
+qwp;Energie erzeugt;Angezeigt wird die gesamte Wärmemenge der Wärmepumpe in kWh.
+qdhw;Energie für WW;Angezeigt wird die Wärmemenge für die Warmwasserbereitung in kWh.
+sw_vers_01;Versione SW 1;
+sw_vers_02;Versione SW 2;
+sw_vers_03;Versione SW 3;
+mode_01;Modo ?;Modo Rotex
+tvbh2;TVBH2 [C];Aktuelle Temperatur Heizung Vorlauf ggf. nach Heizungsunterstützungswärmetauscher (tV,BH).
+tliq2;Tliq2 [C];Aktuelle Kältemitteltemperatur (tliq2).
+tr2;TR2 [C];Aktuelle Temperatur Heizung Rücklauf, sekundärer Fühler (tR2).
+ta2;TA2 [C];Aktuelle Außentemperatur (gemessen von Temperaturfühler des Wärmepumpenaußengeräts)
+tdhw2;Tdhw2 [C];Current temperature in domestic hot water storage tank, secondary sensor (tDHW2).
+quiet;quiet;Shows the status of the whisper mode.
+mode;Mode;Current mode of the heat pump: ---: No heating or cooling demand : Heating : Cooling : Domestic hot water generation : Automatic defrosting function active
+pump;Pump;Actual output of the internal heating circulation pump in %
+ext;Ext;Current energy mode of the heat pump: LT: EVU function HT/NT active and low tariff. HT: EVU function HT/NT active and high tariff. SGN: EVU function SMART GRID active, normal mode. SG1: EVU function SMART GRID active, disconnection: no heat pump operation, no frost protection function. SG2: EVU function SMART GRID active, switchon recommendation, mode with higher set temperatures, cheap power. SG3: EVU function SMART GRID active, switchon command and storage tank charging to 70 C, cheap power - - -: No external mode active, heat pump works in normal mode.
+ehs;EHS;Current output of the backup heater in kW
+rt;RT;Parameter [Room thermostat] / [Interlink fct]
+bpv;BPV;Current position of the mixing valve 3UVB1 (100% = A, 0% = B)
