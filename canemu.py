@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # v 0.0.1 by Vanni Brutto (Zanac)
-
+import sys
 
 class CanEMU(object):
     def __init__(self):
         pass
+        
+    def eprint(self, *args):
+        sys.stderr.write(' '.join(map(str,args)) + '\n')
     
     def sendCommandWithID(self, cmd):
         arrResponse = [
@@ -46,7 +49,10 @@ class CanEMU(object):
             {"name":"rt","resp":"22 0A FA C0 FA 00 01"},
             {"name":"bpv","resp":"22 0A FA C0 FB 00 00"}]
 
-
+        if cmd["name"] == "runtime_pump":
+            self.eprint("Error sending %s" % (cmd["name"]))
+            return "KO"
+        
         for r in arrResponse:
             if r["name"] == cmd["name"]:
                 return r["resp"]

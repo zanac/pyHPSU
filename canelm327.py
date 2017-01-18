@@ -8,6 +8,11 @@ class CanELM327(object):
     def __init__(self):
         pass
     
+    def eprint(self, *args):
+        self.ser.flushInput()  #flush input buffer, discarding all its contents
+        self.ser.flushOutput() #flush output buffer, aborting current output and discard all that is in buffer
+        sys.stderr.write(' '.join(map(str,args)) + '\n')
+    
     def initInterface(self, portstr=None, baudrate=38400, init=False):
         try:
             self.ser = serial.Serial(portstr, baudrate, timeout=1)
@@ -16,7 +21,7 @@ class CanELM327(object):
             self.ser.flushInput()  #flush input buffer, discarding all its contents
             self.ser.flushOutput() #flush output buffer, aborting current output and discard all that is in buffer
         except serial.SerialException:
-            print("Error opening serial %s" % portstr)
+            self.eprint("Error opening serial %s" % portstr)
             sys.exit(9)
 
         if init:
@@ -24,7 +29,7 @@ class CanELM327(object):
                         
             rc = self.sendCommand("AT PP 2F ON")
             if rc != "OK":
-                print("Error sending AT PP 2F ON (rc:%s)" % rc)
+                self.eprint("Error sending AT PP 2F ON (rc:%s)" % rc)
                 sys.exit(9)
             
             """rc = self.sendCommand("AT D")
@@ -34,7 +39,7 @@ class CanELM327(object):
             
             rc = self.sendCommand("AT SP C")
             if rc != "OK":
-                print("Error sending AT SP C (rc:%s)" % rc)
+                self.eprint("Error sending AT SP C (rc:%s)" % rc)
                 sys.exit(9)
 
     def sendCommand(self, cmd):
@@ -48,12 +53,12 @@ class CanELM327(object):
     def sendCommandWithID(self, cmd):
         rc = self.sendCommand("ATSH"+cmd["receiver_id"])
         if rc != "OK":
-            print("Error setting ID %s (rc:%s)" % (cmd["receiver_id"], rc))
+            self.eprint("Error setting ID %s (rc:%s)" % (cmd["receiver_id"], rc))
             return "KO"
         
         rc = self.sendCommand(cmd["command"])
         if rc[0:1] != cmd["command"][0:1]:
-            print("Error sending cmd %s (rc:%s)" % (cmd["command"], rc))
+            self.eprint("Error sending cmd %s (rc:%s)" % (cmd["command"], rc))
             return "KO"
         
         return rc

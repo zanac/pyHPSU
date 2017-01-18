@@ -96,7 +96,7 @@ def main(argv):
                 arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"]})
             else:
                 i += 1
-                time.sleep(1.0)
+                time.sleep(2.0)
 
     if output_type == "JSON":
         print(arrResponse)

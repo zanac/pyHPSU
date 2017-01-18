@@ -4,6 +4,7 @@ from canelm327 import CanELM327
 from canemu import CanEMU
 from canpi import CanPI
 from cantcp import CanTCP
+import platform
 import datetime
 import locale
 import sys
@@ -17,18 +18,23 @@ class HPSU(object):
     UM_BOOLEAN = "b"
     UM_PERCENT = "perc"
     driver = None
+    
+    pathCOMMANDS = "/etc/pyHPSU"    
 
     def __init__(self, driver=None, port=None, cmd=None):
         self.can = None            
         self.commands = []
         self.listCommands = []
         
+        if platform.system() == "Windows":
+            self.pathCOMMANDS = "C:/Sec/apps/Apache24/htdocs/domon/web/waterpump%s" % self.pathCOMMANDS        
+        
         LANG_CODE = locale.getdefaultlocale()[0].split('_')[0].upper()
         hpsuDict = {}
         
-        commands_hpsu = 'commands_hpsu_%s.csv' % LANG_CODE
+        commands_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, LANG_CODE)
         if not os.path.isfile(commands_hpsu):
-            commands_hpsu = 'commands_hpsu_%s.csv' % "EN"
+            commands_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, "EN")
 
         with open(commands_hpsu, 'rU') as csvfile:
             pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
@@ -39,7 +45,7 @@ class HPSU(object):
                 desc = row[2]
                 hpsuDict.update({name:{"label":label, "desc":desc}})
             
-        with open('commands_hpsu.csv', 'rU') as csvfile:
+        with open('%s/commands_hpsu.csv' % self.pathCOMMANDS, 'rU') as csvfile:
             pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
             next(pyHPSUCSV, None) # skip the header
 
@@ -78,7 +84,34 @@ class HPSU(object):
             sys.exit(9)
 
         self.initInterface(port)
+    
+    def sendCommandWithParse(self, cmd):
+        response = None
+        verbose = "1"        
+        i = 1
+        
+        while i <= 3:
+            rc = self.sendCommand(cmd)
+            if rc != "KO":
+                i = 4
+                response = self.parseCommand(cmd=cmd, response=rc, verbose=verbose)["resp"]
+            else:
+                i += 1
+                time.sleep(2.0)
+        return response
 
+    def getParameterValue(self, parameter):
+        response = None
+        cmd = None
+        for c in self.commands:
+            if c["name"] == parameter:
+                cmd = c
+        
+        if cmd:
+            response = self.sendCommandWithParse(cmd)
+        
+        return response
+                
 
     def initInterface(self, portstr=None, baudrate=38400, init=False):
         if self.driver == "ELM327":
@@ -107,7 +140,7 @@ class HPSU(object):
         if hexValues[2] == 0xfa:
             resp = float(self.toSigned(hexValues[5]*0x100+hexValues[6], cmd)) / int(cmd["div"])
         else:
-            resp = float(self.toSigned(hexValues[3]*0x100+hexValues[4])) / int(cmd["div"])
+            resp = float(self.toSigned(hexValues[3]*0x100+hexValues[4], cmd)) / int(cmd["div"])
         
         if verbose == "2":
             timestamp = datetime.datetime.now().isoformat()
