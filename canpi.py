@@ -16,9 +16,10 @@ class CanPI(object):
         self.bus.send(msg)
         time.sleep(50.0 / 1000.0)
         timeout = 2
-        rc = self.bus.recv(timeout)
-        print ("::::::::::::::::::::::::::")
-        print (str(rc))
+        rcBUS = self.bus.recv(timeout)
+        #print ("::::::::::::::::::::::::::")
+        print (str(rcBUS.data))
+        rc = " ".join("{:02X}".format(ord(c)) for c in str(rcBUS.data))
         #todo convertire rc in stringa hex
         
         return rc
