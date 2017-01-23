@@ -12,7 +12,7 @@
 
 
 import serial, sys, getopt, time, locale, importlib, time
-from hpsu import HPSU
+from HPSU.HPSU import HPSU
 
 SocketPort = 7060
     
@@ -109,7 +109,7 @@ def main(argv):
             sys.exit(9)
 
         module = importlib.import_module("plugins.cloud")
-        cloud = module.Cloud(plugin=cloud_plugin)
+        cloud = module.Cloud(plugin=cloud_plugin, pathCOMMANDS=hpsu.pathCOMMANDS)
         cloud.pushValues(vars=arrResponse)
         
 

@@ -14,7 +14,7 @@ try:
     import SocketServer as socketserver
 except ImportError:
     import socketserver
-from hpsu import HPSU
+from HPSU.HPSU import HPSU
 
 
 #-------------------------------------------------------------------
@@ -42,7 +42,6 @@ def printD(message):
 
 #parse Socket request
 def ParseSocketRequest(cmdName, hpsu):
-    mutex.acquire()
     cmdName = cmdName.decode('UTF-8')
     for cmd in hpsu.commands:
         if cmdName == cmd["name"]:            
@@ -52,6 +51,7 @@ def ParseSocketRequest(cmdName, hpsu):
             if cmdName == "qch":
                 sec = 1"""
             time.sleep(sec)
+            mutex.acquire()
             rc = hpsu.sendCommand(cmd)
             if (rc != "KO"):
                 mutex.release()
@@ -61,7 +61,6 @@ def ParseSocketRequest(cmdName, hpsu):
                 return rc
 
     returnlist = "Command %s not available\n" % cmdName
-    mutex.release()
     return returnlist
 
 class ThreadedTCPRequestHandler(socketserver.StreamRequestHandler):

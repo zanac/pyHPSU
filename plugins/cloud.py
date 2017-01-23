@@ -4,6 +4,8 @@
 import configparser, requests, sys
 
 class Cloud():
+    pathCOMMANDS = ""
+    
     def get_with_default(self, config, section, name, default):
         if "config" not in config.sections():
             return default
@@ -13,11 +15,14 @@ class Cloud():
         else:
             return default
         
-    def __init__(self, plugin=None):
+    def __init__(self, plugin=None, pathCOMMANDS=None):
         self.plugin = plugin
+        self.pathCOMMANDS = pathCOMMANDS
 
+        #Legge file emoncms.ini
         config = configparser.ConfigParser()
-        config.read('%s.ini' % plugin)
+        iniFile = '%s/%s.ini' % (self.pathCOMMANDS, plugin)
+        config.read(iniFile)
         self.apikey = self.get_with_default(config=config, section="config", name="apikey", default=None)
         self.proxy = self.get_with_default(config=config, section="network", name="proxy", default=None)
         if self.proxy:
