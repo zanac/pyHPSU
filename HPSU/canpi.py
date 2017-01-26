@@ -19,12 +19,12 @@ class CanPI(object):
         i = 1
         
         
+        msg = can.Message(arbitration_id=receiver_id, data=msg_data)
+        self.bus.send(msg)        
+        time.sleep(50.0 / 1000.0)
+
         while notTimeout:
             i += 1
-            msg = can.Message(arbitration_id=receiver_id, data=msg_data)
-            self.bus.send(msg)
-            
-            time.sleep(50.0 / 1000.0)
             timeout = 0.1
             rcBUS = self.bus.recv(timeout)
             #print (str(rcBUS.data))
