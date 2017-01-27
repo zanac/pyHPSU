@@ -26,16 +26,18 @@ class CanPI(object):
         while notTimeout:
             i += 1
             timeout = 0.1
-            rcBUS = self.bus.recv(timeout)
+            #rcBUS = self.bus.recv(timeout)
+            rcBUS = bufferedreader.get_message()
             #print (str(rcBUS.data))
-            print("bus:%s:%s" % (rcBUS.arbitration_id, ("%02X %02X %02X %02X %02X %02X %02X" % (rcBUS.data[0], rcBUS.data[1], rcBUS.data[2], rcBUS.data[3], rcBUS.data[4], rcBUS.data[5], rcBUS.data[6]))))
-            
-            if rcBUS.arbitration_id in [receiver_id, receiver_id - 0x10]:
-                rc = "%02X %02X %02X %02X %02X %02X %02X" % (rcBUS.data[0], rcBUS.data[1], rcBUS.data[2], rcBUS.data[3], rcBUS.data[4], rcBUS.data[5], rcBUS.data[6])
-                notTimeout = True
-            else:
-                rc = "KO"
-                if i >= 15:
+            if rcBUS:
+                print("bus:%s:%s" % (rcBUS.arbitration_id, ("%02X %02X %02X %02X %02X %02X %02X" % (rcBUS.data[0], rcBUS.data[1], rcBUS.data[2], rcBUS.data[3], rcBUS.data[4], rcBUS.data[5], rcBUS.data[6]))))
+                
+                if rcBUS.arbitration_id in [receiver_id, receiver_id - 0x10]:
+                    rc = "%02X %02X %02X %02X %02X %02X %02X" % (rcBUS.data[0], rcBUS.data[1], rcBUS.data[2], rcBUS.data[3], rcBUS.data[4], rcBUS.data[5], rcBUS.data[6])
                     notTimeout = True
+                else:
+                    rc = "KO"
+                    if i >= 15:
+                        notTimeout = True
         
         return rc
