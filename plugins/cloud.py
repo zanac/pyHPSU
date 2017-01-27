@@ -24,9 +24,9 @@ class Cloud():
         iniFile = '%s/%s.ini' % (self.pathCOMMANDS, plugin)
         config.read(iniFile)
         self.apikey = self.get_with_default(config=config, section="config", name="apikey", default=None)
-        self.proxy = self.get_with_default(config=config, section="network", name="proxy", default=None)
-        if self.proxy:
-            self.proxy = {"http": self.proxy, "https": self.proxy }
+        #self.proxy = self.get_with_default(config=config, section="network", name="proxy", default=None)
+        #if self.proxy:
+        #    self.proxy = {"http": self.proxy, "https": self.proxy }
         
         self.listNodes = []
         for section in config.sections():
@@ -59,7 +59,8 @@ class Cloud():
                     varsTxt = str(varsDict).replace(" ", "")
                     _url = "https://emoncms.org/api/post?apikey=%s&time:%s&json=%s&node=%s" % (self.apikey, timestamp, varsTxt, nodeName)                
                     
-                    r = requests.get(_url, proxies=self.proxy)
+                    #r = requests.get(_url, proxies=self.proxy)
+                    r = requests.get(_url)
                     
                     rc = r.text
                     if rc != "ok":
