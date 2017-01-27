@@ -87,15 +87,18 @@ def main(argv):
     driver = None
     verbose = "1"
     help = False
+    lg_code = None
+    languages = ["EN", "IT", "DE"]        
 
     try:
-        opts, args = getopt.getopt(argv,"hp:d:v:", ["help", "port=", "driver=", "verbose="])
+        opts, args = getopt.getopt(argv,"hp:d:v:l:", ["help", "port=", "driver=", "verbose=",  "language="])
     except getopt.GetoptError:
         print('pyHPSUd.py -d DRIVER')
         print(' ')
         print('           -d  --driver           driver name: [ELM327, PYCAN, EMU]')
         print('           -p  --port             port (eg COM or /dev/tty*, only for ELM327 driver)')
         print('           -v  --verbose          verbosity: [1, 2]   default 1')
+        print('           -l  --language         set the language to use [%s]' % " ".join(languages) )
         sys.exit(2)
 
     for opt, arg in opts:
@@ -108,7 +111,7 @@ def main(argv):
         elif opt in ("-v", "--verbose"):
             verbose = arg
 
-    hpsu = HPSU(driver=driver, port=port, cmd=cmd)
+    hpsu = HPSU(driver=driver, port=port, cmd=cmd, lg_code=lg_code)
     HOST, PORT = SocketHost, SocketPort
     socket_server = ThreadedTCPServer((HOST, PORT), ThreadedTCPRequestHandler)
     socket_server.hpsu = hpsu

@@ -24,9 +24,11 @@ def main(argv):
     help = False
     output_type = "JSON"
     cloud_plugin = None
+    lg_code = None
+    languages = ["EN", "IT", "DE"]    
 
     try:
-        opts, args = getopt.getopt(argv,"hc:p:d:v:o:u:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload="])
+        opts, args = getopt.getopt(argv,"hc:p:d:v:o:u:l:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language="])
     except getopt.GetoptError:
         print('pyHPSU.py -d DRIVER -c COMMAND')
         print(' ')
@@ -36,6 +38,7 @@ def main(argv):
         print('           -c  --cmd              command: [see commands domain]')
         print('           -v  --verbose          verbosity: [1, 2]   default 1')
         print('           -u  --upload           upload on cloud: [_PLUGIN_]')
+        print('           -l  --language         set the language to use [%s]' % " ".join(languages) )
         sys.exit(2)
 
     for opt, arg in opts:
@@ -59,11 +62,21 @@ def main(argv):
             if cloud_plugin not in ["EMONCMS"]:
                 print("Error, please specify a correct plugin")
                 sys.exit(9)
+        elif opt in ("-l", "--language"):
+            lg_code = arg.upper()   
+            if lg_code not in languages:
+                print("Error, please specify a correct language [%s]" % " ".join(languages))
+                sys.exit(9)          
+        elif opt in ("-l", "--language"):
+            lg_code = arg.upper()   
+            if lg_code not in languages:
+                print("Error, please specify a correct language [%s]" % " ".join(languages))
+                sys.exit(9)                  
 
     if verbose == "2":
         locale.setlocale(locale.LC_ALL, '')
         
-    hpsu = HPSU(driver=driver, port=port, cmd=cmd)
+    hpsu = HPSU(driver=driver, port=port, cmd=cmd, lg_code=lg_code)
     
     if help:
         if len(cmd) == 0:
