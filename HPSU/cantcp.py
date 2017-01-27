@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 # v 0.0.1 by Vanni Brutto (Zanac)
 
-import serial
 import sys
 import socket
 import time
