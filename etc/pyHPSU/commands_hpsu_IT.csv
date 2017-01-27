@@ -35,3 +35,9 @@ ext;Ext;Modalita' energetica attuale della pompa di calore:\nLT: Funzione EVU at
 ehs;EHS;Potenza attuale del Backup-Heater (BUH) in kW.
 rt;RT;Parametro [Room thermostat] = Off: - - - Parametro [Room thermostat] = On: Richiesta di calore : Nessuna richiesta di calore
 bpv;BPV;Posizione attuale della valvola di miscelazione 3UVB1 (100 % = A, 0 % = B).
+t_v1;TV;Temperatura di mandata corrente (tV1).
+t_dhw1;Tdhw;Temperatura dell'acqua calda attuale nel bollitore dell'acqua calda (tDHW1).
+t_vbh;TVBH;Temperatura di uscita dell'acqua bollitore dell'acqua calda (tV,BH).
+t_outdoor_ot1;TA;Temperatura esterna attuale (misurata dalla sonda di temperatura opzionale RoCon OT1).
+t_r1;TR;Temperatura di ritorno attuale riscaldamento (tR1).
+v1;V;Flusso di volume attuale (portata) nell'impianto di riscaldamento.
