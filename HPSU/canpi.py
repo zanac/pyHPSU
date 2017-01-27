@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+    #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # v 0.0.1 by Vanni Brutto (Zanac)
 
@@ -10,35 +10,30 @@ class CanPI(object):
         self.bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
     
     def sendCommandWithID(self, cmd):
-        receiver_id = int(cmd["receiver_id"], 16)
-        
-        #Provare anche togliendo il commento segutente!
-        #receiver_id = receiver_id - 0x10
+        receiver_id = int(cmd["receiver_id"], 16)        
         msg_data = [int(r, 16) for r in cmd["command"].split(" ")]
         notTimeout = True
-        i = 1
+        i = 0
         
-        
-        msg = can.Message(arbitration_id=receiver_id, data=msg_data)
-        self.bus.send(msg)        
-        time.sleep(50.0 / 1000.0)
+        msg = can.Message(arbitration_id=receiver_id, data=msg_data, extended_id=False, dlc=7)
+        self.bus.send(msg)
 
         while notTimeout:
             i += 1
             timeout = 0.1
-            #rcBUS = self.bus.recv(timeout)
-            bufferedreader = can.BufferedReader()
-            rcBUS = bufferedreader.get_message()
-            #print (str(rcBUS.data))
+            rcBUS = self.bus.recv(timeout)
+
             if rcBUS:
-                print("bus:%s:%s" % (rcBUS.arbitration_id, ("%02X %02X %02X %02X %02X %02X %02X" % (rcBUS.data[0], rcBUS.data[1], rcBUS.data[2], rcBUS.data[3], rcBUS.data[4], rcBUS.data[5], rcBUS.data[6]))))
-                
-                if rcBUS.arbitration_id in [receiver_id, receiver_id - 0x10]:
+                if (msg_data[2] == 0xfa and msg_data[3] == rcBUS.data[3] and msg_data[4] == rcBUS.data[4]) or (msg_data[2] != 0xfa and msg_data[2] == rcBUS.data[2]):
                     rc = "%02X %02X %02X %02X %02X %02X %02X" % (rcBUS.data[0], rcBUS.data[1], rcBUS.data[2], rcBUS.data[3], rcBUS.data[4], rcBUS.data[5], rcBUS.data[6])
-                    notTimeout = True
+                    notTimeout = False
                 else:
-                    rc = "KO"
                     if i >= 15:
-                        notTimeout = True
+                        notTimeout = False
+                        rc = "KO"
+            else:
+                if i >= 15:
+                    notTimeout = False
+                    rc = "KO"
         
         return rc

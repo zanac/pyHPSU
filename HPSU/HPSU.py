@@ -30,7 +30,7 @@ class HPSU(object):
     
     pathCOMMANDS = "/etc/pyHPSU"    
 
-    def __init__(self, driver=None, port=None, cmd=None):
+    def __init__(self, driver=None, port=None, cmd=None, lg_code=None):
         self.can = None            
         self.commands = []
         self.listCommands = []
@@ -38,7 +38,7 @@ class HPSU(object):
         if platform.system() == "Windows":
             self.pathCOMMANDS = "C:/Sec/apps/Apache24/htdocs/domon/waterpump%s" % self.pathCOMMANDS        
         
-        LANG_CODE = locale.getdefaultlocale()[0].split('_')[0].upper()
+        LANG_CODE = lg_code if lg_code else locale.getdefaultlocale()[0].split('_')[0].upper()
         hpsuDict = {}
         
         commands_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, LANG_CODE)
