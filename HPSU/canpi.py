@@ -27,6 +27,7 @@ class CanPI(object):
             i += 1
             timeout = 0.1
             #rcBUS = self.bus.recv(timeout)
+            bufferedreader = can.BufferedReader()
             rcBUS = bufferedreader.get_message()
             #print (str(rcBUS.data))
             if rcBUS:
