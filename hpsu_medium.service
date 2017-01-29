@@ -1,0 +1,12 @@
+[Unit]
+Description=HPSU MEDIUM Daemon
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/pi/start_hpsu_medium.sh
+PIDFile=/tmp/hpsu_medium.pid
+
+[Install]
+WantedBy=multi-user.target
+Alias=hpsu_medium.service

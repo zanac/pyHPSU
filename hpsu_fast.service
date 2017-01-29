@@ -1,0 +1,12 @@
+[Unit]
+Description=HPSU FAST Daemon
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/pi/start_hpsu_fast.sh
+PIDFile=/tmp/hpsu_fast.pid
+
+[Install]
+WantedBy=multi-user.target
+Alias=hpsu_fast.service

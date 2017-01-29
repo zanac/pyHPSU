@@ -1,0 +1,12 @@
+[Unit]
+Description=HPSU SLOW Daemon
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/pi/start_hpsu_slow.sh
+PIDFile=/tmp/hpsu_slow.pid
+
+[Install]
+WantedBy=multi-user.target
+Alias=hpsu_slow.service
