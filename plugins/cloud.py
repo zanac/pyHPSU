@@ -75,7 +75,7 @@ class Cloud():
                     try:
                         r = requests.get(_url, timeout=7)
                         rc = r.text
-                    except requests.exceptions.Timeout, e:
+                    except (requests.exceptions.Timeout, e):
                         rc = "ko"
                         self.hpsu.printd("exception", "Connection timeout during get %s" % _urlNoApi)
                     except Exception:
