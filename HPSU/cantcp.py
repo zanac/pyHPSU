@@ -10,15 +10,15 @@ SocketPort = 7060
 
 class CanTCP(object):
     sock = None
+    hpsu = None
     
-    def __init__(self):
-        pass
+    def __init__(self, hpsu=None):
+        self.hpsu = hpsu
     
     def initInterface(self):
-        pass
-        
+        pass        
     
-    def sendCommandWithID(self, cmd):
+    def sendCommandWithID(self, cmd):    
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect(('127.0.0.1', SocketPort))
         

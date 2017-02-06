@@ -30,10 +30,11 @@ class HPSU(object):
     
     pathCOMMANDS = "/etc/pyHPSU"    
 
-    def __init__(self, driver=None, port=None, cmd=None, lg_code=None):
+    def __init__(self, logger=None, driver=None, port=None, cmd=None, lg_code=None):
         self.can = None            
         self.commands = []
         self.listCommands = []
+        self.logger = logger
         
         if platform.system() == "Windows":
             self.pathCOMMANDS = "C:/Sec/apps/Apache24/htdocs/domon/waterpump%s" % self.pathCOMMANDS        
@@ -81,18 +82,28 @@ class HPSU(object):
         
         self.driver = driver
         if self.driver == "ELM327":
-            self.can = CanELM327()
+            self.can = CanELM327(self)
         elif self.driver == "EMU":
-            self.can = CanEMU()        
+            self.can = CanEMU(self)        
         elif self.driver == "PYCAN":
-            self.can = CanPI()
+            self.can = CanPI(self)
         elif self.driver == "HPSUD":
-            self.can = CanTCP()
+            self.can = CanTCP(self)
         else:
             print("Error selecting driver %s" % self.driver)
             sys.exit(9)
 
         self.initInterface(port)
+
+    def printd(self, level, msg):
+        print("%s - %s" % (level, msg))
+        if self.logger:
+            if level == 'warning':
+                self.logger.warning(msg)
+            elif level == 'error':
+                self.logger.error(msg)
+            elif level == 'exception':
+                self.logger.exception(msg)
     
     def sendCommandWithParse(self, cmd):
         response = None

@@ -2,18 +2,20 @@
 # -*- coding: utf-8 -*-
 # v 0.0.1 by Vanni Brutto (Zanac)
 
-import serial, sys, getopt, time, csv
+import serial
+import sys
+import time
 
 class CanELM327(object):
     portstr = None
-    def __init__(self):
-        pass
+    hpsu = None
+    def __init__(self, hpsu=None):
+        self.hpsu = hpsu
     
-    def eprint(self, *args):
+    def resetInterface(self):
         self.ser.flushInput()  #flush input buffer, discarding all its contents
         self.ser.flushOutput() #flush output buffer, aborting current output and discard all that is in buffer
-        sys.stderr.write(' '.join(map(str,args)) + '\n')
-        self.initInterface(self.portstr,38400,True)
+        self.initInterface(self.portstr, 38400, True)
     
     def initInterface(self, portstr=None, baudrate=38400, init=False):
         self.portstr = portstr
@@ -24,7 +26,7 @@ class CanELM327(object):
             self.ser.flushInput()  #flush input buffer, discarding all its contents
             self.ser.flushOutput() #flush output buffer, aborting current output and discard all that is in buffer
         except serial.SerialException:
-            self.eprint("Error opening serial %s" % portstr)
+            self.hpsu.printd("error", "Error opening serial %s" % portstr)
             sys.exit(9)
 
         if init:
@@ -32,7 +34,7 @@ class CanELM327(object):
                         
             rc = self.sendCommand("AT PP 2F ON")
             if rc != "OK":
-                self.eprint("Error sending AT PP 2F ON (rc:%s)" % rc)
+                self.hpsu.printd("error", "Error sending AT PP 2F ON (rc:%s)" % rc)
                 sys.exit(9)
             
             """rc = self.sendCommand("AT D")
@@ -42,7 +44,7 @@ class CanELM327(object):
             
             rc = self.sendCommand("AT SP C")
             if rc != "OK":
-                self.eprint("Error sending AT SP C (rc:%s)" % rc)
+                self.hpsu.printd("error", "Error sending AT SP C (rc:%s)" % rc)
                 sys.exit(9)
 
     def sendCommand(self, cmd):
@@ -56,12 +58,16 @@ class CanELM327(object):
     def sendCommandWithID(self, cmd):
         rc = self.sendCommand("ATSH"+cmd["receiver_id"])
         if rc != "OK":
-            self.eprint("Error setting ID %s (rc:%s)" % (cmd["receiver_id"], rc))
+            #self.eprint("Error setting ID %s (rc:%s)" % (cmd["receiver_id"], rc))
+            self.resetInterface()
+            self.hpsu.printd('warning', "Error setting ID %s (rc:%s)" % (cmd["receiver_id"], rc))
             return "KO"
         
         rc = self.sendCommand(cmd["command"])
         if rc[0:1] != cmd["command"][0:1]:
-            self.eprint("Error sending cmd %s (rc:%s)" % (cmd["command"], rc))
+            #self.eprint("Error sending cmd %s (rc:%s)" % (cmd["command"], rc))
+            self.resetInterface()
+            self.hpsu.printd('warning', 'sending cmd %s (rc:%s)' % (cmd["command"], rc))
             return "KO"
         
         return rc
