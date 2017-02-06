@@ -11,7 +11,13 @@
 #- frequenza di aggiornamento (l'ideale sarebbe poterla personalizzare per singola variabile ma lasciamo stare)
 
 
-import serial, sys, getopt, time, locale, importlib, time
+import serial
+import sys
+import getopt
+import time
+import locale
+import importlib
+import logging
 from HPSU.HPSU import HPSU
 
 SocketPort = 7060
@@ -25,10 +31,11 @@ def main(argv):
     output_type = "JSON"
     cloud_plugin = None
     lg_code = None
-    languages = ["EN", "IT", "DE"]    
+    languages = ["EN", "IT", "DE"]
+    logger = None
 
     try:
-        opts, args = getopt.getopt(argv,"hc:p:d:v:o:u:l:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language="])
+        opts, args = getopt.getopt(argv,"hc:p:d:v:o:u:l:g:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log="])
     except getopt.GetoptError:
         print('pyHPSU.py -d DRIVER -c COMMAND')
         print(' ')
@@ -38,7 +45,8 @@ def main(argv):
         print('           -c  --cmd              command: [see commands domain]')
         print('           -v  --verbose          verbosity: [1, 2]   default 1')
         print('           -u  --upload           upload on cloud: [_PLUGIN_]')
-        print('           -l  --language         set the language to use [%s]' % " ".join(languages) )
+        print('           -l  --language         set the language to use [%s]' % " ".join(languages))
+        print('           -g  --log              set the log to file [_filename]')
         sys.exit(2)
 
     for opt, arg in opts:
@@ -66,17 +74,18 @@ def main(argv):
             lg_code = arg.upper()   
             if lg_code not in languages:
                 print("Error, please specify a correct language [%s]" % " ".join(languages))
-                sys.exit(9)          
-        elif opt in ("-l", "--language"):
-            lg_code = arg.upper()   
-            if lg_code not in languages:
-                print("Error, please specify a correct language [%s]" % " ".join(languages))
-                sys.exit(9)                  
-
+                sys.exit(9)
+        elif opt in ("-g", "--log"):
+            logger = logging.getLogger('domon')
+            hdlr = logging.FileHandler(arg)
+            formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+            hdlr.setFormatter(formatter)
+            logger.addHandler(hdlr)
+            logger.setLevel(logging.WARNING)
     if verbose == "2":
         locale.setlocale(locale.LC_ALL, '')
         
-    hpsu = HPSU(driver=driver, port=port, cmd=cmd, lg_code=lg_code)
+    hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
     
     if help:
         if len(cmd) == 0:
@@ -98,7 +107,7 @@ def main(argv):
 
     arrResponse = []        
     for c in hpsu.commands:
-        i = 1
+        i = 0
         while i <= 3:
             rc = hpsu.sendCommand(c)
             if rc != "KO":
@@ -110,6 +119,9 @@ def main(argv):
             else:
                 i += 1
                 time.sleep(2.0)
+                hpsu.printd('warning', 'retry %s command %s' % (i, c["name"]))
+                if i == 4:
+                    hpsu.printd('error', 'command %s failed' % (c["name"]))
 
     if output_type == "JSON":
         print(arrResponse)
@@ -122,7 +134,7 @@ def main(argv):
             sys.exit(9)
 
         module = importlib.import_module("plugins.cloud")
-        cloud = module.Cloud(plugin=cloud_plugin, pathCOMMANDS=hpsu.pathCOMMANDS)
+        cloud = module.Cloud(plugin=cloud_plugin, hpsu=hpsu, logger=logger)
         cloud.pushValues(vars=arrResponse)
         
 

@@ -10,6 +10,7 @@ import time
 import sys
 import socket
 import getopt
+import logging
 try:
     import SocketServer as socketserver
 except ImportError:
@@ -24,6 +25,7 @@ DEBUG = False
 SocketHost = "0.0.0.0"
 SocketPort = 7060
 verbose = "1"
+logger = None
 #-------------------------------------------------------------------
 
 try:
@@ -91,7 +93,7 @@ def main(argv):
     languages = ["EN", "IT", "DE"]        
 
     try:
-        opts, args = getopt.getopt(argv,"hp:d:v:l:", ["help", "port=", "driver=", "verbose=",  "language="])
+        opts, args = getopt.getopt(argv,"hp:d:v:l:g:", ["help", "port=", "driver=", "verbose=", "language=", "log="])
     except getopt.GetoptError:
         print('pyHPSUd.py -d DRIVER')
         print(' ')
@@ -99,6 +101,7 @@ def main(argv):
         print('           -p  --port             port (eg COM or /dev/tty*, only for ELM327 driver)')
         print('           -v  --verbose          verbosity: [1, 2]   default 1')
         print('           -l  --language         set the language to use [%s]' % " ".join(languages) )
+        print('           -g  --log              set the log to file [_filename]')
         sys.exit(2)
 
     for opt, arg in opts:
@@ -110,8 +113,20 @@ def main(argv):
             port = arg
         elif opt in ("-v", "--verbose"):
             verbose = arg
+        elif opt in ("-l", "--language"):
+            lg_code = arg.upper()   
+            if lg_code not in languages:
+                print("Error, please specify a correct language [%s]" % " ".join(languages))
+                sys.exit(9)                  
+        elif opt in ("-g", "--log"):
+            logger = logging.getLogger('domon')
+            hdlr = logging.FileHandler(arg)
+            formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+            hdlr.setFormatter(formatter)
+            logger.addHandler(hdlr)
+            logger.setLevel(logging.WARNING)
 
-    hpsu = HPSU(driver=driver, port=port, cmd=cmd, lg_code=lg_code)
+    hpsu = HPSU(driver=driver, logger=None, port=port, cmd=cmd, lg_code=lg_code)
     HOST, PORT = SocketHost, SocketPort
     socket_server = ThreadedTCPServer((HOST, PORT), ThreadedTCPRequestHandler)
     socket_server.hpsu = hpsu
