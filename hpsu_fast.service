@@ -3,9 +3,11 @@ Description=HPSU FAST Daemon
 After=network.target
 
 [Service]
-Type=simple
+Type=notify
 ExecStart=/home/pi/start_hpsu_fast.sh
 PIDFile=/tmp/hpsu_fast.pid
+WatchdogSec=900s
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
