@@ -43,4 +43,5 @@ t_r1;31 00 FA C1 00;190;d;10
 v1;31 00 FA C1 01;190;d;1
 t_room1_setpoint;61 00 05 00 00;190;d;10
 t_room2_setpoint;61 00 06 00 00;190;d;10
-t_room2_setpoint;61 00 07 00 00;190;d;10
+t_room3_setpoint;61 00 07 00 00;190;d;10
+heat_slope;61 00 FA 01 0E;190;d;100
