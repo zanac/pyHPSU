@@ -41,3 +41,6 @@ t_vbh;31 00 FA C0 FE;190;d;10
 t_outdoor_ot1;31 00 FA C0 FF;190;d;10
 t_r1;31 00 FA C1 00;190;d;10
 v1;31 00 FA C1 01;190;d;1
+t_room1_setpoint;61 00 05 00 00;190;d;10
+t_room2_setpoint;61 00 06 00 00;190;d;10
+t_room2_setpoint;61 00 07 00 00;190;d;10

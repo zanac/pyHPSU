@@ -41,3 +41,9 @@ t_vbh;TVBH;Temperatura di uscita dell'acqua bollitore dell'acqua calda (tV,BH).
 t_outdoor_ot1;TA;Temperatura esterna attuale (misurata dalla sonda di temperatura opzionale RoCon OT1).
 t_r1;TR;Temperatura di ritorno attuale riscaldamento (tR1).
 v1;V;Flusso di volume attuale (portata) nell'impianto di riscaldamento.
+t_room1_setpoint;T-Ambiente 1; Valore nominale della temperatura ambientale in C, che vale per il primo di accensione
+t_room2_setpoint;T-Ambiente 2; Valore nominale della temperatura ambientale in C
+, che vale per il secondo di accensione
+t_room3_setpoint;T-Ambiente 3; Valore nominale della temperatura ambientale in C
+, che vale per il terzo di accensione
+
