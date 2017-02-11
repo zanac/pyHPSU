@@ -1,0 +1,7 @@
+[Unit]
+Description=HPSU MEDIUM Daemon
+
+[Service]
+Type=simple
+ExecStart=/home/pi/hpsu.medium.sh
+PIDFile=/tmp/hpsu.medium.pid

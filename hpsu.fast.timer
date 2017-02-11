@@ -1,0 +1,12 @@
+[Unit]
+Description=Runs HPSU Fast Script
+
+[Timer]
+OnBootSec=30
+OnUnitActiveSec=11
+Unit=hpsu.fast.service
+AccuracySec=1
+Persistent=true
+
+[Install]
+WantedBy=multi-user.target

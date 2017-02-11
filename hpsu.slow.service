@@ -1,0 +1,7 @@
+[Unit]
+Description=HPSU SLOW Daemon
+
+[Service]
+Type=simple
+ExecStart=/home/pi/hpsu.slow.sh
+PIDFile=/tmp/hpsu.slow.pid

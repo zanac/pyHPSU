@@ -1,0 +1,12 @@
+[Unit]
+Description=Runs HPSU Medium Script
+
+[Timer]
+OnBootSec=25
+OnUnitActiveSec=61
+Unit=hpsu.medium.service
+AccuracySec=1
+Persistent=true
+
+[Install]
+WantedBy=multi-user.target
