@@ -5,3 +5,4 @@ Description=HPSU MEDIUM Daemon
 Type=simple
 ExecStart=/home/pi/hpsu.medium.sh
 PIDFile=/tmp/hpsu.medium.pid
+RuntimeMaxSec=8

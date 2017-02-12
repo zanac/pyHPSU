@@ -5,3 +5,4 @@ Description=HPSU FAST Daemon
 Type=simple
 ExecStart=/home/pi/hpsu.fast.sh
 PIDFile=/tmp/hpsu.fast.pid
+RuntimeMaxSec=8

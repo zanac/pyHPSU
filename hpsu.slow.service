@@ -5,3 +5,4 @@ Description=HPSU SLOW Daemon
 Type=simple
 ExecStart=/home/pi/hpsu.slow.sh
 PIDFile=/tmp/hpsu.slow.pid
+RuntimeMaxSec=8
