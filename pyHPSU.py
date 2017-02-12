@@ -81,7 +81,7 @@ def main(argv):
             formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
             hdlr.setFormatter(formatter)
             logger.addHandler(hdlr)
-            logger.setLevel(logging.WARNING)
+            logger.setLevel(logging.ERROR)
     if verbose == "2":
         locale.setlocale(locale.LC_ALL, '')
         
