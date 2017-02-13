@@ -1,8 +1,11 @@
     #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# v 0.0.2 by Vanni Brutto (Zanac)
+# v 0.0.3 by Vanni Brutto (Zanac)
 
-import sys, getopt, time
+import sys
+import getopt
+import time
+import configparser
 try:
     import can
 except Exception:
@@ -10,6 +13,7 @@ except Exception:
 
 class CanPI(object):
     hpsu = None
+    timeout = None
     def __init__(self, hpsu=None):
         self.hpsu = hpsu
         try:
@@ -17,7 +21,22 @@ class CanPI(object):
         except Exception:
             self.hpsu.printd('exception', 'Error opening bus can0')
             sys.exit(9)
+            
+        config = configparser.ConfigParser()
+        iniFile = '%s/%s.ini' % (self.hpsu.pathCOMMANDS, "canpi")
+        config.read(iniFile)
+        self.timeout = float(self.get_with_default(config=config, section="config", name="timeout", default=0.05))
+            
     
+    def get_with_default(self, config, section, name, default):
+        if "config" not in config.sections():
+            return default
+        
+        if config.has_option(section,name):
+            return config.get(section,name)
+        else:
+            return default
+            
     def __del__(self):
         pass
         """try:
@@ -39,7 +58,7 @@ class CanPI(object):
 
         while notTimeout:
             i += 1
-            timeout = 0.05
+            timeout = self.timeout
             rcBUS = None
             try:
                 rcBUS = self.bus.recv(timeout)
