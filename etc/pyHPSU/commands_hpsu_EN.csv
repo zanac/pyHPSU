@@ -35,6 +35,12 @@ ext;Ext;Current energy mode of the heat pump: LT: EVU function HT/NT active and 
 ehs;EHS;Current output of the backup heater in kW
 rt;RT;Parameter [Room thermostat] / [Interlink fct]
 bpv;BPV;Current position of the mixing valve 3UVB1 (100% = A, 0% = B)
+t_v1;TV;Current inflow temperature after the plate heat exchanger (tV1)
+t_dhw1;Tdhw;Current temperature in domestic hot water storage tank (tDHW1)
+t_vbh;TVBH;Current heating inflow temperature or temp. after heating support heat exchanger (tV,BH)
+t_outdoor_ot1;TA;Actual outdoor temperature (measured by optional temperature sensor RoCon OT1)
+t_r1;TR;Current heating return flow temperature (tR1)
+v1;V;Actual volume flow (flow rate) in the heating system
 t_room1_setpoint;T Room 1 Setpoint; Setpoint 1 value
 t_room2_setpoint;T Room 2 Setpoint; Setpoint 1 value
 t_room3_setpoint;T Room 3 Setpoint; Setpoint 1 value
