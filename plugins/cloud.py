@@ -27,30 +27,32 @@ class Cloud():
         config = configparser.ConfigParser()
         iniFile = '%s/%s.ini' % (self.hpsu.pathCOMMANDS, plugin)
         config.read(iniFile)
-        self.apikey = self.get_with_default(config=config, section="config", name="apikey", default=None)
-                
-        self.listNodes = {}
-        self.listCmd = []
-        options = config.options("node")
-        for option in options:
-            try:
-                self.listNodes[option] = config.get("node", option).split(',')
-                self.listCmd.extend(self.listNodes[option])
-                
-                for c in self.listNodes[option]:
-                    InCommand = True
-                    for j in self.hpsu.commands:
-                        if c == j["name"]:
-                            InCommand = False
-                    if InCommand:
-                        self.hpsu.printd("warning", "command %s defined in emoncms but not in extraction" % c)
-
-            except:
-                self.listNodes[option] = None
         
-        for r in self.hpsu.commands:
-            if r["name"] not in self.listCmd:
-                self.hpsu.printd("warning", "command %s defined in extraction but not in emoncms" % r["name"])
+        if self.plugin == "EMONCMS":
+            self.apikey = self.get_with_default(config=config, section="config", name="apikey", default=None)
+                    
+            self.listNodes = {}
+            self.listCmd = []
+            options = config.options("node")
+            for option in options:
+                try:
+                    self.listNodes[option] = config.get("node", option).split(',')
+                    self.listCmd.extend(self.listNodes[option])
+                    
+                    for c in self.listNodes[option]:
+                        InCommand = True
+                        for j in self.hpsu.commands:
+                            if c == j["name"]:
+                                InCommand = False
+                        if InCommand:
+                            self.hpsu.printd("warning", "command %s defined in emoncms but not in extraction" % c)
+
+                except:
+                    self.listNodes[option] = None
+        
+            for r in self.hpsu.commands:
+                if r["name"] not in self.listCmd:
+                    self.hpsu.printd("warning", "command %s defined in extraction but not in emoncms" % r["name"])
 
     def pushValues(self, vars):
         if self.plugin == "EMONCMS":
