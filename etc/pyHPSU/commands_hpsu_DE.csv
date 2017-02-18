@@ -41,3 +41,5 @@ t_vbh;TVBH;Aktuelle Temperatur Heizung Vorlauf ggf. nach Heizungsunterstützungs
 t_outdoor_ot1;TA;Aktuelle Außentemperatur (gemessen von optionalemTemperaturfühler RoCon OT1)
 t_r1;TR;Aktuelle Temperatur Heizung Rücklauf (tR1)
 v1;V;Aktueller Volumenstrom (Durchfluss) in der Heizungsanlage
+t_dhw_setpoint1;TWW Soll 1;Sollwert der Warmwassertemperatur in °C, welche für den 1. Schaltzeitzyklus der Zeitprogramme [Automatik 1] und [Automatik 2] gilt
+hyst_hp;Hysterese WW; Einstellung der Hysterese für die Warmwasserbereitung. Die Warmwasserbereitung wird aktiviert, wenn die am Warmwasserfühler gemessene Temperatur unter die aktuelle Warmwasser-Solltemperatur minus dem hier eingestellten Wert liegt. Eine Warmwasserbereitung istbeendet, wenn die am Warmwasserfühler gemessene Temperatur über der aktuellen Warmwasser-Solltemperatur liegt
