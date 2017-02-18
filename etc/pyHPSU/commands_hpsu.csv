@@ -45,3 +45,5 @@ t_room1_setpoint;61 00 05 00 00;190;d;10
 t_room2_setpoint;61 00 06 00 00;190;d;10
 t_room3_setpoint;61 00 07 00 00;190;d;10
 heat_slope;61 00 FA 01 0E;190;d;100
+t_dhw_setpoint1;31 00 13 00 00;190;d;10
+hyst_hp;31 00 fa c0 b4;190;d;10
