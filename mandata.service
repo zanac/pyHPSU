@@ -1,0 +1,14 @@
+[Unit]
+Description=Smart Flow Temperature Controller
+
+[Service]
+Type=simple
+ExecStart=/home/pi/mandata.sh
+PIDFile=/tmp/mandata.pid
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
+Alias=mandata.service
+

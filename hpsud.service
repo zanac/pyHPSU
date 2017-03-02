@@ -1,0 +1,14 @@
+[Unit]
+Description=HPSUD
+After=network.target
+
+[Service]
+Type=forking
+ExecStartPre=
+ExecStart=/home/domon/start_hpsud.sh
+ExecReload=
+ExecStop=
+
+[Install]
+WantedBy=multi-user.target
+Alias=hpsud.service

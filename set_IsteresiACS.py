@@ -25,9 +25,8 @@ if __name__ == "__main__":
 
     #print (tempHex)
     
-    ##command = "32 00 FA 00 05 %s 00" % tempHex
-    #command = "30 00 13 %s 00 00" % tempHex
-    command = "30 00 fa 06 91 %s" % tempHex
+    #command = "30 00 fa 06 91 %s" % tempHex
+    command = "32 00 fa 06 91 %s" % tempHex
 
     #print (command)
     

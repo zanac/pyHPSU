@@ -1,0 +1,12 @@
+[Unit]
+Description=Runs Termostato Script
+
+[Timer]
+OnBootSec=20
+OnUnitActiveSec=913
+Unit=termostato.service
+AccuracySec=1
+Persistent=true
+
+[Install]
+WantedBy=multi-user.target

@@ -16,13 +16,22 @@ if __name__ == "__main__":
     if int(temp[0]) < 100:
         print("sicuro che stai passando la temperatura moltiplicata 10???? 210 = 21 gradi!!! Emiliano ocio!")
         sys.exit(0)
-    tempHex = "%02x" % int(temp[0])
+    intero = int(temp[0])
+    #print (intero)
+    alto = intero >> 8
+    basso = intero & 255
+    #print (alto, basso)
+    tempHex = "%02x %02x" % (alto, basso)
+
+    #print (tempHex)
     
     #command = "62 00 05 00 %s 00 00" % tempHex
     #command = "62 00 05 00 %s 00 00" % tempHex
     #command = "62 0a 05 00 %s 00 00" % tempHex
     #command = "60 0a 05 00 %s 00 00" % tempHex
-    command = "32 00 FA 00 05 00 %s" % tempHex    
+    command = "32 00 FA 00 05 %s 00" % tempHex
+
+    #print (command)
     
     id = "680" #provare con 11a? oppure 190? oppure 310?
     

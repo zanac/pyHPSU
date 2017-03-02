@@ -1,0 +1,14 @@
+[Unit]
+Description=Termostato Daemon
+
+[Service]
+Type=simple
+ExecStart=/home/pi/termostato.sh
+PIDFile=/tmp/termostato.pid
+MaxRuntimeSec=8
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
+Alias=termostato.service

@@ -118,7 +118,7 @@ def main(argv):
                 arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"]})
             else:
                 i += 1
-                time.sleep(2.0)
+                time.sleep(1.0)
                 hpsu.printd('warning', 'retry %s command %s' % (i, c["name"]))
                 if i == 4:
                     hpsu.printd('error', 'command %s failed' % (c["name"]))
