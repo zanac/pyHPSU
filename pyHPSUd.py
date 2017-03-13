@@ -11,10 +11,12 @@ import sys
 import socket
 import getopt
 import logging
+
 try:
     import SocketServer as socketserver
 except ImportError:
     import socketserver
+   
 from HPSU.HPSU import HPSU
 
 
@@ -46,15 +48,20 @@ def printD(message):
 def ParseSocketRequest(cmdName, hpsu):
     cmdName = cmdName.decode('UTF-8')
     for cmd in hpsu.commands:
-        if cmdName == cmd["name"]:            
+        if cmdName.split(":")[0] == cmd["name"]:
+            setValue = None
+            if ":" in cmdName:
+                setValue = cmdName.split(":")[1]
+            
             sec = 0
-            """if cmdName == "qsc":
-                sec = 10
-            if cmdName == "qch":
-                sec = 1"""
-            time.sleep(sec)
+            #if cmdName == "qsc":
+            #    sec = 10
+            #if cmdName == "qch":
+            #    sec = 1
             mutex.acquire()
-            rc = hpsu.sendCommand(cmd)
+            
+            time.sleep(sec)
+            rc = hpsu.sendCommand(cmd, setValue)
             if (rc != "KO"):
                 mutex.release()
                 return rc
@@ -66,6 +73,7 @@ def ParseSocketRequest(cmdName, hpsu):
     return returnlist
 
 class ThreadedTCPRequestHandler(socketserver.StreamRequestHandler):
+    timeout = 1
     def handle(self):
         # self.rfile is a file-like object created by the handler;
         # we can now use e.g. readline() instead of raw recv() calls
@@ -75,11 +83,13 @@ class ThreadedTCPRequestHandler(socketserver.StreamRequestHandler):
             resp = ParseSocketRequest(self.data, self.server.hpsu)
             self.wfile.write(resp.encode())
         except (Exception, e2):
-            print("Error in ThreadedTCPRequestHandler: " + str(e2))
+            print("Error in ThreadedTCPRequestHandler: ")
         except (KeyboardInterrupt, SystemExit):
             _exit()
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+    def __init__(self, server_address, RequestHandlerClass):
+        socketserver.TCPServer.__init__(self, server_address, RequestHandlerClass)    
     pass
 
 
@@ -134,6 +144,7 @@ def main(argv):
     
     # Start a thread with the server - that thread will then start one more thread for each request
     socket_server_thread = threading.Thread(target=socket_server.serve_forever)
+    #socket_server_thread = threading.Thread(target=socket_server.handle_request)
     socket_server_thread.start()
     print("pyHPSUd started.")
 

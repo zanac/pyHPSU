@@ -105,20 +105,26 @@ def main(argv):
         print("Error, please specify driver [ELM327 or PYCAN, EMU, HPSUD]")
         sys.exit(9)        
 
-    arrResponse = []        
+    arrResponse = []   
     for c in hpsu.commands:
+        setValue = None
+        for i in cmd:
+            if ":" in i and c["name"] == i.split(":")[0]:
+                setValue = i.split(":")[1]
+
         i = 0
         while i <= 3:
-            rc = hpsu.sendCommand(c)
-            if rc != "KO":
+            rc = hpsu.sendCommand(c, setValue)
+            if rc != "KO":            
                 i = 4
-                response = hpsu.parseCommand(cmd=c, response=rc, verbose=verbose)
-                resp = hpsu.umConversion(cmd=c, response=response, verbose=verbose)
+                if not setValue:
+                    response = hpsu.parseCommand(cmd=c, response=rc, verbose=verbose)
+                    resp = hpsu.umConversion(cmd=c, response=response, verbose=verbose)
 
-                arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"]})
+                    arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"]})
             else:
                 i += 1
-                time.sleep(1.0)
+                time.sleep(2.0)
                 hpsu.printd('warning', 'retry %s command %s' % (i, c["name"]))
                 if i == 4:
                     hpsu.printd('error', 'command %s failed' % (c["name"]))
