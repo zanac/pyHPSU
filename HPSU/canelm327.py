@@ -47,23 +47,46 @@ class CanELM327(object):
                 self.hpsu.printd("error", "Error sending AT SP C (rc:%s)" % rc)
                 sys.exit(9)
 
-    def sendCommand(self, cmd):
+    def sendCommand(self, cmd, setValue=None, um=None):
+        if setValue:
+            cmd = cmd[:1] + '2' + cmd[2:]
+            if cmd[6:8] != "FA":
+                cmd = cmd[:3]+"00 FA"+cmd[2:8]
+            cmd = cmd[:14]
+            if um == "d":
+                setValue = int(setValue)
+                if setValue < 0:
+                    setValue = 0x10000+setValue
+                cmd = cmd+" %02X %02X" % (setValue >> 8, setValue & 0xff)
+            if um == "i":
+                setValue = int(setValue)
+                cmd = cmd+" %02X 00" % (setValue)    
+    
         self.ser.write("%s\r\n" % cmd)
         time.sleep(50.0 / 1000.0)
+        if setValue:
+            return "OK"
+
         ser_read = self.ser.read(size=100)
         rc = ser_read[:-3]
         rc = rc.replace("\r", "").replace("\n", "").strip()
         return rc
     
-    def sendCommandWithID(self, cmd):
-        rc = self.sendCommand("ATSH"+cmd["receiver_id"])
+    def sendCommandWithID(self, cmd, setValue=None):
+        if setValue:
+            rc = self.sendCommand("ATSH680")
+        else:
+            rc = self.sendCommand("ATSH"+cmd["receiver_id"])
         if rc != "OK":
             #self.eprint("Error setting ID %s (rc:%s)" % (cmd["receiver_id"], rc))
             self.resetInterface()
             self.hpsu.printd('warning', "Error setting ID %s (rc:%s)" % (cmd["receiver_id"], rc))
             return "KO"
         
-        rc = self.sendCommand(cmd["command"])
+        rc = self.sendCommand(cmd["command"], setValue, cmd["um"])
+        if setValue:
+            return rc
+
         if rc[0:1] != cmd["command"][0:1]:
             #self.eprint("Error sending cmd %s (rc:%s)" % (cmd["command"], rc))
             self.resetInterface()

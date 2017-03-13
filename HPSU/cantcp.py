@@ -18,15 +18,28 @@ class CanTCP(object):
     def initInterface(self):
         pass        
     
-    def sendCommandWithID(self, cmd):    
+    def sendCommandWithID(self, cmd, setValue=None):    
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.settimeout(3.5)
         self.sock.connect(('127.0.0.1', SocketPort))
         
-        dataSEND = "%s\r\n" % cmd["name"]
-        self.sock.send(dataSEND.encode())
+        if setValue:
+            dataSEND = "%s:%s\r\n" % (cmd["name"], setValue)
+        else:
+            dataSEND = "%s\r\n" % cmd["name"]
+
+        try:
+            self.sock.send(dataSEND.encode())
+        except socket.timeout:
+            return "KO"
+        
         time.sleep(0.1)
                 
-        dataRECV = self.sock.recv(512)
+        try:
+            dataRECV = self.sock.recv(512)
+        except socket.timeout:
+            return "KO"
+
         time.sleep(0.1)
         self.sock.close()
         return dataRECV.decode('UTF-8')

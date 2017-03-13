@@ -11,12 +11,12 @@ class CanEMU(object):
     def eprint(self, *args):
         sys.stderr.write(' '.join(map(str,args)) + '\n')
     
-    def sendCommandWithID(self, cmd):
+    def sendCommandWithID(self, cmd, setValue=None):
         arrResponse = [
             {"name":"t_hs","resp":"32 10 FA 01 D6 01 0C"},
             {"name":"t_hs_set","resp":"32 10 02 01 01 00 00"},
             {"name":"water_pressure","resp":"32 10 FA C0 B4 00 22"},
-            {"name":"t_ext","resp":"62 10 FA 0A 0C ff 69"},
+            {"name":"t_ext","resp":"62 10 FA 0A 0C FF 69"},
             {"name":"t_dhw","resp":"32 10 0E 01 B1 00 00"},
             {"name":"t_dhw_set","resp":"32 10 03 01 CC 00 00"},
             {"name":"t_return","resp":"32 10 16 00 DF 00 00"},
@@ -48,15 +48,34 @@ class CanEMU(object):
             {"name":"ext","resp":"22 0A FA C0 F8 00 00"},
             {"name":"ehs","resp":"22 0A FA C0 F9 00 00"},
             {"name":"rt","resp":"22 0A FA C0 FA 00 01"},
-            {"name":"bpv","resp":"22 0A FA C0 FB 00 00"}]
+            {"name":"bpv","resp":"22 0A FA C0 FB 00 00"},
+            {"name":"t_room1_setpoint","resp":"32 10 16 00 DF 00 00"}]
 
         if cmd["name"] == "runtime_pump":
             #self.eprint("Error sending %s" % (cmd["name"]))
             self.hpsu.printd('warning', 'sending cmd %s (rc:%s)' % (cmd["name"], "ko"))
             return "KO"
         
+
         for r in arrResponse:
             if r["name"] == cmd["name"]:
+                command = cmd["command"]
+                if setValue:
+                    command = command[:1] + '2' + command[2:]
+                    if command[6:8] != "FA":
+                        command = command[:3]+"00 FA"+command[2:8]
+                    command = command[:14]
+                    if cmd["um"] == "d":
+                        setValue = int(setValue)
+                        if setValue < 0:
+                            setValue = 0x10000+setValue
+                        command = command+" %02X %02X" % (setValue >> 8, setValue & 0xff)
+                        print command
+                    if cmd["um"] == "i":
+                        setValue = int(setValue)
+                        command = command+" %02X 00" % (setValue)
+                    return "OK"
+
                 return r["resp"]
 
         return "KO"

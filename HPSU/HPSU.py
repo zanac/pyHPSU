@@ -26,6 +26,7 @@ class HPSU(object):
     UM_DEGREE = "d"
     UM_BOOLEAN = "b"
     UM_PERCENT = "perc"
+    UM_INT = "i"
     driver = None
     
     pathCOMMANDS = "/etc/pyHPSU"    
@@ -36,10 +37,12 @@ class HPSU(object):
         self.listCommands = []
         self.logger = logger
         
+        listCmd = [r.split(":")[0] for r in cmd]
+        
         if platform.system() == "Windows":
             self.pathCOMMANDS = "C:/Sec/apps/Apache24/htdocs/domon/waterpump%s" % self.pathCOMMANDS        
         
-        LANG_CODE = lg_code if lg_code else locale.getdefaultlocale()[0].split('_')[0].upper()
+        LANG_CODE = lg_code.upper()[0:2] if lg_code else locale.getdefaultlocale()[0].split('_')[0].upper()
         hpsuDict = {}
         
         commands_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, LANG_CODE)
@@ -65,6 +68,7 @@ class HPSU(object):
                 receiver_id = row[2]
                 um = row[3]
                 div = row[4]
+                flagRW = row[5]
                 label = hpsuDict[name]["label"]
                 desc = hpsuDict[name]["desc"]
                 
@@ -74,10 +78,11 @@ class HPSU(object):
                      "command":command,
                      "receiver_id":receiver_id,
                      "um":um,
-                     "div":div}
+                     "div":div,
+                     "flagRW":flagRW}
                 
                 self.listCommands.append(c)
-                if (name in cmd) or (len(cmd) == 0):
+                if (name in listCmd) or (len(listCmd) == 0):
                     self.commands.append(c)
         
         self.driver = driver
@@ -95,26 +100,32 @@ class HPSU(object):
 
         self.initInterface(port)
 
-    def printd(self, level, msg):
-        print("%s - %s" % (level, msg))
+    def printd(self, level, msg):        
         if self.logger:
             if level == 'warning':
                 self.logger.warning(msg)
             elif level == 'error':
                 self.logger.error(msg)
+            elif level == 'info':
+                self.logger.info(msg)
             elif level == 'exception':
                 self.logger.exception(msg)
+        else:
+            print("%s - %s" % (level, msg))
     
-    def sendCommandWithParse(self, cmd):
+    def sendCommandWithParse(self, cmd, setValue=None):
         response = None
         verbose = "1"        
         i = 1
         
         while i <= 3:
-            rc = self.sendCommand(cmd)
+            rc = self.sendCommand(cmd, setValue=setValue)
             if rc != "KO":
                 i = 4
-                response = self.parseCommand(cmd=cmd, response=rc, verbose=verbose)["resp"]
+                if not setValue:
+                    response = self.parseCommand(cmd=cmd, response=rc, verbose=verbose)["resp"]
+                else:
+                    response = ""
             else:
                 i += 1
                 time.sleep(2.0)
@@ -131,6 +142,18 @@ class HPSU(object):
             response = self.sendCommandWithParse(cmd)
         
         return response
+
+    def setParameterValue(self, parameter, setValue):
+        response = None
+        cmd = None
+        for c in self.commands:
+            if c["name"] == parameter:
+                cmd = c
+        
+        if cmd:
+            response = self.sendCommandWithParse(cmd, setValue)
+        
+        return response
                 
 
     def initInterface(self, portstr=None, baudrate=38400, init=False):
@@ -139,8 +162,14 @@ class HPSU(object):
         elif self.driver == "HPSUD":
             self.can.initInterface()
     
-    def sendCommand(self, cmd):
-        return self.can.sendCommandWithID(cmd)
+    def sendCommand(self, cmd, setValue=None):
+        rc = self.can.sendCommandWithID(cmd, setValue)
+        if rc not in ["KO", "OK"]:
+            try:
+                hexValues = [int(r, 16) for r in rc.split(" ")]
+            except ValueError:
+                return "KO"
+        return rc
         
     def timestamp(self):
         epoch = datetime.datetime.utcfromtimestamp(0)
@@ -157,10 +186,16 @@ class HPSU(object):
     def parseCommand(self, cmd, response, verbose):
         hexValues = [int(r, 16) for r in response.split(" ")]
         
-        if hexValues[2] == 0xfa:
-            resp = float(self.toSigned(hexValues[5]*0x100+hexValues[6], cmd)) / int(cmd["div"])
+        if cmd["um"] == HPSU.UM_INT:
+            if hexValues[2] == 0xfa:
+                resp = float(self.toSigned(hexValues[5], cmd)) / int(cmd["div"])
+            else:
+                resp = float(self.toSigned(hexValues[3], cmd)) / int(cmd["div"])
         else:
-            resp = float(self.toSigned(hexValues[3]*0x100+hexValues[4], cmd)) / int(cmd["div"])
+            if hexValues[2] == 0xfa:
+                resp = float(self.toSigned(hexValues[5]*0x100+hexValues[6], cmd)) / int(cmd["div"])
+            else:
+                resp = float(self.toSigned(hexValues[3]*0x100+hexValues[4], cmd)) / int(cmd["div"])
         
         if verbose == "2":
             timestamp = datetime.datetime.now().isoformat()
@@ -185,6 +220,8 @@ class HPSU(object):
         elif cmd["um"] == HPSU.UM_PERCENT:
             if verbose == "2":
                 resp = "%s%%" % int(response["resp"])
+        elif cmd["um"] == HPSU.UM_INT:
+            resp = str(response["resp"])
         else:
             resp = str(response["resp"])
         
