@@ -1,24 +1,24 @@
 name;label;description
-t_hs;T-WE;Angezeigt wird die aktuelle Vorlauftemperatur (TVBH) des Wärmeerzeugers in C.
-t_hs_set;T-WE Soll;Angezeigt wird die aktuelle Vorlauf-Solltemperatur des Wärmeerzeugers in C
-water_pressure;Wasserdruck;Angezeigt wird der aktuelle Wasserdruck in bar.
-t_ext;T-Aussen;Angezeigt wird die gemittelte Außentemperatur in C.
-t_dhw;T-WW;Angezeigt wird die aktuelle Temperatur des Warmwasserspeichers in C. Sollte keine Warmwasserfunktion aktiviert sein, wird --- angezeigt.
-t_dhw_set;T-WW Soll;Angezeigt wird die aktuelle Warmwasser-Solltemperatur in C. Sollte keine Warmwasserfunktion aktiviert sein, wird --- angezeigt. Der aktuelle Sollwert ist hier immer der Maximalwert aller für diesen Warmwasserkreis relevanten Anforderungen.
-t_return;T-Rücklauf;Angezeigt wird die aktuelle Rücklauftemperatur des Wärmeerzeugers in C. Ist kein entsprechender Sensor am Wärmeerzeuger angeschlossen, wird --- angezeigt.
-flow_rate;Durchfluss;Angezeigt wird der gefilterte Wert des aktuellen Volumenstroms in Liter pro Stunde.
-t_hc;T-HK;Angezeigt wird die Vorlauftemperatur des direkten Heizkreises in C.
-t_hc_set;T-HK Soll;Angezeigt wird die Vorlauf-Solltemperatur des direkten Heizkreises in C.
-status_pump;Status Kesselpumpe;Angezeigt wird der aktuelle Status der internen Heizungsumwälzpumpe der ROTEX HPSU compact.
-runtime_comp;Laufzeit Kompr;Angezeigt wird die Laufzeit des Kältemittelverdichters in h.
-runtime_pump;Laufzeit Pumpe;Angezeigt wird die Laufzeit der internen Heizungsumwälzpumpe in h.
-posmix;Mischer Position;Angezeigt wird die aktuelle Stellung des 3-Wege-Umschaltventils 3UV DHW. 0 %: Stellung A (Raumheizung) 100 %: Stellung B (Warmwasserbereitung)
-qboh;EHS für DHW;Angezeigt wird die Wärmemenge des zusätzlichen Wärmeerzeugers für die Warmwasserbereitung in kWh.
-qchhp;EHS für CH;Angezeigt wird die Wärmemenge des zusätzlichen Wärmeerzeugers für den Heizbetrieb in kWh.
-qsc;Energie Kühlung;Angezeigt wird die Wärmemenge der Wärmepumpe für den Kühlbetrieb in kWh.
-qch;Energie Heizung;Angezeigt wird die Wärmemenge der Wärmepumpe für den Heizbetrieb in kWh.
-qwp;Energie erzeugt;Angezeigt wird die gesamte Wärmemenge der Wärmepumpe in kWh.
-qdhw;Energie für WW;Angezeigt wird die Wärmemenge für die Warmwasserbereitung in kWh.
+t_hs;T-WG;De actuele aanvoertemperatuur (TVBH) van de warmtegenerator wordt aangegeven in C.
+t_hs_set;T-WG gewenst;De actuele aanvoerstreeftemperatuur van de warmtegenerator wordt aangegeven in C.
+water_pressure;Waterdruk;De actuele waterdruk in bar wordt weergegeven.
+t_ext;T-buiten;De actuele buitentemperatuur wordt getoond in C.
+t_dhw;T-WW;De actuele temperatuur van het warmwaterreservoir wordt aangegeven in C. Als er geen warmwaterfunctie is geactiveerd, wordt ---
+t_dhw_set;T-WW setpunt;De actuele warmwaterstreeftemperatuur wordt aangegeven in C. Als er geen warmwater- functie is geactiveerd, wordt "- - 2 weergegeven. De actuele voorgeschreven (aanvoer)temperatuur voor directe verwarmingskring wordt aangegeven in C.
+t_return;T-retour;De actuele retourtemperatuur van de warmtegenerator wordt aangegeven in C. Als er geen overeenkomende sensor is aangesloten op de warmtegenerator, wordt ---
+flow_rate;Volumestroom;De gefilterde waarde van het actuele debiet wordt weergegeven in liter per uur.
+t_hc;T-CV kring;De aanvoertemperatuur van de directe verwarmingskring wordt aangegeven in C.
+t_hc_set;T-CV setpunt;De aanvoerstreeftemperatuur van de directe verwarmingskring wordt aangegeven in C.
+status_pump;status WP pomp;De huidige status van de interne verwarmingscirculatiepomp van de ROTEX HPSU compact wordt weergegeven.
+runtime_comp;Arbeidstijd compr;De looptijd van de koelmiddelcompressor wordt in h. aangegeven.
+runtime_pump;Arbeidstijd pomp;De looptijd van de interne verwarmingscirculatiepomp wordt weergegeven in h.
+posmix;Stand mengkraan;"De huidige positie van het 3-wegs-omschakelventiel 3UV DHW wordt aangegeven. 0 %: Positie A (kamerverwarming) 100 %: Positie B (warmwaterbereiding)"
+qboh;Qboh;De warmtehoeveelheid van de extra warmtegenerator voor de warmwaterbereiding wordt aangegeven in kWh.
+qchhp;Qchhp;De warmtehoeveelheid van de extra warmtegenerator voor de verwarmingswerking wordt aangegeven in kWh.
+qsc;Qsc;De warmtehoeveelheid van de warmtepomp voor de koelingswerking wordt weergegeven in kWh.
+qch;Qch;De warmtehoeveelheid van de warmtepomp voor de verwarmingswerking wordt weergege- ven in kWh.
+qwp;QWP;De totale warmtehoeveelheid van de warmtepomp wordt weergegeven in kWh.
+qdhw;Qdhw;De warmtehoeveelheid voor de warmwatervoorziening wordt weergegeven in kWh.
 sw_vers_01;Versione SW 1;
 sw_vers_02;Versione SW 2;
 sw_vers_03;Versione SW 3;

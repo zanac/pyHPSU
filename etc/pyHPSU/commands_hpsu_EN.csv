@@ -47,4 +47,3 @@ t_room3_setpoint;T Room 3 Setpoint; Setpoint 1 value
 heat_slope;Heat-Slope; Heat Slope
 t_dhw_setpoint1;
 hyst_hp;Hyst HP;Switching threshold hot water charging. Setting of the temperature difference to which the temperature in the domestic hot water storage tank compared to the current target hot water temperature [T-DHW Setpoint] can drop before the heat pump is switched on to provide hot water
-
