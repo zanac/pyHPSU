@@ -4,6 +4,7 @@
 import requests
 import json
 import sys, time
+import datetime
 try:
     import can
 except Exception:
@@ -20,15 +21,80 @@ logger = logging.getLogger()
 logger.addHandler( logHandler )
 logger.setLevel( logging.INFO )
 
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
+logging.getLogger("can").setLevel(logging.WARNING)
+
+com_leggi_modooperativo = "31 00 FA 01 12 00 00 00"
+must_switch_off = False
+must_switch_on = False
+time_is_on = True
+id = "680"
+receiver_id = int(id, 16)
+
 if __name__ == "__main__":    
     temp_min = float(sys.argv[1]) / 10.0
     temp_max = float(sys.argv[2]) / 10.0
 
-    
-    id = "680"
-    
-    receiver_id = int(id, 16)        
+    errore_lettura = False
 
+    # APERTURA CONNESSIONE CAN BUS
+
+    try:
+        bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
+    except Exception:
+        print ("exception open bus")
+        sys.exit(0)
+
+    # legge modo operativo corrente da HPSU
+
+    if (errore_lettura != True):
+        command = com_leggi_modooperativo
+        msg_data = [int(r, 16) for r in command.split(" ")]
+
+        try:
+            msg = can.Message(arbitration_id=receiver_id, data=msg_data, extended_id=False, dlc=7)
+            bus.send(msg)
+        except Exception:
+            print('exception', 'Error sending msg')
+            sys.exit(0)
+        try:
+            rcbus = bus.recv(1.0)
+        except Exception:
+            logger.error('exception', 'Error reading msg')
+            sys.exit(0)
+
+        modo_operativo = -10.0
+
+
+        if rcbus and rcbus.data and (len(rcbus.data) >= 7) and (msg_data[2] == 0xfa and msg_data[3] == rcbus.data[3] and msg_data[4] == rcbus.data[4]) or (msg_data[2] != 0xfa and msg_data[2] == rcbus.data[2]):
+            modo_operativo = rcbus.data[5]
+
+        # skippa dati sballati
+
+        if (modo_operativo == -10.0):
+            errore_lettura = True
+            logger.error ("HPSU                : *** ERRORE LETTURA PARAMETRO MODO OPERATIVO CORRENTE ***")
+            sys.exit(1)
+
+    logger.info("HPSU                : Current mode is %2.0f", modo_operativo)
+    # verifica di essere nell'orario di funzionamento previsto
+
+    now = datetime.datetime.now()
+    time_start = now.replace(hour=11, minute=0, second=0, microsecond=0)
+    time_end = now.replace(hour=21, minute=0, second=0, microsecond=0)
+    logger.info("SMART-THERMOSTAT    : Planned start time = %s", time_start)
+    logger.info("SMART-THERMOSTAT    : Planned end   time = %s", time_end)
+    if ((now < time_start) or (now > time_end)):
+        logger.info("SMART-THERMOSTAT    : Current time is out of planned time window")
+        time_is_on = False
+        # verifico se devo spegnere
+        if (errore_lettura != True) and (modo_operativo != 5.0):
+            #devo spegnere il riscaldamento
+            must_switch_off = True
+
+        sys.exit(0)
+    
     # RECUPERA LA TEMPERATURA INTERNA DA OEM
 
     OEM_API_KEY = 'f7f5d003c595ed3285cd616521aa5aab'
@@ -50,13 +116,16 @@ if __name__ == "__main__":
 
     #print (temperatura_interna, temp_min, temp_max)
 
-    if (temperatura_interna > temp_max) :
+    if ((temperatura_interna > temp_max) or must_switch_off) :
         # spegni
         command = "32 00 FA 01 12 05 00"
+        must_switch_off = True
 
-    if (temperatura_interna < temp_min) :
+    if (temperatura_interna < temp_min) : 
         # accendi
         command = "32 00 FA 01 12 03 00"
+        if (modo_operativo != 3.0):
+            must_switch_on = True
 
     # 01 - Standby
     # 11 - Raffreddare
@@ -66,19 +135,14 @@ if __name__ == "__main__":
     # 0b - Automatico 1
     # 0c - Automatico 2
 
-    if (temperatura_interna > temp_max) or (temperatura_interna < temp_min) :
+    logger.info("SMART-THERMOSTAT    : T Int. = %02.1f (C)" % temperatura_interna)
+
+    if (must_switch_on or must_switch_off) :
         msg_data = [int(r, 16) for r in command.split(" ")]
-        logger.info("T Int. = %02.1f (C) => Cambio stato" % temperatura_interna)
-        try:
-            bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
-        except Exception:
-            logger.error ("exception open bus")
-            sys.exit(1)
+        logger.info("SMART-THERMOSTAT    : Changing heat pump mode")
         try:
             msg = can.Message(arbitration_id=receiver_id, data=msg_data, extended_id=False, dlc=7)
             bus.send(msg)
         except Exception:
             logger.error('exception', 'Error sending msg')                    
             sys.exit(1)
-    else:
-        logger.info("T Int. = %02.1f (C)" % temperatura_interna) 
