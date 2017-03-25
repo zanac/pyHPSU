@@ -1,8 +1,8 @@
-# Scripts Map
+# Scripts
 
 ## Capture-Publish
 
-Scripts to automatic schedule read and publish to emoncms a set of variables.
+Set of useful scripts to automatically read from HPSU Compact and publish them on the cloud ([emoncms.org](http://emoncms.org)) a set of configurable variables.
 
 ## Control
 
