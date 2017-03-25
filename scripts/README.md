@@ -2,7 +2,7 @@
 
 ## Capture-Publish
 
-Set of useful scripts to automatically read from HPSU Compact and publish them on the cloud ([emoncms.org](http://emoncms.org)) a set of configurable variables.
+Set of useful scripts to automatically read from HPSU Compact and publish them on the cloud ([emoncms.org](http://emoncms.org)) a configurable list of variables.
 
 ## Control
 
