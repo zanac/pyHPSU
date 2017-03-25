@@ -1,11 +1,11 @@
-Scripts Map:
+# Scripts Map
 
-Capture-Publish
+## Capture-Publish
 
 Scripts to automatic schedule read and publish to emoncms a set of variables.
 
-Control
+## Control
 
 Scripts to automatically control HPSU:
-- Chrono-thermostat
-- Flow Temperature Control
+* Chrono-thermostat
+* Flow Temperature Control
