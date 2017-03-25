@@ -16,24 +16,49 @@ logger = logging.getLogger()
 logger.addHandler( logHandler )
 logger.setLevel( logging.INFO )
 
-#logging.basicConfig(filename='/home/pi/mandata.log',level=logging.INFO, format='%(asctime)s %(message)s')
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
+
 
 try:
     import can
 except Exception:
     pass
 
-# calcola il valore medio sugli ultimi 3 campioni
+from HPSU import HPSU
+
+logging.getLogger("can").setLevel(logging.WARNING)
+
+#da fare una sola volta in modo da ottenere un’istanza di hpsu
+
+hpsu = HPSU.HPSU(driver="PYCAN", port=None, cmd=[])
+if (hpsu is None):
+    logger.error("ERRORE CREAZIONE OGGETTO HPSU")
+
+# calcola il valore medio sugli ultimi 5 campioni
 
 def get_smooth(x):
   if not hasattr(get_smooth, "t"):
-    get_smooth.t = [x,x,x,x]
+    get_smooth.t = [x,x,x,x,x]
+  get_smooth.t[4] = get_smooth.t[3]
   get_smooth.t[3] = get_smooth.t[2]
   get_smooth.t[2] = get_smooth.t[1]
   get_smooth.t[1] = get_smooth.t[0]
   get_smooth.t[0] = x
-  xs = (get_smooth.t[0]+get_smooth.t[1]+get_smooth.t[2]+get_smooth.t[3])/4
+  xs = (get_smooth.t[0]+get_smooth.t[1]+get_smooth.t[2]+get_smooth.t[3]+get_smooth.t[4])/5
   return(xs)
+
+def get_smooth_flow(x):
+  if not hasattr(get_smooth_flow, "t"):
+    get_smooth_flow.t = [x,x,x,x,x]
+  get_smooth_flow.t[4] = get_smooth_flow.t[3]
+  get_smooth_flow.t[3] = get_smooth_flow.t[2]
+  get_smooth_flow.t[2] = get_smooth_flow.t[1]
+  get_smooth_flow.t[1] = get_smooth_flow.t[0]
+  get_smooth_flow.t[0] = x
+  xs = (get_smooth_flow.t[0]+get_smooth_flow.t[1]+get_smooth_flow.t[2]+get_smooth_flow.t[3]+get_smooth_flow.t[4])/5
+  return(xs)
+
 
 # COSTANTI
 
@@ -57,6 +82,7 @@ com_leggi_testerna      = "31 00 FA C0 FF 00 00 00"
 com_leggi_tritorno      = "31 00 FA C1 00 00 00 00"
 com_leggi_modooperativo = "31 00 FA 01 12 00 00 00"
 com_leggi_mode          = "31 00 FA C0 F6 00 00 00"
+com_leggi_tmandata      = "C1 00 0F 00 00 00 00 00"
 
 # RECUPERA LA TEMPERATURA MEDIA PREVISTA PER LE PROSSIME 24 ORE DA WU
 
@@ -128,7 +154,7 @@ while (ind_ora_end - ind_ora_start < ore_funzionamento) :
             ind_ora_end += 1
         else :
             ind_ora_start -= 1
-    logging.info ("METEO      : ", ind_ora_start, temperatura_esterna[ind_ora_start], potenza_nominale[max(12-round(temperatura_esterna[ind_ora_start][1]),0)][2], ind_ora_end, temperatura_esterna[ind_ora_end], potenza_nominale[max(12-round(temperatura_esterna[ind_ora_end][1]),0)][2])
+    #logging.info ("METEO      : ", ind_ora_start, temperatura_esterna[ind_ora_start], potenza_nominale[max(12-round(temperatura_esterna[ind_ora_start][1]),0)][2], ind_ora_end, temperatura_esterna[ind_ora_end], potenza_nominale[max(12-round(temperatura_esterna[ind_ora_end][1]),0)][2])
 
 ora_start = temperatura_esterna[ind_ora_start][0]
 
@@ -168,6 +194,8 @@ modo_operativo_last = 0.0
 mode_last = 0.0
 temperatura_mandata_nominale_round_last = 0.0
 temperatura_mandata_nominale_last = 0.0
+temperatura_mandata = 0.0
+temperatura_mandata_last = 0.0
 
 while (1):
 
@@ -210,7 +238,7 @@ while (1):
         if (modo_operativo == -10.0):
             modo_operativo = modo_operativo_last
             errore_lettura = True
-            #print("*** ERRORE LETTURA HPSU ***")
+            logger.error ("HPSU                 : *** ERRORE LETTURA PARAMETRO MODO OPERATIVO CORRENTE ***")
         else:
             modo_operativo_last = modo_operativo 
 
@@ -242,7 +270,7 @@ while (1):
         if (mode == -10.0):
             mode = mode_last
             errore_lettura = True
-            #print("*** ERRORE LETTURA HPSU ***")
+            logger.error ("HPSU                 : *** ERRORE LETTURA PARAMETRO MODE ***")
         else:
             mode_last = mode
 
@@ -274,15 +302,10 @@ while (1):
         if (temperatura_ritorno <= 15.0):
             temperatura_ritorno = 26.0
             errore_lettura = True
+            logger.error ("HPSU                 : *** ERRORE LETTURA PARAMETRO TEMPERATURA RITORNO ***")
         else:
             # se il valore letto e' valido, faccio la media mobile sugli ultimi 4 campioni
             temperatura_ritorno = get_smooth(temperatura_ritorno)
-
-        # smorzo le variazioni repentine poiche' la sonda della temperatura di ritorno e' rumorosa
-
-        # if (temperatura_ritorno_last != -1000.0) and (math.fabs(temperatura_ritorno - temperatura_ritorno_last) < 2.5):
-        #    temperatura_ritorno = (temperatura_ritorno + temperatura_ritorno_last) / 2.0
-        #    temperatura_ritorno_last = temperatura_ritorno
 
     # legge temperatura esterna corrente da HPSU
 
@@ -312,11 +335,44 @@ while (1):
         if ((temperatura_esterna < -20.0) or (temperatura_esterna > 45.0)):
             temperatura_esterna = temperatura_esterna_last
             errore_lettura = True
-            #print("*** ERRORE LETTURA HPSU ***")
+            logger.error ("HPSU                 : *** ERRORE LETTURA PARAMETRO TEMPERATURA ESTERNA ***")
         else:
             if (temperatura_esterna_last != -1000.0):
                 temperatura_esterna = (temperatura_esterna + temperatura_esterna_last) / 2.0
             temperatura_esterna_last = temperatura_esterna
+
+    # legge temperatura mandata corrente da HPSU
+
+    if (errore_lettura != True) and (modo_operativo == 3.0):
+        command = com_leggi_tmandata
+        msg_data = [int(r, 16) for r in command.split(" ")]
+
+        try:
+            msg = can.Message(arbitration_id=receiver_id, data=msg_data, extended_id=False, dlc=7)
+            bus.send(msg)
+        except Exception:
+            print('exception', 'Error sending msg')
+            sys.exit(0)
+        try:
+            rcbus = bus.recv(1.0)
+        except Exception:
+            print('exception', 'Error reading msg')
+            sys.exit(0)
+
+        temperatura_mandata = 0.0
+
+        if rcbus and rcbus.data and (len(rcbus.data) >= 7) and (msg_data[2] == 0xfa and msg_data[3] == rcbus.data[3] and msg_data[4] == rcbus.data[4]) or (msg_data[2] != 0xfa and msg_data[2] == rcbus.data[2]):
+            temperatura_mandata = (rcbus.data[4] + rcbus.data[3] * 256) / 10.0
+
+        # skippa dati sballati
+
+        if ((temperatura_mandata < 15.0) or (temperatura_mandata > 60.0)):
+            temperatura_mandata = temperatura_mandata_last
+            errore_lettura = True
+            logger.error ("HPSU                 : *** ERRORE LETTURA PARAMETRO TEMPERATURA MANDATA ***")
+        else:
+            temperatura_mandata = get_smooth_flow(temperatura_mandata)
+            temperatura_mandata_last = temperatura_mandata
 
     # RECUPERA LA TEMPERATURA INTERNA DA OEM
 
@@ -341,9 +397,9 @@ while (1):
     if (errore_lettura != True) and (modo_operativo == 3.0):
 
         # calcola i limiti di potenza termica (e Delta T) alla temperatura esterna corrente
-        potenza_nominale_100 = potenza_nominale[12 - round(temperatura_esterna)][1]
-        potenza_nominale_30 = 0.3 * potenza_nominale_100
-        potenza_nominale_70 = 0.6 * potenza_nominale_100
+        potenza_nominale_100 = potenza_nominale[max(12 - round(temperatura_esterna),0)][1]
+        potenza_nominale_30 = 0.30 * potenza_nominale_100
+        potenza_nominale_70 = 0.70 * potenza_nominale_100
         logger.info("HPSU                 : TA = %02.1f C => P Nom  (kW) @30%% = %02.2f @70%% = %02.2f @100%% = %02.2f" % (temperatura_esterna, potenza_nominale_30, potenza_nominale_70, potenza_nominale_100))
 
         # applico sia i limiti di potenza che il limite di Delta T compreso tra 3 ed 8 gradi
@@ -372,26 +428,30 @@ while (1):
             # verifico che il DeltaT stimato sia all'interno dei limiti calcolati in precedenza
             delta_t = min(max(delta_t_minimo, delta_t), delta_t_massimo)
 
-            # limito la temperatura di mandata nominale calcolata ad un valore massimo di 35.0 C
-            temperatura_mandata_nominale = min(temperatura_ritorno + delta_t, 35.0)
+            logger.info ("CONTROLLER PI        : Integrale = %9.1f ; Errore = %1.2f ; Output PI = %1.6f ; Delta T nom = %2.2f (C) ; Delta T teo = %2.2f (C)" % (Integrale, Errore, OutputPI, delta_t, 1000.0 * potenza_termica / (1.163 * portata)))
 
-            # smorzo le variazioni repentine mediando gli ultimi due campioni disponibili (la temperatura di ritorno e' molto rumorosa)
+            # sono con richiesta riscaldamento
+            if (mode == 1.0):
+                if (temperatura_mandata - temperatura_ritorno < 1.5):
+                    temperatura_mandata_nominale = temperatura_ritorno + 6.0
+                else:
+                    temperatura_mandata_nominale = temperatura_ritorno + delta_t
+                    # evito di far spegnere il compressore
+                    temperatura_mandata_nominale = min(temperatura_mandata_nominale, temperatura_mandata + 0.75)
+                    temperatura_mandata_nominale = max (temperatura_mandata_nominale, temperatura_mandata - 0.75)
+            else:
+                temperatura_mandata_nominale = temperatura_ritorno + 6.0
+
+            # limito la temperatura di mandata nominale calcolata ad un valore massimo di 35.0 C
+            temperatura_mandata_nominale = min(temperatura_mandata_nominale, 35.0)
+
             temperatura_mandata_nominale_round = round ((temperatura_mandata_nominale) * 2.0)/ 2.0
 
-            # con compressore spento incremento la mandata nominale di 1.5 C per far ripartire prima il compressore ma senza esagerare
-            if ((mode == 0.0) and (temperatura_mandata_nominale_round_last != 0.0)):
-                if (mode_last != 0.0):
-                    temperatura_mandata_nominale_round = temperatura_mandata_nominale_round_last + 1.5
-                else:
-                    temperatura_mandata_nominale_round = temperatura_mandata_nominale_round_last
+            # smorzo le variazioni repentine di mandata nominale per evitare di far spegnere subito il compressore(solo quando sono entro i limiti di funzionamento della pompa di calore)
+            if ((mode == 1.0) and (temperatura_mandata_nominale_round_last != 0.0) and ((temperatura_mandata_nominale_round - temperatura_ritorno) <= delta_t_massimo)):
+                temperatura_mandata_nominale_round = min(max(temperatura_mandata_nominale_round, temperatura_mandata_nominale_round_last - 1.0), temperatura_mandata_nominale_round_last + 1.0)
 
-            logger.info ("CONTROLLER PI + HPSU : TR = %02.1f C ; Target T-HC Setpoint %2.2f C" % (temperatura_ritorno, temperatura_mandata_nominale_round))
-
-            # smorzo le variazioni repentine di mandata nominale (solo quando sono entro i limiti di funzionamento della pompa di calore)
-            #if ((temperatura_mandata_nominale_round_last != 0.0) and ((temperatura_mandata_nominale_round - temperatura_ritorno) <= delta_t_massimo)):
-            #    temperatura_mandata_nominale_round = min(max(temperatura_mandata_nominale_round, temperatura_mandata_nominale_round_last - 0.5), temperatura_mandata_nominale_round_last + 0.5)
-
-            logger.info ("CONTROLLER PI        : Integrale = %9.1f ; Errore = %1.2f ; Output PI = %1.6f ; Delta T nom = %2.2f (C) ; Delta T teo = %2.2f (C)" % (Integrale, Errore, OutputPI, delta_t, 1000.0 * potenza_termica / (1.163 * portata)))
+            logger.info ("CONTROLLER PI + HPSU : TR = %02.1f C ; T-HC = %02.1f C ; T-HC Set = %2.2f C" % (temperatura_ritorno, temperatura_mandata, temperatura_mandata_nominale_round))
 
             if ((temperatura_mandata_nominale_round_last == 0.0) or
                (temperatura_mandata_nominale_round != temperatura_mandata_nominale_round_last)):
@@ -420,6 +480,8 @@ while (1):
                 logger.info ("CONTROLLER PI + HPSU : Modo Oper. = %01.0f ; Mode = %01.0f ; TR = %02.1f C ; Changing T-HC Setpoint from %2.2f to %2.2f C (would be %2.2f C)" % (modo_operativo, mode, temperatura_ritorno, temperatura_mandata_nominale_round_last, temperatura_mandata_nominale_round, temperatura_mandata_nominale))
 
                 temperatura_mandata_nominale_round_last = temperatura_mandata_nominale_round
+            else:
+                logger.info ("CONTROLLER PI + HPSU : Modo Oper. = %01.0f ; Mode = %01.0f ; TR = %02.1f C" % (modo_operativo, mode, temperatura_ritorno))
 
         else:
             logger.info ("CONTROLLER PI + HPSU : Modo Oper. = %01.0f ; Mode = %01.0f ; TR = %02.1f C" % (modo_operativo, mode, temperatura_ritorno))
@@ -428,8 +490,9 @@ while (1):
         time.sleep(40)
     else:
         if (errore_lettura != True):
-            logger.error ("CONTROLLER PI + HPSU : MODALITA' RISCALDAMENTO OFF")
-            time.sleep(40)
+            logger.error ("HPSU                 : MODALITA' RISCALDAMENTO OFF")
+            # non essendo in modalita' riscaldamento richiesto allunga la finestra di controllo dello stato
+            time.sleep(300)
         else:
-            logger.error ("CONTROLLER PI + HPSU : *** ERRORE LETTURA DA HPSU ***")
-            time.sleep(1)
+            #logger.error ("CONTROLLER PI + HPSU : *** ERRORE LETTURA DA HPSU ***")
+            time.sleep(3)

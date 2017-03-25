@@ -10,7 +10,6 @@ try:
 except Exception:
     pass
 
-
 import logging
 import logging.handlers
 
@@ -31,10 +30,11 @@ must_switch_on = False
 time_is_on = True
 id = "680"
 receiver_id = int(id, 16)
+temp_heat_setpoint = 21.5
+temp_cool_setpoint = 25.5
+temp_hyst = 0.4
 
 if __name__ == "__main__":    
-    temp_min = float(sys.argv[1]) / 10.0
-    temp_max = float(sys.argv[2]) / 10.0
 
     errore_lettura = False
 
@@ -77,14 +77,22 @@ if __name__ == "__main__":
             logger.error ("HPSU                : *** ERRORE LETTURA PARAMETRO MODO OPERATIVO CORRENTE ***")
             sys.exit(1)
 
-    logger.info("HPSU                : Current mode is %2.0f", modo_operativo)
+    if (modo_operativo == 3.0):
+        etichetta = "HEATING"
+    elif (modo_operativo == 5.0):
+        etichetta = "SUMMER"
+    else:
+        etichetta = "NOT PLANNED"
+    logger.info("HPSU                : Current mode is %s", etichetta)
     # verifica di essere nell'orario di funzionamento previsto
 
     now = datetime.datetime.now()
     time_start = now.replace(hour=11, minute=0, second=0, microsecond=0)
     time_end = now.replace(hour=21, minute=0, second=0, microsecond=0)
-    logger.info("SMART-THERMOSTAT    : Planned start time = %s", time_start)
-    logger.info("SMART-THERMOSTAT    : Planned end   time = %s", time_end)
+    if (now < time_start):
+        logger.info("SMART-THERMOSTAT    : Planned start time = %s", time_start)
+    if (now < time_end):
+        logger.info("SMART-THERMOSTAT    : Planned end   time = %s", time_end)
     if ((now < time_start) or (now > time_end)):
         logger.info("SMART-THERMOSTAT    : Current time is out of planned time window")
         time_is_on = False
@@ -114,15 +122,21 @@ if __name__ == "__main__":
 
     temperatura_interna = float(json_temperature)
 
-    #print (temperatura_interna, temp_min, temp_max)
-
-    if ((temperatura_interna > temp_max) or must_switch_off) :
-        # spegni
+    if (
+           ((modo_operativo == 3.0) and (temperatura_interna > temp_heat_setpoint + temp_hyst))
+           or
+           must_switch_off
+       ) :
+        # spegni mettendo in modalita' Estate
         command = "32 00 FA 01 12 05 00"
         must_switch_off = True
 
-    if (temperatura_interna < temp_min) : 
-        # accendi
+    if (
+           ((modo_operativo != 3.0) and (temperatura_interna < temp_heat_setpoint - temp_hyst))
+           or
+           must_switch_on
+       ) :
+        # accendi riscaldamento mettendo in modalita' Riscaldamento
         command = "32 00 FA 01 12 03 00"
         if (modo_operativo != 3.0):
             must_switch_on = True
@@ -135,13 +149,18 @@ if __name__ == "__main__":
     # 0b - Automatico 1
     # 0c - Automatico 2
 
-    logger.info("SMART-THERMOSTAT    : T Int. = %02.1f (C)" % temperatura_interna)
+    logger.info("OEM                 : T Int. = %02.1f °C" % temperatura_interna)
+    logger.info("SMART-THERMOSTAT    : Heating switch ON  threshold = %02.1f °C" % (temp_heat_setpoint - temp_hyst))
+    logger.info("SMART-THERMOSTAT    : Heating switch OFF threshold = %02.1f °C" % (temp_heat_setpoint + temp_hyst))
+
+    logger.info("SMART-THERMOSTAT    : Must switch on  is %s" % must_switch_on)
+    logger.info("SMART-THERMOSTAT    : Must switch off is %s" % must_switch_off)
 
     if (must_switch_on or must_switch_off) :
         msg_data = [int(r, 16) for r in command.split(" ")]
-        logger.info("SMART-THERMOSTAT    : Changing heat pump mode")
         try:
             msg = can.Message(arbitration_id=receiver_id, data=msg_data, extended_id=False, dlc=7)
+            logger.info("HPSU                : Changing heat pump mode from %s to %s" % (etichetta, msg))
             bus.send(msg)
         except Exception:
             logger.error('exception', 'Error sending msg')                    
