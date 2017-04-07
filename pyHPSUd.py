@@ -4,28 +4,21 @@
 # v 0.0.4 by Vanni Brutto (Zanac)
 # DONT use CTRL+C to Terminate, else Port is blocked
 
-import threading
+import pika
+#import threading
 import serial
 import time
 import sys
-import socket
 import getopt
 import logging
-
-try:
-    import SocketServer as socketserver
-except ImportError:
-    import socketserver
+import json
    
 from HPSU.HPSU import HPSU
 
 
 #-------------------------------------------------------------------
-mutex = threading.Lock()
 DEBUG = True
 DEBUG = False
-SocketHost = "0.0.0.0"
-SocketPort = 7060
 verbose = "1"
 logger = None
 #-------------------------------------------------------------------
@@ -44,110 +37,92 @@ def printD(message):
         sys.stdout.flush()
 
 
-#parse Socket request
-def ParseSocketRequest(cmdName, hpsu):
-    cmdName = cmdName.decode('UTF-8')
-    for cmd in hpsu.commands:
-        if cmdName.split(":")[0] == cmd["name"]:
-            setValue = None
-            if ":" in cmdName:
-                setValue = cmdName.split(":")[1]
-            
-            sec = 0
-            #if cmdName == "qsc":
-            #    sec = 10
-            #if cmdName == "qch":
-            #    sec = 1
-            mutex.acquire()
-            
-            time.sleep(sec)
-            rc = hpsu.sendCommand(cmd, setValue)
-            if (rc != "KO"):
-                mutex.release()
-                return rc
-            else:
-                mutex.release()
-                return rc
+class MainHPSU(object):
+    def main2(self, argv):
+        cmd = []
+        driver = None
+        verbose = "1"
+        help = False
+        port = None
+        lg_code = None
+        languages = ["EN", "IT", "DE"]        
 
-    returnlist = "Command %s not available\n" % cmdName
-    return returnlist
-
-class ThreadedTCPRequestHandler(socketserver.StreamRequestHandler):
-    timeout = 1
-    def handle(self):
-        # self.rfile is a file-like object created by the handler;
-        # we can now use e.g. readline() instead of raw recv() calls
-        self.data = self.rfile.readline().strip()
-        printD("SocketRequest: {}".format(self.data))
         try:
-            resp = ParseSocketRequest(self.data, self.server.hpsu)
-            self.wfile.write(resp.encode())
-        except (Exception, e2):
-            print("Error in ThreadedTCPRequestHandler: ")
-        except (KeyboardInterrupt, SystemExit):
-            _exit()
+            opts, args = getopt.getopt(argv,"hp:d:v:l:g:", ["help", "port=", "driver=", "verbose=", "language=", "log="])
+        except getopt.GetoptError:
+            print('pyHPSUd.py -d DRIVER')
+            print(' ')
+            print('           -d  --driver           driver name: [ELM327, PYCAN, EMU]')
+            print('           -p  --port             port (eg COM or /dev/tty*, only for ELM327 driver)')
+            print('           -v  --verbose          verbosity: [1, 2]   default 1')
+            print('           -l  --language         set the language to use [%s]' % " ".join(languages) )
+            print('           -g  --log              set the log to file [_filename]')
+            sys.exit(2)
 
-class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
-    def __init__(self, server_address, RequestHandlerClass):
-        socketserver.TCPServer.__init__(self, server_address, RequestHandlerClass)    
-    pass
+        for opt, arg in opts:
+            if opt in ("-h", "--help"):
+                help = True
+            elif opt in ("-d", "--driver"):
+                driver = arg.upper()
+            elif opt in ("-p", "--port"):
+                port = arg
+            elif opt in ("-v", "--verbose"):
+                verbose = arg
+            elif opt in ("-l", "--language"):
+                lg_code = arg.upper()   
+                if lg_code not in languages:
+                    print("Error, please specify a correct language [%s]" % " ".join(languages))
+                    sys.exit(9)                  
+            elif opt in ("-g", "--log"):
+                logger = logging.getLogger('domon')
+                hdlr = logging.FileHandler(arg)
+                formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+                hdlr.setFormatter(formatter)
+                logger.addHandler(hdlr)
+                logger.setLevel(logging.WARNING)
 
+        self.hpsu = HPSU(driver=driver, logger=None, port=port, cmd=cmd, lg_code=lg_code)
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+        channel = connection.channel()
 
-def main(argv):
-    cmd = []
-    port = None
-    driver = None
-    verbose = "1"
-    help = False
-    lg_code = None
-    languages = ["EN", "IT", "DE"]        
+        channel.queue_delete(queue='hpsu_queue')
+        channel.queue_declare(queue='hpsu_queue', arguments={"x-max-priority":3})
+        channel.basic_qos(prefetch_count=1)
+        channel.basic_consume(self.on_request, queue='hpsu_queue')
+        channel.start_consuming()
 
-    try:
-        opts, args = getopt.getopt(argv,"hp:d:v:l:g:", ["help", "port=", "driver=", "verbose=", "language=", "log="])
-    except getopt.GetoptError:
-        print('pyHPSUd.py -d DRIVER')
-        print(' ')
-        print('           -d  --driver           driver name: [ELM327, PYCAN, EMU]')
-        print('           -p  --port             port (eg COM or /dev/tty*, only for ELM327 driver)')
-        print('           -v  --verbose          verbosity: [1, 2]   default 1')
-        print('           -l  --language         set the language to use [%s]' % " ".join(languages) )
-        print('           -g  --log              set the log to file [_filename]')
-        sys.exit(2)
+    def on_request(self, ch, method, props, body):
+        message = json.loads(body.decode('UTF-8'))
+        name = message["name"]
+        value = message["value"]
+        type = message["type"]
+        sec = 0
+        time.sleep(sec)
+        
+        rc = "KO"
+        print ("1")
+        for cmd in self.hpsu.commands:
+            print ("1.5")
+            if name == cmd["name"]:
+                print(str(cmd))
+                print(name)
+                print("set:%s:" % value)
+                rc = self.hpsu.sendCommand(cmd, value)
+                print ("1.7")
+        print ("2")
+        
+        if type == "sync":
+            priority = 2
+            response = rc
+            print(rc)
+            ch.basic_publish(exchange='',
+                             routing_key=props.reply_to,
+                             properties=pika.BasicProperties(priority=priority, correlation_id = props.correlation_id),
+                             body=str(response))
+            print("spedito"+props.reply_to)
+        ch.basic_ack(delivery_tag = method.delivery_tag)    
 
-    for opt, arg in opts:
-        if opt in ("-h", "--help"):
-            help = True
-        elif opt in ("-d", "--driver"):
-            driver = arg.upper()
-        elif opt in ("-p", "--port"):
-            port = arg
-        elif opt in ("-v", "--verbose"):
-            verbose = arg
-        elif opt in ("-l", "--language"):
-            lg_code = arg.upper()   
-            if lg_code not in languages:
-                print("Error, please specify a correct language [%s]" % " ".join(languages))
-                sys.exit(9)                  
-        elif opt in ("-g", "--log"):
-            logger = logging.getLogger('domon')
-            hdlr = logging.FileHandler(arg)
-            formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-            hdlr.setFormatter(formatter)
-            logger.addHandler(hdlr)
-            logger.setLevel(logging.WARNING)
-
-    hpsu = HPSU(driver=driver, logger=None, port=port, cmd=cmd, lg_code=lg_code)
-    HOST, PORT = SocketHost, SocketPort
-    socket_server = ThreadedTCPServer((HOST, PORT), ThreadedTCPRequestHandler)
-    socket_server.hpsu = hpsu
-    ip, port = socket_server.server_address
     
-    # Start a thread with the server - that thread will then start one more thread for each request
-    socket_server_thread = threading.Thread(target=socket_server.serve_forever)
-    #socket_server_thread = threading.Thread(target=socket_server.handle_request)
-    socket_server_thread.start()
-    print("pyHPSUd started.")
-
 def _exit():
     try:
         read_thread.exit()
@@ -157,5 +132,7 @@ def _exit():
         exit()
     
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    #main(sys.argv[1:])
+    main = MainHPSU()
+    main.main2(sys.argv[1:])
 
