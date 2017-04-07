@@ -15,6 +15,10 @@ class CanELM327(object):
     def resetInterface(self):
         self.ser.flushInput()  #flush input buffer, discarding all its contents
         self.ser.flushOutput() #flush output buffer, aborting current output and discard all that is in buffer
+        try:
+            self.ser.close()
+        except:
+            pass
         self.initInterface(self.portstr, 38400, True)
     
     def initInterface(self, portstr=None, baudrate=38400, init=False):
@@ -62,17 +66,17 @@ class CanELM327(object):
                 setValue = int(setValue)
                 cmd = cmd+" %02X 00" % (setValue)    
     
-        self.ser.write("%s\r\n" % cmd)
+        self.ser.write(bytes(str("%s\r\n" % cmd).encode('utf-8')))
         time.sleep(50.0 / 1000.0)
         if setValue:
             return "OK"
 
         ser_read = self.ser.read(size=100)
-        rc = ser_read[:-3]
+        rc = ser_read.decode('utf-8')[:-3]
         rc = rc.replace("\r", "").replace("\n", "").strip()
         return rc
     
-    def sendCommandWithID(self, cmd, setValue=None):
+    def sendCommandWithID(self, cmd, setValue=None, priority=1):
         if setValue:
             rc = self.sendCommand("ATSH680")
         else:

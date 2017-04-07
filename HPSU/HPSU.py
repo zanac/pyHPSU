@@ -113,13 +113,13 @@ class HPSU(object):
         else:
             print("%s - %s" % (level, msg))
     
-    def sendCommandWithParse(self, cmd, setValue=None):
+    def sendCommandWithParse(self, cmd, setValue=None, priority=1):
         response = None
         verbose = "1"        
         i = 1
         
         while i <= 3:
-            rc = self.sendCommand(cmd, setValue=setValue)
+            rc = self.sendCommand(cmd, setValue=setValue, priority=priority)
             if rc != "KO":
                 i = 4
                 if not setValue:
@@ -131,7 +131,7 @@ class HPSU(object):
                 time.sleep(2.0)
         return response
 
-    def getParameterValue(self, parameter):
+    def getParameterValue(self, parameter, priority=1):
         response = None
         cmd = None
         for c in self.commands:
@@ -139,11 +139,11 @@ class HPSU(object):
                 cmd = c
         
         if cmd:
-            response = self.sendCommandWithParse(cmd)
+            response = self.sendCommandWithParse(cmd=cmd, priority=priority)
         
         return response
 
-    def setParameterValue(self, parameter, setValue):
+    def setParameterValue(self, parameter, setValue, priority=1):
         response = None
         cmd = None
         for c in self.commands:
@@ -151,7 +151,7 @@ class HPSU(object):
                 cmd = c
         
         if cmd:
-            response = self.sendCommandWithParse(cmd, setValue)
+            response = self.sendCommandWithParse(cmd=cmd, setValue=setValue, priority=priority)
         
         return response
                 
@@ -162,8 +162,8 @@ class HPSU(object):
         elif self.driver == "HPSUD":
             self.can.initInterface()
     
-    def sendCommand(self, cmd, setValue=None):
-        rc = self.can.sendCommandWithID(cmd, setValue)
+    def sendCommand(self, cmd, setValue=None, priority=1):
+        rc = self.can.sendCommandWithID(cmd=cmd, setValue=setValue, priority=priority)
         if rc not in ["KO", "OK"]:
             try:
                 hexValues = [int(r, 16) for r in rc.split(" ")]

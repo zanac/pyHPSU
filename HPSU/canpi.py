@@ -47,7 +47,7 @@ class CanPI(object):
         except Exception:
             self.hpsu.printd('exception', 'Error shutdown canbus')"""
     
-    def sendCommandWithID(self, cmd, setValue=None):
+    def sendCommandWithID(self, cmd, setValue=None, priority=1):
         if setValue:
             receiver_id = 0x680
         else:

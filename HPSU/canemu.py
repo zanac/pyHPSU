@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # v 0.0.1 by Vanni Brutto (Zanac)
 import sys
+import time
 
 class CanEMU(object):
     hspu = None
@@ -11,7 +12,7 @@ class CanEMU(object):
     def eprint(self, *args):
         sys.stderr.write(' '.join(map(str,args)) + '\n')
     
-    def sendCommandWithID(self, cmd, setValue=None):
+    def sendCommandWithID(self, cmd, setValue=None, priority=1):
         arrResponse = [
             {"name":"t_hs","resp":"32 10 FA 01 D6 01 0C"},
             {"name":"t_hs_set","resp":"32 10 02 01 01 00 00"},
@@ -49,6 +50,8 @@ class CanEMU(object):
             {"name":"ehs","resp":"22 0A FA C0 F9 00 00"},
             {"name":"rt","resp":"22 0A FA C0 FA 00 01"},
             {"name":"bpv","resp":"22 0A FA C0 FB 00 00"},
+            {"name":"t_dhw_setpoint1","resp":"31 00 13 01 B1 00 00"},
+            {"name":"hyst_hp","resp":"31 00 FA 06 91 05 00"},            
             {"name":"t_room1_setpoint","resp":"32 10 16 00 DF 00 00"}]
 
         if cmd["name"] == "runtime_pump":
@@ -56,7 +59,7 @@ class CanEMU(object):
             self.hpsu.printd('warning', 'sending cmd %s (rc:%s)' % (cmd["name"], "ko"))
             return "KO"
         
-
+        #time.sleep(2.0)
         for r in arrResponse:
             if r["name"] == cmd["name"]:
                 command = cmd["command"]
@@ -70,7 +73,7 @@ class CanEMU(object):
                         if setValue < 0:
                             setValue = 0x10000+setValue
                         command = command+" %02X %02X" % (setValue >> 8, setValue & 0xff)
-                        print command
+                        print(command)
                     if cmd["um"] == "i":
                         setValue = int(setValue)
                         command = command+" %02X 00" % (setValue)
