@@ -22,3 +22,4 @@ Scripts to control heating flow temperature:
 - [ ] Make all configuration parameters external
 - [ ] Include DHW control inside chrono-thermostat (currently in crontab)
 - [ ] Create cooling flow temperature control (nice to have)
+- [ ] Create smarter DHW setpoint temperature control (nice to have)
