@@ -47,3 +47,4 @@ t_room3_setpoint;T-Ambiente 3; Valore nominale della temperatura ambientale in C
 heat_slope;Curva riscaldamento; Curva climatica
 t_dhw_setpoint1;T-ACS nom 1;Valore nominale della temperatura dell'acqua calda in C, che vale per il primo ciclo di accensione
 hyst_hp;HP Isteresi TDHW;Soglia di attivazione caricamento acqua calda. Stabilisce a partire da quale differenza di temperatura si attiva la pompa di calore per il caricamento dell'acqua calda
+t_flow_cooling;T-Imp refrig;Temperatura nominale di mandata di modalita' di raffreddamento in caso di regolazione in base ad una temperatura di mandata fissa
