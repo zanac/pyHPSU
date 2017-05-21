@@ -9,3 +9,5 @@
   * Summer Mode (setmode_Estate.py)
   * Cooling Mode (setmode_Raffrescare.py)
   * Heating Mode (setmode_Riscaldare.py)
+
+* Crontab example
