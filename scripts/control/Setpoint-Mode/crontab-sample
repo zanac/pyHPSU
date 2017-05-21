@@ -1,0 +1,13 @@
+# m h  dom mon dow   command
+00 20 * * * python3 /home/pi/pyHPSU-master/set_IsteresiACS.py 20
+01 20 * * * python3 /home/pi/pyHPSU-master/set_T-ACS1.py 480
+31 22 * * * python3 /home/pi/pyHPSU-master/set_T-ACS1.py 440
+00 00 * * * python3 /home/pi/pyHPSU-master/set_IsteresiACS.py 30
+01 00 * * * python3 /home/pi/pyHPSU-master/set_T-ACS1.py 420
+00 19 * * * python3 /home/pi/pyHPSU-master/set_T-ImpRefrig.py 210
+30 19 * * * python3 /home/pi/pyHPSU-master/set_T-ImpRefrig.py 200
+30 20 * * * python3 /home/pi/pyHPSU-master/set_T-ImpRefrig.py 190
+00 22 * * * python3 /home/pi/pyHPSU-master/set_T-ImpRefrig.py 180
+00 00 * * * python3 /home/pi/pyHPSU-master/set_T-ImpRefrig.py 170
+03 02 * * * python3 /home/pi/pyHPSU-master/set_T-ImpRefrig.py 160
+03 05 * * * python3 /home/pi/pyHPSU-master/set_T-ImpRefrig.py 180
