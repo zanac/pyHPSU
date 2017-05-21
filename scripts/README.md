@@ -7,5 +7,5 @@ Set of useful scripts to automatically read from HPSU Compact and publish them o
 ## Control
 
 Scripts to automatically control HPSU:
-* Chrono-thermostat
-* Flow Temperature Control
+* Chrono-thermostat (heating and cooling)
+* Flow Temperature Control (heating only)
