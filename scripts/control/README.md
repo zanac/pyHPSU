@@ -21,7 +21,7 @@ Scripts to control heating flow temperature:
   * DHW Hysteresis (set_IsteresiACS.py)
   * Cooling Setpoint (set_T-ImpRefrig.py)
 
-* Scripts to schedule various HPSU Operating Mode changes:
+* Scripts to schedule HPSU Operating Mode changes:
   * Summer Mode (setmode_Estate.py)
   * Cooling Mode (setmode_Raffrescare.py)
   * Heating Mode (setmode_Riscaldare.py)
