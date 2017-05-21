@@ -10,4 +10,4 @@
   * Cooling Mode (`setmode_Raffrescare.py`)
   * Heating Mode (`setmode_Riscaldare.py`)
 
-* Crontab example
+* Crontab example (`crontab-sample`)
