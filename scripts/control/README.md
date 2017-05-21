@@ -1,11 +1,20 @@
-# Scripts
+# Control Scripts
+Scripts to automatically control HPSU.
+## Chrono-thermostat
 
-## Capture-Publish
+Set of useful scripts to automatically control:
+* heating timeframe
+* cooling timeframe
+* heating setpoints
+* cooling setpoints
 
-Set of useful scripts to automatically read from HPSU Compact and publish them on the cloud ([emoncms.org](http://emoncms.org)) a configurable list of variables.
+## Flow Temperature Control
 
-## Control
+Scripts to control heating flow temperature:
+* PI Controller (inside temperature vs setpoint)
+* heating power control within HPSU specifications
 
-Scripts to automatically control HPSU:
-* Chrono-thermostat (heating and cooling)
-* Flow Temperature Control (heating only)
+## To-do list
+* Make all configuration parameters external
+* Include DHW control inside chrono-thermostat (currently in crontab)
+* Create cooling flow temperature control (nice to have)
