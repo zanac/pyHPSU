@@ -3,7 +3,7 @@ Description=Runs Termostato Script
 
 [Timer]
 OnBootSec=20
-OnUnitActiveSec=913
+OnUnitActiveSec=337
 Unit=termostato.service
 AccuracySec=1
 Persistent=true
