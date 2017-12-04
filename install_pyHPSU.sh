@@ -2,6 +2,7 @@
 
 SHARE_DIR="/usr/share/pyHPSU/"
 CONF_DIR="/etc/pyHPSU"
+BIN_DIR="/usr/share/pyHPSU/bin/"
 
 
 if [ ! -d $CONF_DIR ]; then
@@ -12,6 +13,11 @@ fi
 if [ ! -d $SHARE_DIR ]; then
 	echo "Creating directory for shared files"
 	mkdir -p $SHARE_DIR
+fi
+
+if [ ! -d $BIN_DIR ]; then
+	echo "Creating directory for executable files"
+	mkdir -p $BIN_DIR
 fi
 
 
@@ -31,5 +37,11 @@ cp -r plugins $SHARE_DIR
 # copy service file
 cp hpsud.service /etc/systemd/system/
 systemctl --system daemon-reload
+
+# copy binarys
+cp pyHPSU.py $BIN_DIR
+cp pyHPSUd.py $BIN_DIR
+chmod a+x $BIN_DIR/pyHPSU.py
+chmod a+x $BIN_DIR/pyHPSUd.py
 
 	
