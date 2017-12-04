@@ -14,6 +14,8 @@
 
 import serial
 import sys
+sys.path.append('/usr/share/pyHPSU/HPSU/');
+
 import getopt
 import time
 import locale

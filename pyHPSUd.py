@@ -9,6 +9,7 @@ import pika
 import serial
 import time
 import sys
+ys.path.append('/usr/share/pyHPSU/HPSU/');
 import getopt
 import logging
 import json
