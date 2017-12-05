@@ -25,12 +25,12 @@ class Cloud():
 
         #Legge file emoncms.ini
         config = configparser.ConfigParser()
-        iniFile = '%s/%s.ini' % (self.hpsu.pathCOMMANDS, plugin)
+        iniFile = '%s/%s.ini' % (self.hpsu.pathCOMMANDS, plugin.lower())
         config.read(iniFile)
         
         if self.plugin == "EMONCMS":
             self.apikey = self.get_with_default(config=config, section="config", name="apikey", default=None)
-                    
+            self.url = self.get_with_default(config=config, section="config", name="emoncms_url", default=None)        
             self.listNodes = {}
             self.listCmd = []
             options = config.options("node")
@@ -71,8 +71,10 @@ class Cloud():
                             varsDict.update({r["name"]:r["resp"]})
                 if len(varsDict) > 0:
                     varsTxt = str(varsDict).replace(" ", "")
-                    _url = "https://emoncms.org/api/post?apikey=%s&time:%s&json=%s&node=%s" % (self.apikey, timestamp, varsTxt, nodeName)
-                    _urlNoApi = "https://emoncms.org/api/post?apikey=%s&time:%s&json=%s&node=%s" % ('xxx', timestamp, varsTxt, nodeName)
+#                    _url = "https://emoncms.org/api/post?apikey=%s&time:%s&json=%s&node=%s" % (self.apikey, timestamp, varsTxt, nodeName)
+#                    _urlNoApi = "https://emoncms.org/api/post?apikey=%s&time:%s&json=%s&node=%s" % ('xxx', timestamp, varsTxt, nodeName)
+                    _url = "%s/api/post?apikey=%s&time:%s&json=%s&node=%s" % (self.url, self.apikey, timestamp, varsTxt, nodeName)
+                    _urlNoApi = "%s/api/post?apikey=%s&time:%s&json=%s&node=%s" % (self.url, 'xxx', timestamp, varsTxt, nodeName)
                     
                     try:
                         r = requests.get(_url, timeout=7)
