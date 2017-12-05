@@ -15,7 +15,7 @@ import getopt
 import logging
 import json
    
-from HPSU.HPSU import HPSU
+from HPSU import HPSU
 
 
 #-------------------------------------------------------------------
