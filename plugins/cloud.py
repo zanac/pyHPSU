@@ -31,6 +31,9 @@ class Cloud():
         if self.plugin == "EMONCMS":
             self.apikey = self.get_with_default(config=config, section="config", name="apikey", default=None)
             self.url = self.get_with_default(config=config, section="config", name="emoncms_url", default=None)        
+
+
+
             self.listNodes = {}
             self.listCmd = []
             options = config.options("node")
@@ -45,14 +48,14 @@ class Cloud():
                             if c == j["name"]:
                                 InCommand = False
                         if InCommand:
-                            self.hpsu.printd("warning", "command %s defined in emoncms but not in extraction" % c)
+                            self.hpsu.printd("warning", "command %s defined in emoncms but not as commandline option" % c)
 
                 except:
                     self.listNodes[option] = None
         
             for r in self.hpsu.commands:
                 if r["name"] not in self.listCmd:
-                    self.hpsu.printd("warning", "command %s defined in extraction but not in emoncms" % r["name"])
+                    self.hpsu.printd("warning", "command %s defined as commandline option but not in emoncms" % r["name"])
 
     def pushValues(self, vars):
         if self.plugin == "EMONCMS":
@@ -75,7 +78,7 @@ class Cloud():
 #                    _urlNoApi = "https://emoncms.org/api/post?apikey=%s&time:%s&json=%s&node=%s" % ('xxx', timestamp, varsTxt, nodeName)
                     _url = "%s/api/post?apikey=%s&time:%s&json=%s&node=%s" % (self.url, self.apikey, timestamp, varsTxt, nodeName)
                     _urlNoApi = "%s/api/post?apikey=%s&time:%s&json=%s&node=%s" % (self.url, 'xxx', timestamp, varsTxt, nodeName)
-                    
+                                 
                     try:
                         r = requests.get(_url, timeout=7)
                         rc = r.text
@@ -85,7 +88,6 @@ class Cloud():
                     except Exception:
                         rc = "ko"
                         self.hpsu.printd("exception", "Exception on get %s" % _urlNoApi)
-                    
                     
                 
             return True
