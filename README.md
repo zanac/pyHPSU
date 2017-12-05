@@ -7,7 +7,13 @@ A possible HW set-up guide (italian language):
 * [Pompa di calore Rotex HPSU Compact hack: terza parte](https://lamiacasaelettrica.com/2017/03/04/rotex-hpsu-compact-hack-terza-parte/)
 
 Needs:
-- python2
+- python
 - python-pika
 - python-serial
 - python-configparser
+- python-can
+- python-requests
+- python3
+- python3-serial
+- python3-pika
+- python3-requests

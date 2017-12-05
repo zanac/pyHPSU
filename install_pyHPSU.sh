@@ -22,7 +22,7 @@ fi
 
 
 # copy configs
-cp etc/pyHPSU/EMONCMS.ini $CONF_DIR/emoncms.ini
+cp etc/pyHPSU/emoncms.ini $CONF_DIR/emoncms.ini
 cp etc/pyHPSU/canpi.ini $CONF_DIR/canpi.ini
 cp etc/pyHPSU/commands* $CONF_DIR/
 cp etc/pyHPSU/pyhpsu.conf $CONF_DIR/
