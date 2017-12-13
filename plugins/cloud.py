@@ -76,8 +76,8 @@ class Cloud():
                     varsTxt = str(varsDict).replace(" ", "")
 #                    _url = "https://emoncms.org/api/post?apikey=%s&time:%s&json=%s&node=%s" % (self.apikey, timestamp, varsTxt, nodeName)
 #                    _urlNoApi = "https://emoncms.org/api/post?apikey=%s&time:%s&json=%s&node=%s" % ('xxx', timestamp, varsTxt, nodeName)
-                    _url = "%s/api/post?apikey=%s&time:%s&json=%s&node=%s" % (self.url, self.apikey, timestamp, varsTxt, nodeName)
-                    _urlNoApi = "%s/api/post?apikey=%s&time:%s&json=%s&node=%s" % (self.url, 'xxx', timestamp, varsTxt, nodeName)
+                    _url = "%s/input/post?apikey=%s&time:%s&json=%s&node=%s" % (self.url, self.apikey, timestamp, varsTxt, nodeName)
+                    _urlNoApi = "%s/input/post?apikey=%s&time:%s&json=%s&node=%s" % (self.url, 'xxx', timestamp, varsTxt, nodeName)
                                  
                     try:
                         r = requests.get(_url, timeout=7)
