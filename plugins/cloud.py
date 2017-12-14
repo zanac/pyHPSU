@@ -62,8 +62,9 @@ class Cloud():
             timestamp = None
             
             for node in self.listNodes:
-                nodeName = node[5:]
-                
+#		Commented out...why are the first 5 characters are stripped?
+#                nodeName = node[5:]
+                nodeName = node                
                 varsDict = {}
                 for r in vars:
                     if not timestamp:
