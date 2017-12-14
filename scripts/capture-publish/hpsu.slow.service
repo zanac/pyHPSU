@@ -3,6 +3,6 @@ Description=HPSU SLOW Daemon
 
 [Service]
 Type=simple
-ExecStart=/home/pi/hpsu.slow.sh
+ExecStart=/usr/share/pyHPSU/scripts/capture-publish/hpsu.slow.sh
 PIDFile=/tmp/hpsu.slow.pid
 MaxRuntimeSec=8

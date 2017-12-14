@@ -4,7 +4,7 @@ t_hs_set;T-WE Soll;Angezeigt wird die aktuelle Vorlauf-Solltemperatur des Waerme
 water_pressure;Wasserdruck;Angezeigt wird der aktuelle Wasserdruck in bar.
 t_ext;T-Aussen;Angezeigt wird die gemittelte Aussentemperatur in C.
 t_dhw;T-WW;Angezeigt wird die aktuelle Temperatur des Warmwasserspeichers in C. Sollte keine Warmwasserfunktion aktiviert sein, wird --- angezeigt.
-t_dhw_set;T-WW Soll;Angezeigt wird die aktuelle Warmwasser-Solltemperatur in C. Sollte keine Warmwasserfunktion aktiviert sein, wird --- angezeigt. Der aktuelle Sollwert ist hier immer der Maximalwert aller fuer diesen Warmwasserkreis relevanten Anforderungen.
+t_dhw_set;T-WW Soll;aktuelle Warmwasser-Solltemperatur in C. Sollte keine Warmwasserfunktion aktiviert sein, wird --- angezeigt. Der aktuelle Sollwert ist hier immer der Maximalwert aller fuer diesen Warmwasserkreis relevanten Anforderungen.
 t_return;T-Ruecklauf;Angezeigt wird die aktuelle Ruecklauftemperatur des Waermeerzeugers in C. Ist kein entsprechender Sensor am Waermeerzeuger angeschlossen, wird --- angezeigt.
 flow_rate;Durchfluss;Angezeigt wird der gefilterte Wert des aktuellen Volumenstroms in Liter pro Stunde.
 t_hc;T-HK;Angezeigt wird die Vorlauftemperatur des direkten Heizkreises in C.
@@ -12,7 +12,7 @@ t_hc_set;T-HK Soll;Angezeigt wird die Vorlauf-Solltemperatur des direkten Heizkr
 status_pump;Status Kesselpumpe;Angezeigt wird der aktuelle Status der internen Heizungsumwaelzpumpe der ROTEX HPSU compact.
 runtime_comp;Laufzeit Kompr;Angezeigt wird die Laufzeit des Kuehltemittelverdichters in h.
 runtime_pump;Laufzeit Pumpe;Angezeigt wird die Laufzeit der internen Heizungsumwaelzpumpe in h.
-posmix;Mischer Position;Angezeigt wird die aktuelle Stellung des 3-Wege-Umschaltventils 3UV DHW. 0 %: Stellung A (Raumheizung) 100 %: Stellung B (Warmwasserbereitung)
+posmix;Mischer Positiion;aktuelle Stellung des 3-Wege-Umschaltventils 3UV DHW. 0 %: Stellung A (Raumheizung) 100 %: Stellung B (Warmwasserbereitung)
 qboh;EHS fuer DHW;Angezeigt wird die Waermemenge des zusaetzlichen Waermeerzeugers fuer die Warmwasserbereitung in kWh.
 qchhp;EHS fuer CH;Angezeigt wird die Waermemenge des zusaetzlichen Waermeerzeugers fuer den Heizbetrieb in kWh.
 qsc;Energie Kuehlung;Angezeigt wird die Waermemenge der Waermepumpe fuer den Kuehlbetrieb in kWh.
@@ -22,19 +22,19 @@ qdhw;Energie fuer WW;Angezeigt wird die Waermemenge fuer die Warmwasserbereitung
 sw_vers_01;Versione SW 1;
 sw_vers_02;Versione SW 2;
 sw_vers_03;Versione SW 3;
-mode_01;Modo ?;Modo Rotex
+mode_01;Modus;Modus Rotex
 tvbh2;TVBH2 [C];Aktuelle Temperatur Heizung Vorlauf ggf. nach Heizungsunterstuetzungswaermetauscher (tV,BH).
-tliq2;Tliq2 [C];Aktuelle Kuehltemitteltemperatur (tliq2).
+tliq2;Tliq2 [C];Aktuelle Kältemitteltemperatur (tliq2).
 tr2;TR2 [C];Aktuelle Temperatur Heizung Ruecklauf, sekundaerer Fuehler (tR2).
 ta2;TA2 [C];Aktuelle Aussentemperatur (gemessen von Temperaturfuehler des Waermepumpenaussengeraets)
 tdhw2;Tdhw2 [C];Current temperature in domestic hot water storage tank, secondary sensor (tDHW2).
 quiet;quiet;Shows the status of the whisper mode.
-mode;Mode;Current mode of the heat pump: ---: No heating or cooling demand : Heating : Cooling : Domestic hot water generation : Automatic defrosting function active
-pump;Pump;Actual output of the internal heating circulation pump in %
-ext;Ext;Current energy mode of the heat pump: LT: EVU function HT/NT active and low tariff. HT: EVU function HT/NT active and high tariff. SGN: EVU function SMART GRID active, normal mode. SG1: EVU function SMART GRID active, disconnection: no heat pump operation, no frost protection function. SG2: EVU function SMART GRID active, switchon recommendation, mode with higher set temperatures, cheap power. SG3: EVU function SMART GRID active, switchon command and storage tank charging to 70 C, cheap power - - -: No external mode active, heat pump works in normal mode.
-ehs;EHS;Current output of the backup heater in kW
+mode;Modus;Aktueller Modus der Wärmepumpe: ---: No heating or cooling demand : Heating : Cooling : Domestic hot water generation : Automatic defrosting function active
+pump;Pump;Aktuelle Leistung der internen Heizungsumwälzpumpe in %
+ext;Ext;Aktueller Energiemodus der Wärmepumpe: LT: EVU-Funktion HT/NT aktiv und Niedertarif. HT: EVU-Funktion HT/NT aktiv und Hochtarif. SGN: EVU-Funktion SMART GRID aktiv, Normalbetrieb. SG1: EVU-Funktion SMART GRID aktiv, Abwurf: kein Wärmepumpenbetrieb, keine Frostschutzfunktion. SG2: EVU-Funktion SMART GRID aktiv, Einschaltempfehlung, Betrieb mit höheren Solltemperaturen, billiger Strom. SG3:EVU-Funktion SMART GRID aktiv, Einschaltbefehl und Speicherladung auf 70 °C, billiger Strom. - - -: Kein externer Modus aktiv, Wärmepumpe arbeitet im normalen Betrieb.
+ehs;EHS;Aktuelle Leistung des Backup-Heaters in kW
 rt;RT;Parameter [Room thermostat] / [Interlink fct]
-bpv;BPV;Current position of the mixing valve 3UVB1 (100% = A, 0% = B)
+bpv;BPV;Aktuelle Position Mischventil 3UVB1 (100% = A, 0% = B)
 t_v1;TV;Aktuelle Vorlauftemperatur nach dem Plattenwaermetauscher (tV1)
 t_dhw1;Tdhw;Aktuelle Temperatur im Warmwasserspeicher  (tDHW1)
 t_vbh;TVBH;Aktuelle Temperatur Heizung Vorlauf ggf. nach Heizungsunterstuetzungswaermetauscher  (tV,BH)
@@ -45,6 +45,6 @@ t_room1_setpoint;T Room 1 Setpoint; Setpoint 1 value
 t_room2_setpoint;T Room 2 Setpoint; Setpoint 2 value
 t_room3_setpoint;T Room 3 Setpoint; Setpoint 3 value
 heat_slope;Heat-Slope; Heat Slope
-t_dhw_setpoint1;TWW Soll 1;Sollwert der Warmwassertemperatur in Grad C, welche fuer den 1. Schaltzeitzyklus der Zeitprogramme [Automatik 1] und [Automatik 2] gilt
+t_dhw_setpoint1;T-WW Soll 1;Sollwert der Warmwassertemperatur in Grad C, welche fuer den 1. Schaltzeitzyklus der Zeitprogramme [Automatik 1] und [Automatik 2] gilt
 hyst_hp;Hysterese WW; Einstellung der Hysterese fuer die Warmwasserbereitung. Die Warmwasserbereitung wird aktiviert, wenn die am Warmwasserfuehler gemessene Temperatur unter die aktuelle Warmwasser-Solltemperatur minus dem hier eingestellten Wert liegt. Eine Warmwasserbereitung istbeendet, wenn die am Warmwasserfuehler gemessene Temperatur ueber der aktuellen Warmwasser-Solltemperatur liegt
 t_flow_cooling;T-Flow Kuehlung;
