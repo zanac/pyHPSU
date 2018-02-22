@@ -3,6 +3,6 @@ Description=HPSU MEDIUM Daemon
 
 [Service]
 Type=simple
-ExecStart=/home/pi/hpsu.medium.sh
+ExecStart=/usr/share/pyHPSU/scripts/capture-publish/hpsu.medium.sh
 PIDFile=/tmp/hpsu.medium.pid
 MaxRuntimeSec=8

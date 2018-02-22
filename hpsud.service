@@ -5,7 +5,9 @@ After=network.target
 [Service]
 Type=forking
 ExecStartPre=
-ExecStart=/home/domon/start_hpsud.sh
+EnvironmentFile=/etc/pyHPSU/pyhpsu.conf
+ExecStart=/usr/share/pyHPSU/bin/pyHPSUd.py -d ${PYHPSU_DEVICE} -l ${PYHPSU_LANG}
+#ExecStart=/usr/share/pyHPSU/bin/pyHPSUd.py -d PYCAN -l IT
 ExecReload=
 ExecStop=
 

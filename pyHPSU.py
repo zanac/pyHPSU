@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+#
 # -*- coding: utf-8 -*-
 # v 0.0.4 by Vanni Brutto (Zanac)
 #todo: 
@@ -13,12 +14,15 @@
 
 import serial
 import sys
+sys.path.append('/usr/share/pyHPSU/HPSU');
+sys.path.append('/usr/share/pyHPSU/plugins');
+
 import getopt
 import time
 import locale
 import importlib
 import logging
-from HPSU.HPSU import HPSU
+from HPSU import HPSU
 
 SocketPort = 7060
     
@@ -139,7 +143,7 @@ def main(argv):
             print ("Error, please specify a cloud_plugin")
             sys.exit(9)
 
-        module = importlib.import_module("plugins.cloud")
+        module = importlib.import_module("cloud")
         cloud = module.Cloud(plugin=cloud_plugin, hpsu=hpsu, logger=logger)
         cloud.pushValues(vars=arrResponse)
         
