@@ -35,7 +35,7 @@ def main(argv):
     output_type = "JSON"
     cloud_plugin = None
     lg_code = None
-    languages = ["EN", "IT", "DE"]
+    languages = ["EN", "IT", "DE", "NL"]
     logger = None
 
     try:
