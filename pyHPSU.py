@@ -23,37 +23,47 @@ import locale
 import importlib
 import logging
 from HPSU import HPSU
+import configparser
 
 SocketPort = 7060
     
 def main(argv): 
     cmd = []
     port = None
-    driver = None
+    driver = "PYCAN"
     verbose = "1"
     help = False
     output_type = "JSON"
     cloud_plugin = None
-    lg_code = None
+    lg_code = "EN"
     languages = ["EN", "IT", "DE", "NL"]
     logger = None
+    conf_file = "/etc/pyHPSU/pyhpsu.conf"
+    config=configparser.ConfigParser()
+    config.read('example.ini')
+
 
     try:
         opts, args = getopt.getopt(argv,"hc:p:d:v:o:u:l:g:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log="])
     except getopt.GetoptError:
         print('pyHPSU.py -d DRIVER -c COMMAND')
         print(' ')
-        print('           -d  --driver           driver name: [ELM327, PYCAN, EMU, HPSUD]')
+        print('           -f  --config           Configfile, overrides given commandline arguments')
+        print('           -d  --driver           driver name: [ELM327, PYCAN, EMU, HPSUD], Default: PYCAN')
         print('           -p  --port             port (eg COM or /dev/tty*, only for ELM327 driver)')
         print('           -o  --output_type      output type: [JSON, CSV, CLOUD] default JSON')
         print('           -c  --cmd              command: [see commands domain]')
         print('           -v  --verbose          verbosity: [1, 2]   default 1')
         print('           -u  --upload           upload on cloud: [_PLUGIN_]')
-        print('           -l  --language         set the language to use [%s]' % " ".join(languages))
+        print('           -l  --language         set the language to use [%s], default is \"EN\" ' % " ".join(languages))
         print('           -g  --log              set the log to file [_filename]')
+        print('           -h  --help             show help')
         sys.exit(2)
 
     for opt, arg in opts:
+        if opt in ("-f", "--config"):
+            read_from_conf_file = True
+            conf_file = arg        
         if opt in ("-h", "--help"):
             help = True
         elif opt in ("-d", "--driver"):
@@ -66,19 +76,11 @@ def main(argv):
             verbose = arg
         elif opt in ("-o", "--output_type"):
             output_type = arg.upper()
-            if output_type not in ["JSON", "CSV", "CLOUD"]:
-                print("Error, please specify a correct output_type [JSON, CSV, CLOUD]")
-                sys.exit(9)
         elif opt in ("-u", "--upload"):
+            upload=True
             cloud_plugin = arg.upper()
-            if cloud_plugin not in ["EMONCMS"]:
-                print("Error, please specify a correct plugin")
-                sys.exit(9)
         elif opt in ("-l", "--language"):
             lg_code = arg.upper()   
-            if lg_code not in languages:
-                print("Error, please specify a correct language [%s]" % " ".join(languages))
-                sys.exit(9)
         elif opt in ("-g", "--log"):
             logger = logging.getLogger('domon')
             hdlr = logging.FileHandler(arg)
@@ -88,7 +90,35 @@ def main(argv):
             logger.setLevel(logging.ERROR)
     if verbose == "2":
         locale.setlocale(locale.LC_ALL, '')
-        
+
+# get config from file if given....
+    if read_from_conf_file and conf_file="":
+        print("Error, please provide a config file")
+        sys.exit(9)
+
+#
+# now we should have all options...let's check them 
+#
+# Check driver
+if driver not in ["ELM327", "PYCAN", "EMU", "HPSUD"]:
+    print("Error, please specify a correct driver [ELM327, PYCAN, EMU, HPSUD] ")
+    sys.exit(9)
+
+# Check output type 
+if output_type not in ["JSON", "CSV", "CLOUD"]:
+    print("Error, please specify a correct output_type [JSON, CSV, CLOUD]")
+    sys.exit(9)
+
+# Check Plugin type
+if cloud_plugin not in ["EMONCMS"] and upload:
+    print("Error, please specify a correct plugin")
+    sys.exit(9)
+
+# Check Language
+if lg_code not in languages:
+    print("Error, please specify a correct language [%s]" % " ".join(languages))
+    sys.exit(9)
+
     hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
     
     if help:
@@ -104,10 +134,12 @@ def main(argv):
             for c in hpsu.commands:
                 print("%12s - %-10s - %s" % (c['name'], c['label'], c['desc']))
         sys.exit(0)
+   
+    # really needed? Driver is checked above
 
-    if not driver:
-        print("Error, please specify driver [ELM327 or PYCAN, EMU, HPSUD]")
-        sys.exit(9)        
+    #if not driver:
+    #    print("Error, please specify driver [ELM327 or PYCAN, EMU, HPSUD]")
+    #    sys.exit(9)        
 
     arrResponse = []   
     for c in hpsu.commands:
