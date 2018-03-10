@@ -95,29 +95,46 @@ def main(argv):
     if read_from_conf_file and conf_file="":
         print("Error, please provide a config file")
         sys.exit(9)
+    else:
+        config = configparser.ConfigParser()
+        config.read(conf_file)
+        if config['DAEMON']['PYHPSU_DEVICE']:
+            driver=config['DAEMON']['PYHPSU_DEVICE']
+        if config['DAEMON']['PORT']:
+            config['DAEMON']['PORT']
+        if config['DAEMON']['PYHPSU_LANG']:
+            lg_code=config['DAEMON']['PYHPSU_LANG']
+        if config['DAEMON']['OUTPUT_TYPE']:
+            output_type=config['DAEMON']['OUTPUT_TYPE']
+        if config['DAEMON']['EMONCMS']:
+            cloud_plugin=config['DAEMON']['EMONCMS']
 
-#
-# now we should have all options...let's check them 
-#
-# Check driver
-if driver not in ["ELM327", "PYCAN", "EMU", "HPSUD"]:
-    print("Error, please specify a correct driver [ELM327, PYCAN, EMU, HPSUD] ")
-    sys.exit(9)
+    #
+    # now we should have all options...let's check them 
+    #
+    # Check driver 
+    if driver not in ["ELM327", "PYCAN", "EMU", "HPSUD"]:
+        print("Error, please specify a correct driver [ELM327, PYCAN, EMU, HPSUD] ")
+        sys.exit(9)
 
-# Check output type 
-if output_type not in ["JSON", "CSV", "CLOUD"]:
-    print("Error, please specify a correct output_type [JSON, CSV, CLOUD]")
-    sys.exit(9)
+    if driver = "ELM327" and port = "":
+        print("Error, please specify a correct port for the ELM327 device ")
+        sys.exit(9)
 
-# Check Plugin type
-if cloud_plugin not in ["EMONCMS"] and upload:
-    print("Error, please specify a correct plugin")
-    sys.exit(9)
+    # Check output type 
+    if output_type not in ["JSON", "CSV", "CLOUD"]:
+        print("Error, please specify a correct output_type [JSON, CSV, CLOUD]")
+        sys.exit(9)
 
-# Check Language
-if lg_code not in languages:
-    print("Error, please specify a correct language [%s]" % " ".join(languages))
-    sys.exit(9)
+    # Check Plugin type
+    if cloud_plugin not in ["EMONCMS"] and upload:
+        print("Error, please specify a correct plugin")
+        sys.exit(9)
+
+    # Check Language
+    if lg_code not in languages:
+        print("Error, please specify a correct language [%s]" % " ".join(languages))
+        sys.exit(9)
 
     hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
     
