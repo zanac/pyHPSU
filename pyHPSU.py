@@ -35,16 +35,14 @@ def main(argv):
     help = False
     output_type = "JSON"
     cloud_plugin = None
+    upload = False
     lg_code = "EN"
     languages = ["EN", "IT", "DE", "NL"]
     logger = None
     conf_file = "/etc/pyHPSU/pyhpsu.conf"
-    config=configparser.ConfigParser()
-    config.read('example.ini')
-
 
     try:
-        opts, args = getopt.getopt(argv,"hc:p:d:v:o:u:l:g:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log="])
+        opts, args = getopt.getopt(argv,"hc:p:d:v:o:u:l:g:f:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log=", "config_file="])
     except getopt.GetoptError:
         print('pyHPSU.py -d DRIVER -c COMMAND')
         print(' ')
@@ -92,21 +90,29 @@ def main(argv):
         locale.setlocale(locale.LC_ALL, '')
 
 # get config from file if given....
-    if read_from_conf_file and conf_file="":
+    if read_from_conf_file and conf_file=="":
         print("Error, please provide a config file")
         sys.exit(9)
     else:
+        try:
+            with open(conf_file) as f:
+                config.readfp(f)
+        except IOError:
+            print("Error: config file not found")	
+            sys.exit(9)
+
+
         config = configparser.ConfigParser()
         config.read(conf_file)
-        if config['DAEMON']['PYHPSU_DEVICE']:
+        if config.has_option('DAEMON','PYHPSU_DEVICE'):
             driver=config['DAEMON']['PYHPSU_DEVICE']
-        if config['DAEMON']['PORT']:
-            config['DAEMON']['PORT']
-        if config['DAEMON']['PYHPSU_LANG']:
+        if config.has_option('DAEMON','PORT'):
+            port=config['DAEMON']['PORT']
+        if config.has_option('DAEMON','PYHPSU_LANG'):
             lg_code=config['DAEMON']['PYHPSU_LANG']
-        if config['DAEMON']['OUTPUT_TYPE']:
+        if config.has_option('DAEMON','OUTPUT_TYPE'):
             output_type=config['DAEMON']['OUTPUT_TYPE']
-        if config['DAEMON']['EMONCMS']:
+        if config.has_option('DAEMON','EMONCMS'):
             cloud_plugin=config['DAEMON']['EMONCMS']
 
     #
@@ -117,7 +123,7 @@ def main(argv):
         print("Error, please specify a correct driver [ELM327, PYCAN, EMU, HPSUD] ")
         sys.exit(9)
 
-    if driver = "ELM327" and port = "":
+    if driver == "ELM327" and port == "":
         print("Error, please specify a correct port for the ELM327 device ")
         sys.exit(9)
 
@@ -135,7 +141,6 @@ def main(argv):
     if lg_code not in languages:
         print("Error, please specify a correct language [%s]" % " ".join(languages))
         sys.exit(9)
-
     hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
     
     if help:
