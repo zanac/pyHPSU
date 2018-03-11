@@ -2,3 +2,4 @@
 *.pyc
 install_pyHPSU
 install
+.vscode/settings.json
