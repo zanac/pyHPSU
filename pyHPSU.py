@@ -143,6 +143,15 @@ def main(argv):
         sys.exit(9)
     hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
     
+#
+# try to query different commands in different periods
+# Read them from config and group them
+#
+    for each_key in config.items('JOBS'):
+        
+
+
+
     if help:
         if len(cmd) == 0:
             print("List available commands:")
