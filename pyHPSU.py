@@ -42,7 +42,6 @@ def main(argv):
     logger = None
     conf_file = "/etc/pyHPSU/pyhpsu.conf"
     run_daemon = False
-    loop=true
     ticker=0
 
     try:
@@ -244,6 +243,8 @@ def print_output(hpsu):
 
 
 if __name__ == "__main__":
+    global loop 
+    loop=True
     while loop==True:               # run main
         main(sys.argv[1:])
         if run_daemon==false:       # if not in daemon mode, stop after one loop
