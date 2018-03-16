@@ -26,7 +26,8 @@ from HPSU import HPSU
 import configparser
 
 SocketPort = 7060
-    
+
+
 def main(argv): 
     cmd = []
     port = None
@@ -40,12 +41,16 @@ def main(argv):
     languages = ["EN", "IT", "DE", "NL"]
     logger = None
     conf_file = "/etc/pyHPSU/pyhpsu.conf"
+    run_daemon = False
+    loop=true
+    ticker=0
 
     try:
-        opts, args = getopt.getopt(argv,"hc:p:d:v:o:u:l:g:f:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log=", "config_file="])
+        opts, args = getopt.getopt(argv,"Dhc:p:d:v:o:u:l:g:f:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log=", "config_file="])
     except getopt.GetoptError:
         print('pyHPSU.py -d DRIVER -c COMMAND')
         print(' ')
+        print('           -D  --daemon           run as daemon')
         print('           -f  --config           Configfile, overrides given commandline arguments')
         print('           -d  --driver           driver name: [ELM327, PYCAN, EMU, HPSUD], Default: PYCAN')
         print('           -p  --port             port (eg COM or /dev/tty*, only for ELM327 driver)')
@@ -59,6 +64,8 @@ def main(argv):
         sys.exit(2)
 
     for opt, arg in opts:
+        if opt in ("-D", "--daemon"):
+            run_daemon = True
         if opt in ("-f", "--config"):
             read_from_conf_file = True
             conf_file = arg        
@@ -141,17 +148,40 @@ def main(argv):
     if lg_code not in languages:
         print("Error, please specify a correct language [%s]" % " ".join(languages))
         sys.exit(9)
-    hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
-    
 #
 # try to query different commands in different periods
 # Read them from config and group them
 #
-    for each_key in config.items('JOBS'):
-        
+    # create dictionary for the jobs
+    timed_jobs=dict()
+    if read_from_conf_file and len(config.options('JOBS')):
+        for each_key in config.options('JOBS'):
+            job_period=config.get('JOBS',each_key)
+            if not job_period in timed_jobs.keys():
+                timed_jobs[job_period]=[]
+            timed_jobs[job_period].append(each_key)
+        wanted_periods=list(timed_jobs.keys())
+    else:
+        #
+        # now its time to call the hpsu and do the REAL can query, but only every 2 seconds
+        # and handle the data as configured
+        #
+        if not ticker%2:
+            hpsu = read_can(driver, logger, port, cmd, lg_code)
+            print_output(hpsu)
 
 
 
+
+def read_can(driver,logger,port,cmd,lg_code):
+    hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
+    return hpsu
+
+def print_output(hpsu):
+    hpsu=hpsu
+    #
+    # print out available commands
+    #
     if help:
         if len(cmd) == 0:
             print("List available commands:")
@@ -209,7 +239,15 @@ def main(argv):
         module = importlib.import_module("cloud")
         cloud = module.Cloud(plugin=cloud_plugin, hpsu=hpsu, logger=logger)
         cloud.pushValues(vars=arrResponse)
-        
+
+
+
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    while loop==True:               # run main
+        main(sys.argv[1:])
+        if run_daemon==false:       # if not in daemon mode, stop after one loop
+            loop=False
+        else:                       # else ticker +1 and sleep a second.
+            ticker+=1
+            time.sleep(1)
