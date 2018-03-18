@@ -10,6 +10,7 @@
 #
 #Lo script di lettura e pubblicazione deve essere facilmente schedulabile in modo controllato:
 #- frequenza di aggiornamento (l'ideale sarebbe poterla personalizzare per singola variabile ma lasciamo stare)
+# Branch new_config_format
 
 
 import serial
