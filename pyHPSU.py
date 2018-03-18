@@ -10,7 +10,7 @@
 #
 #Lo script di lettura e pubblicazione deve essere facilmente schedulabile in modo controllato:
 #- frequenza di aggiornamento (l'ideale sarebbe poterla personalizzare per singola variabile ma lasciamo stare)
-# Branch new_config_format
+
 
 
 import serial
@@ -167,8 +167,8 @@ def main(argv):
         # and handle the data as configured
         #
         if not ticker%2:
-            hpsu = read_can(driver, logger, port, cmd, lg_code)
-            print_output(hpsu)
+            hpsu_out = read_can(driver, logger, port, cmd, lg_code)
+            print_output(hpsu_out)
 
 
 
@@ -187,12 +187,12 @@ def print_output(hpsu_out):
             print("List available commands:")
             print("%12s - %-10s" % ('COMMAND', 'LABEL'))
             print("%12s---%-10s" % ('------------', '----------'))
-            for cmd in hpsu.listCommands:
+            for cmd in hpsu_in.listCommands:
                 print("%12s - %-10s" % (cmd['name'], cmd['label']))
         else:
             print("%12s - %-10s - %s" % ('COMMAND', 'LABEL', 'DESCRIPTION'))
             print("%12s---%-10s---%s" % ('------------', '----------', '---------------------------------------------------'))
-            for c in hpsu.commands:
+            for c in hpsu_in.commands:
                 print("%12s - %-10s - %s" % (c['name'], c['label'], c['desc']))
         sys.exit(0)
    
