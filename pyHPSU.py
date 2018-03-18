@@ -173,11 +173,11 @@ def main(argv):
 
 
 def read_can(driver,logger,port,cmd,lg_code):
-    hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
-    return hpsu
+    hpsu_out = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
+    return hpsu_out
 
-def print_output(hpsu):
-    hpsu=hpsu
+def print_output(hpsu_out):
+    hpsu_in=hpsu_out
     #
     # print out available commands
     #
@@ -202,7 +202,7 @@ def print_output(hpsu):
     #    sys.exit(9)        
 
     arrResponse = []   
-    for c in hpsu.commands:
+    for c in hpsu_in.commands:
         setValue = None
         for i in cmd:
             if ":" in i and c["name"] == i.split(":")[0]:
@@ -210,20 +210,20 @@ def print_output(hpsu):
 
         i = 0
         while i <= 3:
-            rc = hpsu.sendCommand(c, setValue)
+            rc = hpsu_in.sendCommand(c, setValue)
             if rc != "KO":            
                 i = 4
                 if not setValue:
-                    response = hpsu.parseCommand(cmd=c, response=rc, verbose=verbose)
-                    resp = hpsu.umConversion(cmd=c, response=response, verbose=verbose)
+                    response = hpsu_in.parseCommand(cmd=c, response=rc, verbose=verbose)
+                    resp = hpsu_in.umConversion(cmd=c, response=response, verbose=verbose)
 
                     arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"]})
             else:
                 i += 1
                 time.sleep(2.0)
-                hpsu.printd('warning', 'retry %s command %s' % (i, c["name"]))
+                hpsu_in.printd('warning', 'retry %s command %s' % (i, c["name"]))
                 if i == 4:
-                    hpsu.printd('error', 'command %s failed' % (c["name"]))
+                    hpsu_in.printd('error', 'command %s failed' % (c["name"]))
 
     if output_type == "JSON":
         print(arrResponse)
@@ -236,7 +236,7 @@ def print_output(hpsu):
             sys.exit(9)
 
         module = importlib.import_module("cloud")
-        cloud = module.Cloud(plugin=cloud_plugin, hpsu=hpsu, logger=logger)
+        cloud = module.Cloud(plugin=cloud_plugin, hpsu=hpsu_in, logger=logger)
         cloud.pushValues(vars=arrResponse)
 
 
