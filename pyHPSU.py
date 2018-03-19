@@ -12,7 +12,6 @@
 #- frequenza di aggiornamento (l'ideale sarebbe poterla personalizzare per singola variabile ma lasciamo stare)
 
 
-
 import serial
 import sys
 sys.path.append('/usr/share/pyHPSU/HPSU');
@@ -29,8 +28,7 @@ import configparser
 SocketPort = 7060
 
 
-def main(argv):
-    print("Bin im main") 
+def main(argv): 
     cmd = []
     port = None
     driver = "PYCAN"
@@ -42,8 +40,8 @@ def main(argv):
     lg_code = "EN"
     languages = ["EN", "IT", "DE", "NL"]
     logger = None
-    read_from_conf_file = False
     conf_file = "/etc/pyHPSU/pyhpsu.conf"
+    read_from_conf_file=False
     run_daemon = False
     ticker=0
 
@@ -70,8 +68,7 @@ def main(argv):
             run_daemon = True
         if opt in ("-f", "--config"):
             read_from_conf_file = True
-            conf_file = arg
-            config = configparser.ConfigParser()        
+            conf_file = arg        
         if opt in ("-h", "--help"):
             help = True
         elif opt in ("-d", "--driver"):
@@ -100,7 +97,7 @@ def main(argv):
         locale.setlocale(locale.LC_ALL, '')
 
 # get config from file if given....
-    if read_from_conf_file:
+    if read_from_conf_file: 
         if conf_file=="":
             print("Error, please provide a config file")
             sys.exit(9)
@@ -113,6 +110,7 @@ def main(argv):
                 sys.exit(9)
 
 
+        config = configparser.ConfigParser()
         config.read(conf_file)
         if config.has_option('DAEMON','PYHPSU_DEVICE'):
             driver=config['DAEMON']['PYHPSU_DEVICE']
@@ -170,19 +168,14 @@ def main(argv):
         # and handle the data as configured
         #
         if not ticker%2:
-            hpsu_out = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
-            #hpsu_out = read_can(driver, logger, port, cmd, lg_code)
-            #print_output(hpsu_out,cmd, help, verbose)
+            hpsu = read_can(driver, logger, port, cmd, lg_code)
 
 
 
 
-
-#def print_output(hpsu_out,cmd,help,verbose):
-    #hpsu_in=hpsu_out
-    #cmd=cmd
-    #help=help
-    #verbose=verbose
+def read_can(driver,logger,port,cmd,lg_code):
+    hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
+    return hpsu
     #
     # print out available commands
     #
@@ -191,12 +184,12 @@ def main(argv):
             print("List available commands:")
             print("%12s - %-10s" % ('COMMAND', 'LABEL'))
             print("%12s---%-10s" % ('------------', '----------'))
-            for cmd in hpsu_out.listCommands:
+            for cmd in hpsu.listCommands:
                 print("%12s - %-10s" % (cmd['name'], cmd['label']))
         else:
             print("%12s - %-10s - %s" % ('COMMAND', 'LABEL', 'DESCRIPTION'))
             print("%12s---%-10s---%s" % ('------------', '----------', '---------------------------------------------------'))
-            for c in hpsu_out.commands:
+            for c in hpsu.commands:
                 print("%12s - %-10s - %s" % (c['name'], c['label'], c['desc']))
         sys.exit(0)
    
@@ -207,7 +200,7 @@ def main(argv):
     #    sys.exit(9)        
 
     arrResponse = []   
-    for c in hpsu_out.commands:
+    for c in hpsu.commands:
         setValue = None
         for i in cmd:
             if ":" in i and c["name"] == i.split(":")[0]:
@@ -215,20 +208,20 @@ def main(argv):
 
         i = 0
         while i <= 3:
-            rc = hpsu_out.sendCommand(c, setValue)
+            rc = hpsu.sendCommand(c, setValue)
             if rc != "KO":            
                 i = 4
                 if not setValue:
-                    response = hpsu_out.parseCommand(cmd=c, response=rc, verbose=verbose)
-                    resp = hpsu_out.umConversion(cmd=c, response=response, verbose=verbose)
+                    response = hpsu.parseCommand(cmd=c, response=rc, verbose=verbose)
+                    resp = hpsu.umConversion(cmd=c, response=response, verbose=verbose)
 
                     arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"]})
             else:
                 i += 1
                 time.sleep(2.0)
-                hpsu_out.printd('warning', 'retry %s command %s' % (i, c["name"]))
+                hpsu.printd('warning', 'retry %s command %s' % (i, c["name"]))
                 if i == 4:
-                    hpsu_out.printd('error', 'command %s failed' % (c["name"]))
+                    hpsu.printd('error', 'command %s failed' % (c["name"]))
 
     if output_type == "JSON":
         print(arrResponse)
@@ -241,25 +234,19 @@ def main(argv):
             sys.exit(9)
 
         module = importlib.import_module("cloud")
-        cloud = module.Cloud(plugin=cloud_plugin, hpsu=hpsu_out, logger=logger)
+        cloud = module.Cloud(plugin=cloud_plugin, hpsu=hpsu, logger=logger)
         cloud.pushValues(vars=arrResponse)
 
-def read_can(driver,logger,port,cmd,lg_code):
-    hpsu_out = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
-    return hpsu_out
 
 
 
 if __name__ == "__main__":
+    global loop 
     loop=True
     while loop==True:               # run main
         main(sys.argv[1:])
-        if not run_daemon:       # if not in daemon mode, stop after one loop
+        if run_daemon==false:       # if not in daemon mode, stop after one loop
             loop=False
         else:                       # else ticker +1 and sleep a second.
-            print("loop mode")
             ticker+=1
             time.sleep(1)
-            
-            
-            
