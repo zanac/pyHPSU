@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import platform
 import sys
@@ -49,7 +49,7 @@ class HPSU(object):
         if not os.path.isfile(commands_hpsu):
             commands_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, "EN")
 
-        with open(commands_hpsu, 'rU') as csvfile:
+        with open(commands_hpsu, 'rU',encoding='utf-8') as csvfile:
             pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
             next(pyHPSUCSV, None) # skip the header
             for row in pyHPSUCSV:
@@ -58,7 +58,7 @@ class HPSU(object):
                 desc = row[2]
                 hpsuDict.update({name:{"label":label, "desc":desc}})
             
-        with open('%s/commands_hpsu.csv' % self.pathCOMMANDS, 'rU') as csvfile:
+        with open('%s/commands_hpsu.csv' % self.pathCOMMANDS, 'rU',encoding='utf-8') as csvfile:
             pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
             next(pyHPSUCSV, None) # skip the header
 

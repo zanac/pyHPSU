@@ -23,39 +23,59 @@ import locale
 import importlib
 import logging
 from HPSU import HPSU
+import configparser
+import threading
 
 SocketPort = 7060
-    
+
+
 def main(argv): 
     cmd = []
     port = None
-    driver = None
+    driver = "PYCAN"
     verbose = "1"
-    help = False
+    show_help = False
     output_type = "JSON"
     cloud_plugin = None
-    lg_code = None
+    upload = False
+    lg_code = "EN"
     languages = ["EN", "IT", "DE", "NL"]
     logger = None
+    conf_file = "/etc/pyHPSU/pyhpsu.conf"
+    read_from_conf_file=False
+    global daemon
+    global ticker
+    ticker=0
+    loop=True
+    daemon=False
+    config = configparser.ConfigParser()
 
     try:
-        opts, args = getopt.getopt(argv,"hc:p:d:v:o:u:l:g:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log="])
+        opts, args = getopt.getopt(argv,"Dhc:p:d:v:o:u:l:g:f:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log=", "config_file="])
     except getopt.GetoptError:
         print('pyHPSU.py -d DRIVER -c COMMAND')
         print(' ')
-        print('           -d  --driver           driver name: [ELM327, PYCAN, EMU, HPSUD]')
+        print('           -D  --daemon           run as daemon')
+        print('           -f  --config           Configfile, overrides given commandline arguments')
+        print('           -d  --driver           driver name: [ELM327, PYCAN, EMU, HPSUD], Default: PYCAN')
         print('           -p  --port             port (eg COM or /dev/tty*, only for ELM327 driver)')
         print('           -o  --output_type      output type: [JSON, CSV, CLOUD] default JSON')
         print('           -c  --cmd              command: [see commands domain]')
         print('           -v  --verbose          verbosity: [1, 2]   default 1')
         print('           -u  --upload           upload on cloud: [_PLUGIN_]')
-        print('           -l  --language         set the language to use [%s]' % " ".join(languages))
+        print('           -l  --language         set the language to use [%s], default is \"EN\" ' % " ".join(languages))
         print('           -g  --log              set the log to file [_filename]')
+        print('           -h  --help             show help')
         sys.exit(2)
 
     for opt, arg in opts:
+        if opt in ("-D", "--daemon"):
+            daemon = True
+        if opt in ("-f", "--config"):
+            read_from_conf_file = True
+            conf_file = arg        
         if opt in ("-h", "--help"):
-            help = True
+            show_help = True
         elif opt in ("-d", "--driver"):
             driver = arg.upper()
         elif opt in ("-p", "--port"):
@@ -66,19 +86,11 @@ def main(argv):
             verbose = arg
         elif opt in ("-o", "--output_type"):
             output_type = arg.upper()
-            if output_type not in ["JSON", "CSV", "CLOUD"]:
-                print("Error, please specify a correct output_type [JSON, CSV, CLOUD]")
-                sys.exit(9)
         elif opt in ("-u", "--upload"):
+            upload=True
             cloud_plugin = arg.upper()
-            if cloud_plugin not in ["EMONCMS"]:
-                print("Error, please specify a correct plugin")
-                sys.exit(9)
         elif opt in ("-l", "--language"):
             lg_code = arg.upper()   
-            if lg_code not in languages:
-                print("Error, please specify a correct language [%s]" % " ".join(languages))
-                sys.exit(9)
         elif opt in ("-g", "--log"):
             logger = logging.getLogger('domon')
             hdlr = logging.FileHandler(arg)
@@ -88,10 +100,119 @@ def main(argv):
             logger.setLevel(logging.ERROR)
     if verbose == "2":
         locale.setlocale(locale.LC_ALL, '')
+
+# get config from file if given....
+    if read_from_conf_file: 
+        if conf_file=="":
+            print("Error, please provide a config file")
+            sys.exit(9)
+        else:
+            try:
+                with open(conf_file) as f:
+                    config.readfp(f)
+            except IOError:
+                print("Error: config file not found")	
+                sys.exit(9)
+
+
+        config.read(conf_file)
+        if config.has_option('DAEMON','PYHPSU_DEVICE'):
+            driver=config['DAEMON']['PYHPSU_DEVICE']
+        if config.has_option('DAEMON','PORT'):
+            port=config['DAEMON']['PORT']
+        if config.has_option('DAEMON','PYHPSU_LANG'):
+            lg_code=config['DAEMON']['PYHPSU_LANG']
+        if config.has_option('DAEMON','OUTPUT_TYPE'):
+            output_type=config['DAEMON']['OUTPUT_TYPE']
+        if config.has_option('DAEMON','EMONCMS'):
+            cloud_plugin=config['DAEMON']['EMONCMS']
+
+    #
+    # now we should have all options...let's check them 
+    #
+    # Check driver 
+    if driver not in ["ELM327", "PYCAN", "EMU", "HPSUD"]:
+        print("Error, please specify a correct driver [ELM327, PYCAN, EMU, HPSUD] ")
+        sys.exit(9)
+
+    if driver == "ELM327" and port == "":
+        print("Error, please specify a correct port for the ELM327 device ")
+        sys.exit(9)
+
+    # Check output type 
+    if output_type not in ["JSON", "CSV", "CLOUD"]:
+        print("Error, please specify a correct output_type [JSON, CSV, CLOUD]")
+        sys.exit(9)
+
+    # Check Plugin type
+    if cloud_plugin not in ["EMONCMS"] and upload:
+        print("Error, please specify a correct plugin")
+        sys.exit(9)
+
+    # Check Language
+    if lg_code not in languages:
+        print("Error, please specify a correct language [%s]" % " ".join(languages))
+        sys.exit(9)
+#
+# try to query different commands in different periods
+# Read them from config and group them
+#
+    # create dictionary for the jobs
+    timed_jobs=dict()
+    if read_from_conf_file: 
+        if len(config.options('JOBS')):
+            for each_key in config.options('JOBS'):
+                job_period=config.get('JOBS',each_key)
+                if not job_period in timed_jobs.keys():
+                    timed_jobs["timer_" + job_period]=[]
+                timed_jobs["timer_" + job_period].append(each_key)
+            wanted_periods=list(timed_jobs.keys())
         
-    hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
+        else:
+            print("Error, please specify a value to query in config file ")
+            sys.exit(9)
+    if show_help:
+        #print("help ist " + str(show_help))
+        #print("Driver = " + str(driver) + ", logger=" + str(logger)+ ", port=" + str(port) + ", cmd=" + str(cmd) + ", lg_code=" + str(lg_code) + 
+        #", show_help" + str(show_help) + ",  verbose=" + str(verbose) + ", output_type=" + str(output_type))
+        hpsu = read_can(driver, logger, port, cmd, lg_code,show_help,verbose,output_type)    
+        #
+        # now its time to call the hpsu and do the REAL can query, but only every 2 seconds
+        # and handle the data as configured
+        #
+    if daemon:
+        while loop:
+            ticker+=1
+            collected_cmds=[]
+            for period_string in timed_jobs.keys():
+                period=period_string.split("_")[1]
+                if not ticker % int(period):
+                    for job in timed_jobs[period_string]:
+                        collected_cmds.append(str(job))
+            if len(collected_cmds):
+                exec('thread_%s = threading.Thread(target=read_can, args=(driver,logger,port,collected_cmds,lg_code,show_help,verbose,output_type))' % (period))
+                exec('thread_%s.start()' % (period))
+            time.sleep(1)
+            
+            
     
-    if help:
+    print("Kein Daemon.....exit")
+    #print("Ticker: " + str(ticker))
+    #if not ticker%2:
+    #    print("Arbeite " + str(verbose))
+    hpsu = read_can(driver, logger, port, cmd, lg_code,show_help,verbose,output_type)
+
+
+
+
+def read_can(driver,logger,port,cmd,lg_code,show_help,verbose,output_type):
+    hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
+#    print(hpsu)
+    #
+    # print out available commands
+    #
+    if show_help:
+#        print("Hilfe " + str(show_help))
         if len(cmd) == 0:
             print("List available commands:")
             print("%12s - %-10s" % ('COMMAND', 'LABEL'))
@@ -104,10 +225,12 @@ def main(argv):
             for c in hpsu.commands:
                 print("%12s - %-10s - %s" % (c['name'], c['label'], c['desc']))
         sys.exit(0)
+   
+    # really needed? Driver is checked above
 
-    if not driver:
-        print("Error, please specify driver [ELM327 or PYCAN, EMU, HPSUD]")
-        sys.exit(9)        
+    #if not driver:
+    #    print("Error, please specify driver [ELM327 or PYCAN, EMU, HPSUD]")
+    #    sys.exit(9)        
 
     arrResponse = []   
     for c in hpsu.commands:
@@ -146,7 +269,10 @@ def main(argv):
         module = importlib.import_module("cloud")
         cloud = module.Cloud(plugin=cloud_plugin, hpsu=hpsu, logger=logger)
         cloud.pushValues(vars=arrResponse)
-        
+
+
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])
+    
