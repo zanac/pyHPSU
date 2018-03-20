@@ -171,12 +171,6 @@ def main(argv):
         else:
             print("Error, please specify a value to query in config file ")
             sys.exit(9)
-    if show_help:
-        #print("help ist " + str(show_help))
-        #print("Driver = " + str(driver) + ", logger=" + str(logger)+ ", port=" + str(port) + ", cmd=" + str(cmd) + ", lg_code=" + str(lg_code) + 
-        #", show_help" + str(show_help) + ",  verbose=" + str(verbose) + ", output_type=" + str(output_type))
-        hpsu = read_can(driver, logger, port, cmd, lg_code,show_help,verbose,output_type)    
-        #
         # now its time to call the hpsu and do the REAL can query, but only every 2 seconds
         # and handle the data as configured
         #
@@ -193,26 +187,18 @@ def main(argv):
                 exec('thread_%s = threading.Thread(target=read_can, args=(driver,logger,port,collected_cmds,lg_code,show_help,verbose,output_type))' % (period))
                 exec('thread_%s.start()' % (period))
             time.sleep(1)
-            
-            
-    
-    print("Kein Daemon.....exit")
-    #print("Ticker: " + str(ticker))
-    #if not ticker%2:
-    #    print("Arbeite " + str(verbose))
-    hpsu = read_can(driver, logger, port, cmd, lg_code,show_help,verbose,output_type)
+    else:
+        hpsu = read_can(driver, logger, port, cmd, lg_code,show_help,verbose,output_type)
 
 
 
 
 def read_can(driver,logger,port,cmd,lg_code,show_help,verbose,output_type):
     hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
-#    print(hpsu)
     #
     # print out available commands
     #
     if show_help:
-#        print("Hilfe " + str(show_help))
         if len(cmd) == 0:
             print("List available commands:")
             print("%12s - %-10s" % ('COMMAND', 'LABEL'))
