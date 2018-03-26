@@ -163,6 +163,10 @@ class HPSU(object):
             self.can.initInterface()
     
     def sendCommand(self, cmd, setValue=None, priority=1):
+        if setValue:
+            FormattedSetValue=int(setValue)*int(cmd["div"])
+            print(setValue + " * " + str(cmd["div"]) + " = " + str(FormattedSetValue))
+            setValue=FormattedSetValue 
         rc = self.can.sendCommandWithID(cmd=cmd, setValue=setValue, priority=priority)
         if rc not in ["KO", "OK"]:
             try:
