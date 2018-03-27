@@ -14,9 +14,9 @@
 
 import serial
 import sys
-sys.path.append('/usr/share/pyHPSU/HPSU');
-sys.path.append('/usr/share/pyHPSU/plugins');
-
+sys.path.append('/usr/share/pyHPSU/HPSU')
+sys.path.append('/usr/share/pyHPSU/plugins')
+import os
 import getopt
 import time
 import locale
@@ -25,6 +25,7 @@ import logging
 from HPSU import HPSU
 import configparser
 import threading
+import csv
 
 SocketPort = 7060
 
@@ -41,13 +42,17 @@ def main(argv):
     lg_code = "EN"
     languages = ["EN", "IT", "DE", "NL"]
     logger = None
+    pathCOMMANDS = "/etc/pyHPSU"
     conf_file = "/etc/pyHPSU/pyhpsu.conf"
     read_from_conf_file=False
     global daemon
     global ticker
+    global command_dict
     ticker=0
     loop=True
     daemon=False
+    commands = []
+    listCommands = []
     config = configparser.ConfigParser()
 
     try:
@@ -171,6 +176,53 @@ def main(argv):
         else:
             print("Error, please specify a value to query in config file ")
             sys.exit(9)
+
+
+    # get language, if non given, take it from the system
+    LANG_CODE = lg_code.upper()[0:2] if lg_code else locale.getdefaultlocale()[0].split('_')[0].upper()
+    hpsuDict = {}
+        
+    # read the translation file. if it doesn't exist, take the english one
+    commands_hpsu = '%s/commands_hpsu_%s.csv' % (pathCOMMANDS, LANG_CODE)
+    if not os.path.isfile(commands_hpsu):
+        commands_hpsu = '%s/commands_hpsu_%s.csv' % (pathCOMMANDS, "EN")
+    
+    with open(commands_hpsu, 'rU',encoding='utf-8') as csvfile:
+        pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
+        next(pyHPSUCSV, None) # skip the header
+        for row in pyHPSUCSV:
+            name = row[0]
+            label = row[1]
+            desc = row[2]
+            hpsuDict.update({name:{"label":label, "desc":desc}})
+          
+    with open('%s/commands_hpsu.csv' % pathCOMMANDS, 'rU',encoding='utf-8') as csvfile:
+        pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
+        next(pyHPSUCSV, None) # skip the header
+        for row in pyHPSUCSV:
+            name = row[0]
+            command = row[1]
+            receiver_id = row[2]
+            um = row[3]
+            div = row[4]
+            flagRW = row[5]
+            label = hpsuDict[name]["label"]
+            desc = hpsuDict[name]["desc"]
+               
+            command_dict = {"name":name,
+                 "desc":desc,
+                 "label":label,
+                 "command":command,
+                 "receiver_id":receiver_id,
+                 "um":um,
+                 "div":div,
+                 "flagRW":flagRW}
+                
+            listCommands.append(command_dict)
+            #if (name in listCmd) or (len(listCmd) == 0):
+            #    commands.append(command_dict)
+
+
         # now its time to call the hpsu and do the REAL can query, but only every 2 seconds
         # and handle the data as configured
         #
@@ -194,7 +246,7 @@ def main(argv):
 
 
 def read_can(driver,logger,port,cmd,lg_code,show_help,verbose,output_type):
-    hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
+    n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
     #
     # print out available commands
     #
@@ -203,23 +255,23 @@ def read_can(driver,logger,port,cmd,lg_code,show_help,verbose,output_type):
             print("List available commands:")
             print("%12s - %-10s" % ('COMMAND', 'LABEL'))
             print("%12s---%-10s" % ('------------', '----------'))
-            for cmd in hpsu.listCommands:
+            for cmd in n_hpsu.listCommands:
                 print("%12s - %-10s" % (cmd['name'], cmd['label']))
         else:
             print("%12s - %-10s - %s" % ('COMMAND', 'LABEL', 'DESCRIPTION'))
             print("%12s---%-10s---%s" % ('------------', '----------', '---------------------------------------------------'))
-            for c in hpsu.commands:
+            for c in n_hpsu.commands:
                 print("%12s - %-10s - %s" % (c['name'], c['label'], c['desc']))
         sys.exit(0)
    
     # really needed? Driver is checked above
 
-    #if not driver:
-    #    print("Error, please specify driver [ELM327 or PYCAN, EMU, HPSUD]")
-    #    sys.exit(9)        
+    ##if not driver:
+    ##    print("Error, please specify driver [ELM327 or PYCAN, EMU, HPSUD]")
+    ##    sys.exit(9)        
 
     arrResponse = []   
-    for c in hpsu.commands:
+    for c in n_hpsu.commands:
         setValue = None
         for i in cmd:
             if ":" in i and c["name"] == i.split(":")[0]:
@@ -227,20 +279,20 @@ def read_can(driver,logger,port,cmd,lg_code,show_help,verbose,output_type):
 
         i = 0
         while i <= 3:
-            rc = hpsu.sendCommand(c, setValue)
+            rc = n_hpsu.sendCommand(c, setValue)
             if rc != "KO":            
                 i = 4
                 if not setValue:
-                    response = hpsu.parseCommand(cmd=c, response=rc, verbose=verbose)
-                    resp = hpsu.umConversion(cmd=c, response=response, verbose=verbose)
+                    response = n_hpsu.parseCommand(cmd=c, response=rc, verbose=verbose)
+                    resp = n_hpsu.umConversion(cmd=c, response=response, verbose=verbose)
 
                     arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"]})
             else:
                 i += 1
                 time.sleep(2.0)
-                hpsu.printd('warning', 'retry %s command %s' % (i, c["name"]))
+                n_hpsu.printd('warning', 'retry %s command %s' % (i, c["name"]))
                 if i == 4:
-                    hpsu.printd('error', 'command %s failed' % (c["name"]))
+                    n_hpsu.printd('error', 'command %s failed' % (c["name"]))
 
     if output_type == "JSON":
         print(arrResponse)
@@ -253,8 +305,13 @@ def read_can(driver,logger,port,cmd,lg_code,show_help,verbose,output_type):
             sys.exit(9)
 
         module = importlib.import_module("cloud")
-        cloud = module.Cloud(plugin=cloud_plugin, hpsu=hpsu, logger=logger)
+        cloud = module.Cloud(plugin=cloud_plugin, hpsu=n_hpsu, logger=logger)
         cloud.pushValues(vars=arrResponse)
+
+    elif output_type == "db":
+        module = importlib.import_module("db")
+        db = module.DB(hpsu=n_hpsu, logger=logger, config_file=config_file)
+        db.pushValues(vars=arrResponse)
 
 
 
