@@ -89,6 +89,7 @@ class Db():
         if self.db_version:
             # update the version if a newer is available in commands_hpsu.csv
             if StrictVersion(self.commands_file_version) > StrictVersion(self.db_version):
+                print("Braucht Update")
                 UpdateQuery="UPDATE commands SET descr='%s' WHERE name='%s'" %  (self.hpsu.command_dict['version']['desc'],self.hpsu.command_dict['version']['name'])
                 cursor.execute(UpdateQuery)
                 # update all commands or insert the new ones
@@ -120,14 +121,20 @@ class Db():
             
                 UpdateQuery="INSERT INTO commands (name,descr,label,command,receiver_id,um,divisor,readwrite) VALUES ('%s','%s','%s','%s','%s','%s','%s','%s') on DUPLICATE KEY UPDATE descr='%s', command='%s', label='%s', receiver_id='%s', um='%s', divisor='%s', readwrite='%s'" % (n_name,n_desc,n_label,n_command,n_receiver_id,n_um,n_div,n_flagRW,n_desc,n_command,n_label,n_receiver_id,n_um,n_div,n_flagRW)
                 cursor.execute(UpdateQuery)
-
+                #CREATE TABLE kunde_id INT PRIMARY KEY AUTO_INCREMENT, kunde_vorname VARCHAR(80), kunde_postleitzahl VARCHAR(5);
+                #TableQuery="CREATE TABLE IF NOT EXISTS '%s' (id INT PRIMARY KEY AUTO_INCREMENT, timestamp VARCHAR(20), value FLOAT)" % (n_name)
+                TableQuery="CREATE TABLE IF NOT EXISTS `%s` (`id` int(20) NOT NULL PRIMARY KEY AUTO_INCREMENT,`value` float NOT NULL,`timestamp` varchar(20) COLLATE utf8_bin NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;" % (n_name)
+                print(TableQuery)
+                cursor.execute(TableQuery)
     
     def pushValues(self,vars=None):
         self.push_conn= mysql.connector.connect(**self.db_params)
         cursor=self.push_conn.cursor()
         for reply in vars:
             PushQuery="INSERT INTO commands (name, current_value, timestamp) VALUES ('%s', '%s','%s') on DUPLICATE KEY UPDATE current_value='%s', timestamp='%s'" % (reply['name'], reply['resp'], reply['timestamp'], reply['resp'], reply['timestamp'])
-        cursor.execute(PushQuery)
+            cursor.execute(PushQuery)
+            PushValueQuery="INSERT INTO %s (value,timestamp) VALUES ('%s','%s')" % (reply['name'],reply['resp'],reply['timestamp'])
+            cursor.execute(PushValueQuery)
         self.push_conn.commit()
         cursor.close()
         self.push_conn.close()

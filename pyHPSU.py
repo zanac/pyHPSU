@@ -176,7 +176,8 @@ def main(argv):
             print("%12s - %-10s" % ('COMMAND', 'LABEL'))
             print("%12s---%-10s" % ('------------', '----------'))
             for cmd in n_hpsu.command_dict:
-                print("%12s - %-10s" % (n_hpsu.command_dict[cmd]['name'], n_hpsu.command_dict[cmd]['label']))
+                if cmd not in "version":
+                    print("%12s - %-10s" % (n_hpsu.command_dict[cmd]['name'], n_hpsu.command_dict[cmd]['label']))
         else:
             print("%12s - %-10s - %s" % ('COMMAND', 'LABEL', 'DESCRIPTION'))
             print("%12s---%-10s---%s" % ('------------', '----------', '---------------------------------------------------'))
@@ -238,27 +239,28 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
 
     arrResponse = []   
     for c in n_hpsu.commands:
-        setValue = None
-        for i in cmd:
-            if ":" in i and c["name"] == i.split(":")[0]:
-                setValue = i.split(":")[1]
+        if c['name'] not in "version":
+            setValue = None
+            for i in cmd:
+                if ":" in i and c["name"] == i.split(":")[0]:
+                    setValue = i.split(":")[1]
 
-        i = 0
-        while i <= 3:
-            rc = n_hpsu.sendCommand(c, setValue)
-            if rc != "KO":            
-                i = 4
-                if not setValue:
-                    response = n_hpsu.parseCommand(cmd=c, response=rc, verbose=verbose)
-                    resp = n_hpsu.umConversion(cmd=c, response=response, verbose=verbose)
+            i = 0
+            while i <= 3:
+                rc = n_hpsu.sendCommand(c, setValue)
+                if rc != "KO":            
+                    i = 4
+                    if not setValue:
+                        response = n_hpsu.parseCommand(cmd=c, response=rc, verbose=verbose)
+                        resp = n_hpsu.umConversion(cmd=c, response=response, verbose=verbose)
 
-                    arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"]})
-            else:
-                i += 1
-                time.sleep(2.0)
-                n_hpsu.printd('warning', 'retry %s command %s' % (i, c["name"]))
-                if i == 4:
-                    n_hpsu.printd('error', 'command %s failed' % (c["name"]))
+                        arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"]})
+                else:
+                    i += 1
+                    time.sleep(2.0)
+                    n_hpsu.printd('warning', 'retry %s command %s' % (i, c["name"]))
+                    if i == 4:
+                        n_hpsu.printd('error', 'command %s failed' % (c["name"]))
 
     if output_type == "JSON":
         print(arrResponse)
