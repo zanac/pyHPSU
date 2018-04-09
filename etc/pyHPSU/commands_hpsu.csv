@@ -1,3 +1,4 @@
+version;1.0
 name;command;receiver_id;um;divisor;read_write
 t_hs;31 00 FA 01 D6 00 00;190;d;10;r
 t_hs_set;31 00 02 00 00 00 00;190;d;10;r

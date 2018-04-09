@@ -65,33 +65,42 @@ class HPSU(object):
                 
             with open('%s/commands_hpsu.csv' % self.pathCOMMANDS, 'rU',encoding='utf-8') as csvfile:
                 pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
-                next(pyHPSUCSV, None) # skip the header
+                #next(pyHPSUCSV, None) # skip the header
 
                 for row in pyHPSUCSV:
-                    name = row[0]
-                    command = row[1]
-                    receiver_id = row[2]
-                    um = row[3]
-                    div = row[4]
-                    flagRW = row[5]
-                    label = hpsuDict[name]["label"]
-                    desc = hpsuDict[name]["desc"]
+                    if row[0].startswith("name"):
+                        next(pyHPSUCSV, None) # skip the header
+                        
                     
-                    c = {"name":name,
-                        "desc":desc,
-                        "label":label,
-                        "command":command,
-                        "receiver_id":receiver_id,
-                        "um":um,
-                        "div":div,
-                        "flagRW":flagRW}
+                    elif row[0].lower().startswith("version"):
+                        name=row[0].lower()
+                        c ={ "name":row[0].lower() ,
+                        "desc":row[1]}
+
+                    else:
+                        name = row[0]
+                        command = row[1]
+                        receiver_id = row[2]
+                        um = row[3]
+                        div = row[4]
+                        flagRW = row[5]
+                        label = hpsuDict[name]["label"]
+                        desc = hpsuDict[name]["desc"]
+                        
                     
-                    self.listCommands.append(c)
+                        c = {"name":name,
+                            "desc":desc,
+                            "label":label,
+                            "command":command,
+                            "receiver_id":receiver_id,
+                            "um":um,
+                            "div":div,
+                            "flagRW":flagRW}
+                
                     self.command_dict.update({name:c})
-                    #print(self.command_dict) 
                     if (name in listCmd) or (len(listCmd) == 0):                        
-                        self.commands.append(c) 
-                    #print(self.commands)
+                        self.commands.append(self.command_dict[name] ) 
+                    
         
         self.driver = driver
         if self.driver == "ELM327":
@@ -185,11 +194,10 @@ class HPSU(object):
         elif self.driver == "HPSUD":
             self.can.initInterface()
     
-    def sendCommand(self, cmd, setValue=None, priority=1):
-        print("sendCommand")
+    # funktion to set/read a value
+    def sendCommand(self, cmd, setValue=None, priority=1):     
         if setValue:
             FormattedSetValue=int(setValue)*int(cmd["div"])
-            print(setValue + " * " + str(cmd["div"]) + " = " + str(FormattedSetValue))
             setValue=FormattedSetValue 
         rc = self.can.sendCommandWithID(cmd=cmd, setValue=setValue, priority=priority)
         if rc not in ["KO", "OK"]:

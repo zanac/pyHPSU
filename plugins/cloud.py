@@ -25,7 +25,7 @@ class Cloud():
 
         #Legge file emoncms.ini
         config = configparser.ConfigParser()
-        iniFile = '%s/%s.ini' % (self.hpsu.pathCOMMANDS, plugin.lower())
+        iniFile = '%s/%s.conf' % (self.hpsu.pathCOMMANDS, plugin.lower())
         config.read(iniFile)
         
         if self.plugin == "EMONCMS":

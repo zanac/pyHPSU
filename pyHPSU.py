@@ -28,7 +28,7 @@ import threading
 import csv
 
 SocketPort = 7060
-
+global conf_file
 
 def main(argv): 
     cmd = []
@@ -43,17 +43,20 @@ def main(argv):
     languages = ["EN", "IT", "DE", "NL"]
     logger = None
     pathCOMMANDS = "/etc/pyHPSU"
+    global conf_file
     conf_file = "/etc/pyHPSU/pyhpsu.conf"
     read_from_conf_file=False
     global daemon
     global ticker
-    global command_dict
+    #global command_dict
     ticker=0
     loop=True
     daemon=False
-    commands = []
-    listCommands = []
+    #commands = []
+    #listCommands = []
     config = configparser.ConfigParser()
+    global n_hpsu
+    
 
     try:
         opts, args = getopt.getopt(argv,"Dhc:p:d:v:o:u:l:g:f:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log=", "config_file="])
@@ -145,7 +148,7 @@ def main(argv):
         sys.exit(9)
 
     # Check output type 
-    if output_type not in ["JSON", "CSV", "CLOUD"]:
+    if output_type not in ["JSON", "CSV", "CLOUD", "DB"]:
         print("Error, please specify a correct output_type [JSON, CSV, CLOUD]")
         sys.exit(9)
 
@@ -158,7 +161,29 @@ def main(argv):
     if lg_code not in languages:
         print("Error, please specify a correct language [%s]" % " ".join(languages))
         sys.exit(9)
-#
+
+    n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
+    #print(n_hpsu.command_dict['version'])
+
+
+
+    #
+    # Print help
+    #
+    if show_help:
+        if len(cmd) == 0:
+            print("List available commands:")
+            print("%12s - %-10s" % ('COMMAND', 'LABEL'))
+            print("%12s---%-10s" % ('------------', '----------'))
+            for cmd in n_hpsu.command_dict:
+                print("%12s - %-10s" % (n_hpsu.command_dict[cmd]['name'], n_hpsu.command_dict[cmd]['label']))
+        else:
+            print("%12s - %-10s - %s" % ('COMMAND', 'LABEL', 'DESCRIPTION'))
+            print("%12s---%-10s---%s" % ('------------', '----------', '---------------------------------------------------'))
+            for c in n_hpsu.commands:
+                print("%12s - %-10s - %s" % (c['name'], c['label'], c['desc']))
+        sys.exit(0)
+
 # try to query different commands in different periods
 # Read them from config and group them
 #
@@ -178,49 +203,7 @@ def main(argv):
             sys.exit(9)
 
 
-    # get language, if non given, take it from the system
-    LANG_CODE = lg_code.upper()[0:2] if lg_code else locale.getdefaultlocale()[0].split('_')[0].upper()
-    hpsuDict = {}
-        
-    # read the translation file. if it doesn't exist, take the english one
-    commands_hpsu = '%s/commands_hpsu_%s.csv' % (pathCOMMANDS, LANG_CODE)
-    if not os.path.isfile(commands_hpsu):
-        commands_hpsu = '%s/commands_hpsu_%s.csv' % (pathCOMMANDS, "EN")
     
-    with open(commands_hpsu, 'rU',encoding='utf-8') as csvfile:
-        pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
-        next(pyHPSUCSV, None) # skip the header
-        for row in pyHPSUCSV:
-            name = row[0]
-            label = row[1]
-            desc = row[2]
-            hpsuDict.update({name:{"label":label, "desc":desc}})
-          
-    with open('%s/commands_hpsu.csv' % pathCOMMANDS, 'rU',encoding='utf-8') as csvfile:
-        pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
-        next(pyHPSUCSV, None) # skip the header
-        for row in pyHPSUCSV:
-            name = row[0]
-            command = row[1]
-            receiver_id = row[2]
-            um = row[3]
-            div = row[4]
-            flagRW = row[5]
-            label = hpsuDict[name]["label"]
-            desc = hpsuDict[name]["desc"]
-               
-            command_dict = {"name":name,
-                 "desc":desc,
-                 "label":label,
-                 "command":command,
-                 "receiver_id":receiver_id,
-                 "um":um,
-                 "div":div,
-                 "flagRW":flagRW}
-                
-            listCommands.append(command_dict)
-            #if (name in listCmd) or (len(listCmd) == 0):
-            #    commands.append(command_dict)
 
 
         # now its time to call the hpsu and do the REAL can query, but only every 2 seconds
@@ -236,34 +219,17 @@ def main(argv):
                     for job in timed_jobs[period_string]:
                         collected_cmds.append(str(job))
             if len(collected_cmds):
-                exec('thread_%s = threading.Thread(target=read_can, args=(driver,logger,port,collected_cmds,lg_code,show_help,verbose,output_type))' % (period))
+                exec('thread_%s = threading.Thread(target=read_can, args=(driver,logger,port,collected_cmds,lg_code,verbose,output_type))' % (period))
                 exec('thread_%s.start()' % (period))
             time.sleep(1)
     else:
-        hpsu = read_can(driver, logger, port, cmd, lg_code,show_help,verbose,output_type)
+        hpsu = read_can(driver, logger, port, cmd, lg_code,verbose,output_type)
 
 
 
 
-def read_can(driver,logger,port,cmd,lg_code,show_help,verbose,output_type):
-    n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
-    #
-    # print out available commands
-    #
-    if show_help:
-        if len(cmd) == 0:
-            print("List available commands:")
-            print("%12s - %-10s" % ('COMMAND', 'LABEL'))
-            print("%12s---%-10s" % ('------------', '----------'))
-            for cmd in n_hpsu.listCommands:
-                print("%12s - %-10s" % (cmd['name'], cmd['label']))
-        else:
-            print("%12s - %-10s - %s" % ('COMMAND', 'LABEL', 'DESCRIPTION'))
-            print("%12s---%-10s---%s" % ('------------', '----------', '---------------------------------------------------'))
-            for c in n_hpsu.commands:
-                print("%12s - %-10s - %s" % (c['name'], c['label'], c['desc']))
-        sys.exit(0)
-   
+def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
+    global conf_file
     # really needed? Driver is checked above
 
     ##if not driver:
@@ -308,9 +274,9 @@ def read_can(driver,logger,port,cmd,lg_code,show_help,verbose,output_type):
         cloud = module.Cloud(plugin=cloud_plugin, hpsu=n_hpsu, logger=logger)
         cloud.pushValues(vars=arrResponse)
 
-    elif output_type == "db":
+    elif output_type == "DB":
         module = importlib.import_module("db")
-        db = module.DB(hpsu=n_hpsu, logger=logger, config_file=config_file)
+        db = module.Db(hpsu=n_hpsu, logger=logger, config_file=conf_file)
         db.pushValues(vars=arrResponse)
 
 
