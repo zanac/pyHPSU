@@ -118,13 +118,11 @@ class Db():
                 n_um=self.hpsu.command_dict[com]['um']
                 n_div=self.hpsu.command_dict[com]['div']
                 n_flagRW=self.hpsu.command_dict[com]['flagRW']
-            
+                # insert new commands
                 UpdateQuery="INSERT INTO commands (name,descr,label,command,receiver_id,um,divisor,readwrite) VALUES ('%s','%s','%s','%s','%s','%s','%s','%s') on DUPLICATE KEY UPDATE descr='%s', command='%s', label='%s', receiver_id='%s', um='%s', divisor='%s', readwrite='%s'" % (n_name,n_desc,n_label,n_command,n_receiver_id,n_um,n_div,n_flagRW,n_desc,n_command,n_label,n_receiver_id,n_um,n_div,n_flagRW)
                 cursor.execute(UpdateQuery)
-                #CREATE TABLE kunde_id INT PRIMARY KEY AUTO_INCREMENT, kunde_vorname VARCHAR(80), kunde_postleitzahl VARCHAR(5);
-                #TableQuery="CREATE TABLE IF NOT EXISTS '%s' (id INT PRIMARY KEY AUTO_INCREMENT, timestamp VARCHAR(20), value FLOAT)" % (n_name)
+                # insert table for each command
                 TableQuery="CREATE TABLE IF NOT EXISTS `%s` (`id` int(20) NOT NULL PRIMARY KEY AUTO_INCREMENT,`value` float NOT NULL,`timestamp` varchar(20) COLLATE utf8_bin NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;" % (n_name)
-                print(TableQuery)
                 cursor.execute(TableQuery)
     
     def pushValues(self,vars=None):
