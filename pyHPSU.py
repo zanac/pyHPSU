@@ -14,9 +14,9 @@
 
 import serial
 import sys
-sys.path.append('/usr/share/pyHPSU/HPSU');
-sys.path.append('/usr/share/pyHPSU/plugins');
-
+sys.path.append('/usr/share/pyHPSU/HPSU')
+sys.path.append('/usr/share/pyHPSU/plugins')
+import os
 import getopt
 import time
 import locale
@@ -25,9 +25,10 @@ import logging
 from HPSU import HPSU
 import configparser
 import threading
+import csv
 
 SocketPort = 7060
-
+global conf_file
 
 def main(argv): 
     cmd = []
@@ -41,14 +42,21 @@ def main(argv):
     lg_code = "EN"
     languages = ["EN", "IT", "DE", "NL"]
     logger = None
+    pathCOMMANDS = "/etc/pyHPSU"
+    global conf_file
     conf_file = "/etc/pyHPSU/pyhpsu.conf"
     read_from_conf_file=False
     global daemon
     global ticker
+    #global command_dict
     ticker=0
     loop=True
     daemon=False
+    #commands = []
+    #listCommands = []
     config = configparser.ConfigParser()
+    global n_hpsu
+    
 
     try:
         opts, args = getopt.getopt(argv,"Dhc:p:d:v:o:u:l:g:f:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log=", "config_file="])
@@ -140,7 +148,7 @@ def main(argv):
         sys.exit(9)
 
     # Check output type 
-    if output_type not in ["JSON", "CSV", "CLOUD"]:
+    if output_type not in ["JSON", "CSV", "CLOUD", "DB"]:
         print("Error, please specify a correct output_type [JSON, CSV, CLOUD]")
         sys.exit(9)
 
@@ -153,7 +161,30 @@ def main(argv):
     if lg_code not in languages:
         print("Error, please specify a correct language [%s]" % " ".join(languages))
         sys.exit(9)
-#
+
+    n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
+    #print(n_hpsu.command_dict['version'])
+
+
+
+    #
+    # Print help
+    #
+    if show_help:
+        if len(cmd) == 0:
+            print("List available commands:")
+            print("%12s - %-10s" % ('COMMAND', 'LABEL'))
+            print("%12s---%-10s" % ('------------', '----------'))
+            for cmd in n_hpsu.command_dict:
+                if cmd not in "version":
+                    print("%12s - %-10s" % (n_hpsu.command_dict[cmd]['name'], n_hpsu.command_dict[cmd]['label']))
+        else:
+            print("%12s - %-10s - %s" % ('COMMAND', 'LABEL', 'DESCRIPTION'))
+            print("%12s---%-10s---%s" % ('------------', '----------', '---------------------------------------------------'))
+            for c in n_hpsu.commands:
+                print("%12s - %-10s - %s" % (c['name'], c['label'], c['desc']))
+        sys.exit(0)
+
 # try to query different commands in different periods
 # Read them from config and group them
 #
@@ -171,6 +202,11 @@ def main(argv):
         else:
             print("Error, please specify a value to query in config file ")
             sys.exit(9)
+
+
+    
+
+
         # now its time to call the hpsu and do the REAL can query, but only every 2 seconds
         # and handle the data as configured
         #
@@ -184,63 +220,47 @@ def main(argv):
                     for job in timed_jobs[period_string]:
                         collected_cmds.append(str(job))
             if len(collected_cmds):
-                exec('thread_%s = threading.Thread(target=read_can, args=(driver,logger,port,collected_cmds,lg_code,show_help,verbose,output_type))' % (period))
+                exec('thread_%s = threading.Thread(target=read_can, args=(driver,logger,port,collected_cmds,lg_code,verbose,output_type))' % (period))
                 exec('thread_%s.start()' % (period))
             time.sleep(1)
     else:
-        hpsu = read_can(driver, logger, port, cmd, lg_code,show_help,verbose,output_type)
+        hpsu = read_can(driver, logger, port, cmd, lg_code,verbose,output_type)
 
 
 
 
-def read_can(driver,logger,port,cmd,lg_code,show_help,verbose,output_type):
-    hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
-    #
-    # print out available commands
-    #
-    if show_help:
-        if len(cmd) == 0:
-            print("List available commands:")
-            print("%12s - %-10s" % ('COMMAND', 'LABEL'))
-            print("%12s---%-10s" % ('------------', '----------'))
-            for cmd in hpsu.listCommands:
-                print("%12s - %-10s" % (cmd['name'], cmd['label']))
-        else:
-            print("%12s - %-10s - %s" % ('COMMAND', 'LABEL', 'DESCRIPTION'))
-            print("%12s---%-10s---%s" % ('------------', '----------', '---------------------------------------------------'))
-            for c in hpsu.commands:
-                print("%12s - %-10s - %s" % (c['name'], c['label'], c['desc']))
-        sys.exit(0)
-   
+def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
+    global conf_file
     # really needed? Driver is checked above
 
-    #if not driver:
-    #    print("Error, please specify driver [ELM327 or PYCAN, EMU, HPSUD]")
-    #    sys.exit(9)        
+    ##if not driver:
+    ##    print("Error, please specify driver [ELM327 or PYCAN, EMU, HPSUD]")
+    ##    sys.exit(9)        
 
     arrResponse = []   
-    for c in hpsu.commands:
-        setValue = None
-        for i in cmd:
-            if ":" in i and c["name"] == i.split(":")[0]:
-                setValue = i.split(":")[1]
+    for c in n_hpsu.commands:
+        if c['name'] not in "version":
+            setValue = None
+            for i in cmd:
+                if ":" in i and c["name"] == i.split(":")[0]:
+                    setValue = i.split(":")[1]
 
-        i = 0
-        while i <= 3:
-            rc = hpsu.sendCommand(c, setValue)
-            if rc != "KO":            
-                i = 4
-                if not setValue:
-                    response = hpsu.parseCommand(cmd=c, response=rc, verbose=verbose)
-                    resp = hpsu.umConversion(cmd=c, response=response, verbose=verbose)
+            i = 0
+            while i <= 3:
+                rc = n_hpsu.sendCommand(c, setValue)
+                if rc != "KO":            
+                    i = 4
+                    if not setValue:
+                        response = n_hpsu.parseCommand(cmd=c, response=rc, verbose=verbose)
+                        resp = n_hpsu.umConversion(cmd=c, response=response, verbose=verbose)
 
-                    arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"]})
-            else:
-                i += 1
-                time.sleep(2.0)
-                hpsu.printd('warning', 'retry %s command %s' % (i, c["name"]))
-                if i == 4:
-                    hpsu.printd('error', 'command %s failed' % (c["name"]))
+                        arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"]})
+                else:
+                    i += 1
+                    time.sleep(2.0)
+                    n_hpsu.printd('warning', 'retry %s command %s' % (i, c["name"]))
+                    if i == 4:
+                        n_hpsu.printd('error', 'command %s failed' % (c["name"]))
 
     if output_type == "JSON":
         print(arrResponse)
@@ -253,8 +273,13 @@ def read_can(driver,logger,port,cmd,lg_code,show_help,verbose,output_type):
             sys.exit(9)
 
         module = importlib.import_module("cloud")
-        cloud = module.Cloud(plugin=cloud_plugin, hpsu=hpsu, logger=logger)
+        cloud = module.Cloud(plugin=cloud_plugin, hpsu=n_hpsu, logger=logger)
         cloud.pushValues(vars=arrResponse)
+
+    elif output_type == "DB":
+        module = importlib.import_module("db")
+        db = module.Db(hpsu=n_hpsu, logger=logger, config_file=conf_file)
+        db.pushValues(vars=arrResponse)
 
 
 

@@ -33,57 +33,74 @@ class HPSU(object):
 
     def __init__(self, logger=None, driver=None, port=None, cmd=None, lg_code=None):
         self.can = None            
-        self.commands = []
-        self.listCommands = []
+        self.commands = []              # data for all commands requested
+        self.listCommands = []          # all usable commands from csv
         self.logger = logger
+        self.command_dict={}
         
         listCmd = [r.split(":")[0] for r in cmd]
         
         if platform.system() == "Windows":
             self.pathCOMMANDS = "C:/Sec/apps/Apache24/htdocs/domon/waterpump%s" % self.pathCOMMANDS        
         
-        LANG_CODE = lg_code.upper()[0:2] if lg_code else locale.getdefaultlocale()[0].split('_')[0].upper()
-        hpsuDict = {}
-        
-        commands_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, LANG_CODE)
-        if not os.path.isfile(commands_hpsu):
-            commands_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, "EN")
+        if not self.listCommands: #if we don't get a dict with commands
 
-        with open(commands_hpsu, 'rU',encoding='utf-8') as csvfile:
-            pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
-            next(pyHPSUCSV, None) # skip the header
-            for row in pyHPSUCSV:
-                name = row[0]
-                label = row[1]
-                desc = row[2]
-                hpsuDict.update({name:{"label":label, "desc":desc}})
+            # get language, if non given, take it from the system
+            LANG_CODE = lg_code.upper()[0:2] if lg_code else locale.getdefaultlocale()[0].split('_')[0].upper()
+            hpsuDict = {}
             
-        with open('%s/commands_hpsu.csv' % self.pathCOMMANDS, 'rU',encoding='utf-8') as csvfile:
-            pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
-            next(pyHPSUCSV, None) # skip the header
+            # read the translation file. if it doesn't exist, take the english one
+            commands_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, LANG_CODE)
+            if not os.path.isfile(commands_hpsu):
+                commands_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, "EN")
 
-            for row in pyHPSUCSV:
-                name = row[0]
-                command = row[1]
-                receiver_id = row[2]
-                um = row[3]
-                div = row[4]
-                flagRW = row[5]
-                label = hpsuDict[name]["label"]
-                desc = hpsuDict[name]["desc"]
+            with open(commands_hpsu, 'rU',encoding='utf-8') as csvfile:
+                pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
+                next(pyHPSUCSV, None) # skip the header
+                for row in pyHPSUCSV:
+                    name = row[0]
+                    label = row[1]
+                    desc = row[2]
+                    hpsuDict.update({name:{"label":label, "desc":desc}})
                 
-                c = {"name":name,
-                     "desc":desc,
-                     "label":label,
-                     "command":command,
-                     "receiver_id":receiver_id,
-                     "um":um,
-                     "div":div,
-                     "flagRW":flagRW}
+            with open('%s/commands_hpsu.csv' % self.pathCOMMANDS, 'rU',encoding='utf-8') as csvfile:
+                pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
+                #next(pyHPSUCSV, None) # skip the header
+
+                for row in pyHPSUCSV:
+                    if row[0].startswith("name"):
+                        next(pyHPSUCSV, None) # skip the header
+                        
+                    
+                    elif row[0].lower().startswith("version"):
+                        name=row[0].lower()
+                        c ={ "name":row[0].lower() ,
+                        "desc":row[1]}
+
+                    else:
+                        name = row[0]
+                        command = row[1]
+                        receiver_id = row[2]
+                        um = row[3]
+                        div = row[4]
+                        flagRW = row[5]
+                        label = hpsuDict[name]["label"]
+                        desc = hpsuDict[name]["desc"]
+                        
+                    
+                        c = {"name":name,
+                            "desc":desc,
+                            "label":label,
+                            "command":command,
+                            "receiver_id":receiver_id,
+                            "um":um,
+                            "div":div,
+                            "flagRW":flagRW}
                 
-                self.listCommands.append(c)
-                if (name in listCmd) or (len(listCmd) == 0):
-                    self.commands.append(c)
+                    self.command_dict.update({name:c})
+                    if (name in listCmd) or (len(listCmd) == 0):                        
+                        self.commands.append(self.command_dict[name] ) 
+                    
         
         self.driver = driver
         if self.driver == "ELM327":
@@ -114,6 +131,7 @@ class HPSU(object):
             print("%s - %s" % (level, msg))
     
     def sendCommandWithParse(self, cmd, setValue=None, priority=1):
+        print("sendCommandWithParse")
         response = None
         verbose = "1"        
         i = 1
@@ -131,29 +149,43 @@ class HPSU(object):
                 time.sleep(2.0)
         return response
 
-    def getParameterValue(self, parameter, priority=1):
+    
+    #
+    # don't found out where this function is called.....
+    #
+    
+    """ def getParameterValue(self, parameter, priority=1):
+        print("getParameterValue")
         response = None
         cmd = None
         for c in self.commands:
             if c["name"] == parameter:
                 cmd = c
-        
+                print("cmd ist " + cmd + " gerParameterValue")
+
+
+
         if cmd:
             response = self.sendCommandWithParse(cmd=cmd, priority=priority)
         
-        return response
+        return response """
 
-    def setParameterValue(self, parameter, setValue, priority=1):
+
+    #
+    # don't found out where this function is called.....
+    #
+    """ def setParameterValue(self, parameter, setValue, priority=1):
         response = None
         cmd = None
         for c in self.commands:
             if c["name"] == parameter:
                 cmd = c
+                print("cmd ist " + cmd + " setParameterValue")
         
         if cmd:
             response = self.sendCommandWithParse(cmd=cmd, setValue=setValue, priority=priority)
         
-        return response
+        return response """
                 
 
     def initInterface(self, portstr=None, baudrate=38400, init=False):
@@ -162,7 +194,11 @@ class HPSU(object):
         elif self.driver == "HPSUD":
             self.can.initInterface()
     
-    def sendCommand(self, cmd, setValue=None, priority=1):
+    # funktion to set/read a value
+    def sendCommand(self, cmd, setValue=None, priority=1):     
+        if setValue:
+            FormattedSetValue=int(setValue)*int(cmd["div"])
+            setValue=FormattedSetValue 
         rc = self.can.sendCommandWithID(cmd=cmd, setValue=setValue, priority=priority)
         if rc not in ["KO", "OK"]:
             try:
