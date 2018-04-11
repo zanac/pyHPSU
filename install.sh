@@ -2,7 +2,7 @@
 
 SHARE_DIR="/usr/share/pyHPSU/"
 CONF_DIR="/etc/pyHPSU"
-BIN_DIR="/usr/share/pyHPSU/bin/"
+BIN_DIR="/usr/bin/"
 PACKAGE_DIR="/usr/share/doc/packages/pyHPSU"
 DIST_DIR="/usr/lib/python3/dist-packages/HPSU"
 
