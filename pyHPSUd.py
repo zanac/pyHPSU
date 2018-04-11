@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # v 0.0.4 by Vanni Brutto (Zanac)
@@ -14,8 +14,7 @@ sys.path.append('/usr/share/pyHPSU/plugins/');
 import getopt
 import logging
 import json
-   
-from HPSU import HPSU
+import HPSU
 
 
 #-------------------------------------------------------------------

@@ -14,15 +14,15 @@
 
 import serial
 import sys
-sys.path.append('/usr/share/pyHPSU/HPSU')
-sys.path.append('/usr/share/pyHPSU/plugins')
+#sys.path.append('/usr/share/pyHPSU/HPSU')
+#sys.path.append('/usr/share/pyHPSU/plugins')
 import os
 import getopt
 import time
 import locale
 import importlib
 import logging
-from HPSU import HPSU
+import HPSU
 import configparser
 import threading
 import csv
@@ -163,7 +163,7 @@ def main(argv):
         sys.exit(9)
 
     n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
-    #print(n_hpsu.command_dict['version'])
+    
 
 
 
