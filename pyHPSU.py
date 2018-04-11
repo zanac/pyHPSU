@@ -272,12 +272,12 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
             print ("Error, please specify a cloud_plugin")
             sys.exit(9)
 
-        module = importlib.import_module("cloud")
+        module = importlib.import_module("HPSU.plugins.cloud")
         cloud = module.Cloud(plugin=cloud_plugin, hpsu=n_hpsu, logger=logger)
         cloud.pushValues(vars=arrResponse)
 
     elif output_type == "DB":
-        module = importlib.import_module("db")
+        module = importlib.import_module("HPSU.plugins.db")
         db = module.Db(hpsu=n_hpsu, logger=logger, config_file=conf_file)
         db.pushValues(vars=arrResponse)
 
