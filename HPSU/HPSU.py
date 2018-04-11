@@ -8,10 +8,10 @@ else:
     sys.path.append('/home/domon/domon/')
     sys.path.append('/home/domon/domon/web/')
     sys.path.append('/home/domon/domon/web/waterpump/')"""
-from canelm327 import CanELM327
-from canemu import CanEMU
-from canpi import CanPI
-from cantcp import CanTCP
+from HPSU.canelm327 import CanELM327
+from HPSU.canemu import CanEMU
+from HPSU.canpi import CanPI
+from HPSU.cantcp import CanTCP
 import platform
 import datetime
 import locale

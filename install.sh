@@ -35,10 +35,10 @@ cp etc/pyHPSU/pyhpsu.conf $CONF_DIR/
 
 # copy the rest
 #cp -r can $SHARE_DIR 
-cp -r HPSU $DIST_DIR
+cp -r HPSU/* $DIST_DIR
 cp -r scripts $PACKAGE_DIR
 cp -r examples $PACKAGE_DIR
-cp -r plugins $DIST_DIR/HPSU
+cp -r plugins $DIST_DIR
 
 # copy service file
 #cp hpsud.service /etc/systemd/system/

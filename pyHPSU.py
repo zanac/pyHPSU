@@ -22,7 +22,7 @@ import time
 import locale
 import importlib
 import logging
-import HPSU
+from HPSU.HPSU import HPSU
 import configparser
 import threading
 import csv

@@ -9,12 +9,12 @@ import pika
 import serial
 import time
 import sys
-sys.path.append('/usr/share/pyHPSU/HPSU/');
-sys.path.append('/usr/share/pyHPSU/plugins/');
+#sys.path.append('/usr/share/pyHPSU/HPSU/');
+#sys.path.append('/usr/share/pyHPSU/plugins/');
 import getopt
 import logging
 import json
-import HPSU
+from HPSU.HPSU import HPSU
 
 
 #-------------------------------------------------------------------
