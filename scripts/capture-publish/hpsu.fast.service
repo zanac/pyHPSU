@@ -3,6 +3,7 @@ Description=HPSU FAST Daemon
 
 [Service]
 Type=simple
-ExecStart=/usr/share/pyHPSU/scripts/capture-publish/hpsu.fast.sh
+ExecStart=/home/pi/scripts/hpsu.fast.sh
 PIDFile=/tmp/hpsu.fast.pid
 MaxRuntimeSec=8
+User=pi

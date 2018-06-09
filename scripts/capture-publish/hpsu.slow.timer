@@ -9,4 +9,4 @@ AccuracySec=1
 Persistent=true
 
 [Install]
-WantedBy=timers.target
+WantedBy=multi-user.target

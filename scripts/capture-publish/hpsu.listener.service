@@ -3,5 +3,9 @@ Description=HPSU LISTENER Daemon
 
 [Service]
 Type=simple
-ExecStart=/home/pi/hpsu.listener.sh
+ExecStart=/home/pi/scripts/hpsu.listener.sh
 PIDFile=/tmp/hpsu.listener.pid
+User=pi
+
+[Install]
+WantedBy=multi-user.target
