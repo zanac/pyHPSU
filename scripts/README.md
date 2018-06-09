@@ -7,10 +7,10 @@ Copy the
 <code>*.service
 *.timer</code>
 to
-/etc/systemd/system
+<code>/etc/systemd/system</code>
 and enable and start it via systemctl. Examples:
-systemctl enable hpsu.fast.timer
-systemctl start hpsu.fast.timer
+<code>systemctl enable hpsu.fast.timer
+systemctl start hpsu.fast.timer</code>
 
 ## Control
 
