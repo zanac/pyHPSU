@@ -1,3 +1,9 @@
+
+Main configuration files are store within <code>/pyHPSU-master/etc/pyHPSU</code> folder.
+
+Remember that actual running configuration files are expected to be within <code>/etc/pyHPSU</code> folder.
+
+
 More information at: http://cercaenergia.forumcommunity.net/?t=58409485
 
 A possible HW set-up guide (italian language):
@@ -6,7 +12,7 @@ A possible HW set-up guide (italian language):
 * [Pompa di calore Rotex HPSU Compact hack: seconda parte](https://lamiacasaelettrica.com/2017/02/02/rotex-hpsu-compact-hack-seconda-parte/)
 * [Pompa di calore Rotex HPSU Compact hack: terza parte](https://lamiacasaelettrica.com/2017/03/04/rotex-hpsu-compact-hack-terza-parte/)
 
-Needs:
+Dependencies:
 - python
 - python-pika
 - python-serial
