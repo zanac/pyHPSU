@@ -9,8 +9,8 @@ Copy the
 to
 <code>/etc/systemd/system</code>
 and enable and start it via systemctl. Examples:
-<code>systemctl enable hpsu.fast.timer
-systemctl start hpsu.fast.timer</code>
+<code>sudo systemctl enable hpsu.fast.timer
+sudo systemctl start hpsu.fast.timer</code>
 
 ## Control
 
