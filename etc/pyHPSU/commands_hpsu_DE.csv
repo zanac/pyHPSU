@@ -48,3 +48,4 @@ heat_slope;Heat-Slope; Heat Slope
 t_dhw_setpoint1;T-WW Soll 1;Sollwert der Warmwassertemperatur in Grad C, welche fuer den 1. Schaltzeitzyklus der Zeitprogramme [Automatik 1] und [Automatik 2] gilt
 hyst_hp;Hysterese WW; Einstellung der Hysterese fuer die Warmwasserbereitung. Die Warmwasserbereitung wird aktiviert, wenn die am Warmwasserfuehler gemessene Temperatur unter die aktuelle Warmwasser-Solltemperatur minus dem hier eingestellten Wert liegt. Eine Warmwasserbereitung istbeendet, wenn die am Warmwasserfuehler gemessene Temperatur ueber der aktuellen Warmwasser-Solltemperatur liegt
 t_flow_cooling;T-Flow Kuehlung;
+error;Fehler;Fehlercode

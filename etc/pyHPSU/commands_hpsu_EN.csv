@@ -48,3 +48,4 @@ heat_slope;Heat-Slope; Heat Slope
 t_dhw_setpoint1;T-ACS nom 1;Nominal value of the hot water temperature in C, which is valid for the first ignition cycle
 hyst_hp;Hyst HP;Switching threshold hot water charging. Setting of the temperature difference to which the temperature in the domestic hot water storage tank compared to the current target hot water temperature [T-DHW Setpoint] can drop before the heat pump is switched on to provide hot water
 t_flow_cooling;T-Flow Cooling;Setting the cooling inflow target temperature (fixed value) when cooling mode is active
+error;error;errorcode
