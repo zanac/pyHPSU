@@ -1,4 +1,4 @@
-version;1.0;;;;
+version;1.1;;;;
 name;command;receiver_id;um;divisor;read_write
 t_hs;31 00 FA 01 D6 00 00;190;d;10;r
 t_hs_set;31 00 02 00 00 00 00;190;d;10;r
@@ -49,3 +49,4 @@ heat_slope;31 00 FA 01 0E 00 00;190;d;100;w
 t_dhw_setpoint1;31 00 13 00 00 00 00;190;d;10;w
 hyst_hp;31 00 FA 06 91 00 00;190;d;10;w
 t_flow_cooling;61 00 fa 03 dd 00 00;190;d;10;w
+error;31 00 FA 13 88 00 00;190;;1;r

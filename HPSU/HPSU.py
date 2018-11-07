@@ -37,8 +37,9 @@ class HPSU(object):
         self.listCommands = []          # all usable commands from csv
         self.logger = logger
         self.command_dict={}
-        
+
         listCmd = [r.split(":")[0] for r in cmd]
+
         
         if platform.system() == "Windows":
             self.pathCOMMANDS = "C:/Sec/apps/Apache24/htdocs/domon/waterpump%s" % self.pathCOMMANDS        
@@ -65,18 +66,23 @@ class HPSU(object):
                 
             with open('%s/commands_hpsu.csv' % self.pathCOMMANDS, 'rU',encoding='utf-8') as csvfile:
                 pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
-                #next(pyHPSUCSV, None) # skip the header
-
+                
+                
                 for row in pyHPSUCSV:
-                    if row[0].startswith("name"):
-                        next(pyHPSUCSV, None) # skip the header
-                        
-                    
-                    elif row[0].lower().startswith("version"):
-                        name=row[0].lower()
-                        c ={ "name":row[0].lower() ,
-                        "desc":row[1]}
+                    if len(row)==0:
+                        pass    # skip empty lines
 
+                    elif row[0]=="name":
+                        pass    # skip the header
+                        
+                    elif row[0].lower().startswith("version"):
+                        
+                        name=row[0].lower()
+                        desc=row[1]
+                        c ={ "name":name,
+                        "desc":desc}  
+                        self.command_dict.update({name:c})
+                    
                     else:
                         name = row[0]
                         command = row[1]
@@ -86,7 +92,6 @@ class HPSU(object):
                         flagRW = row[5]
                         label = hpsuDict[name]["label"]
                         desc = hpsuDict[name]["desc"]
-                        
                     
                         c = {"name":name,
                             "desc":desc,
@@ -97,9 +102,10 @@ class HPSU(object):
                             "div":div,
                             "flagRW":flagRW}
                 
-                    self.command_dict.update({name:c})
-                    if (name in listCmd) or (len(listCmd) == 0):                        
-                        self.commands.append(self.command_dict[name] ) 
+                        self.command_dict.update({name:c})
+                        if (name in listCmd) or (len(listCmd) == 0):                        
+                            self.commands.append(self.command_dict[name])
+                
                     
         
         self.driver = driver
