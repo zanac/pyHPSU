@@ -92,7 +92,6 @@ class HPSU(object):
                         flagRW = row[5]
                         label = hpsuDict[name]["label"]
                         desc = hpsuDict[name]["desc"]
-                        
                     
                         c = {"name":name,
                             "desc":desc,
@@ -104,8 +103,8 @@ class HPSU(object):
                             "flagRW":flagRW}
                 
                         self.command_dict.update({name:c})
-                    if (name in listCmd) or (len(listCmd) == 0):                        
-                        self.commands.append(self.command_dict[name])
+                        if (name in listCmd) or (len(listCmd) == 0):                        
+                            self.commands.append(self.command_dict[name])
                 
                     
         
