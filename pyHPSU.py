@@ -2,8 +2,8 @@
 #
 # -*- coding: utf-8 -*-
 # v 0.0.4 by Vanni Brutto (Zanac)
-#todo: 
-# 
+#todo:
+#
 # utilizzare la formattazione del locale corrente (se ho settato Italy devo vedere date giuste, punti/virgole giusti)
 # monitor mode (sniff)
 # tcp_con = serial.serial_for_url('socket://<my_ip>:<my_port>')
@@ -30,7 +30,7 @@ import csv
 SocketPort = 7060
 global conf_file
 
-def main(argv): 
+def main(argv):
     cmd = []
     port = None
     driver = "PYCAN"
@@ -54,9 +54,21 @@ def main(argv):
     daemon=False
     #commands = []
     #listCommands = []
+    global config 
     config = configparser.ConfigParser()
     global n_hpsu
-    
+    PLUGIN_PATH="/usr/lib/python3/dist-packages/HPSU/plugins"
+    #
+    # get all plugins
+    #
+    PLUGIN_LIST=["JSON", "CSV"]
+    PLUGIN_STRING="JSON, CSV"
+    for file in os.listdir(PLUGIN_PATH):
+        if file.endswith(".py") and not file.startswith("__"):
+            PLUGIN=file.upper().split(".")[0]
+            PLUGIN_STRING+=", "
+            PLUGIN_STRING+=PLUGIN
+            PLUGIN_LIST.append(PLUGIN)
 
     try:
         opts, args = getopt.getopt(argv,"Dhc:p:d:v:o:u:l:g:f:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log=", "config_file="])
@@ -67,7 +79,7 @@ def main(argv):
         print('           -f  --config           Configfile, overrides given commandline arguments')
         print('           -d  --driver           driver name: [ELM327, PYCAN, EMU, HPSUD], Default: PYCAN')
         print('           -p  --port             port (eg COM or /dev/tty*, only for ELM327 driver)')
-        print('           -o  --output_type      output type: [JSON, CSV, CLOUD] default JSON')
+        print('           -o  --output_type      output type: [' + PLUGIN_STRING + '] default JSON')
         print('           -c  --cmd              command: [see commands domain]')
         print('           -v  --verbose          verbosity: [1, 2]   default 1')
         print('           -u  --upload           upload on cloud: [_PLUGIN_]')
@@ -81,7 +93,7 @@ def main(argv):
             daemon = True
         if opt in ("-f", "--config"):
             read_from_conf_file = True
-            conf_file = arg        
+            conf_file = arg
         if opt in ("-h", "--help"):
             show_help = True
         elif opt in ("-d", "--driver"):
@@ -98,9 +110,9 @@ def main(argv):
             upload=True
             cloud_plugin = arg.upper()
         elif opt in ("-l", "--language"):
-            lg_code = arg.upper()   
+            lg_code = arg.upper()
         elif opt in ("-g", "--log"):
-            logger = logging.getLogger('domon')
+            logger = logging.getLogger('pyhpsu')
             hdlr = logging.FileHandler(arg)
             formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
             hdlr.setFormatter(formatter)
@@ -110,7 +122,7 @@ def main(argv):
         locale.setlocale(locale.LC_ALL, '')
 
 # get config from file if given....
-    if read_from_conf_file: 
+    if read_from_conf_file:
         if conf_file=="":
             print("Error, please provide a config file")
             sys.exit(9)
@@ -119,15 +131,15 @@ def main(argv):
                 with open(conf_file) as f:
                     config.readfp(f)
             except IOError:
-                print("Error: config file not found")	
+                print("Error: config file not found")
                 sys.exit(9)
 
 
         config.read(conf_file)
         if config.has_option('DAEMON','PYHPSU_DEVICE'):
             driver=config['DAEMON']['PYHPSU_DEVICE']
-        if config.has_option('DAEMON','PORT'):
-            port=config['DAEMON']['PORT']
+        if config.has_option('DAEMON','PYHPSU_PORT'):
+            port=config['DAEMON']['PYHPSU_PORT']
         if config.has_option('DAEMON','PYHPSU_LANG'):
             lg_code=config['DAEMON']['PYHPSU_LANG']
         if config.has_option('DAEMON','OUTPUT_TYPE'):
@@ -135,10 +147,12 @@ def main(argv):
         if config.has_option('DAEMON','EMONCMS'):
             cloud_plugin=config['DAEMON']['EMONCMS']
 
+
+
     #
-    # now we should have all options...let's check them 
+    # now we should have all options...let's check them
     #
-    # Check driver 
+    # Check driver
     if driver not in ["ELM327", "PYCAN", "EMU", "HPSUD"]:
         print("Error, please specify a correct driver [ELM327, PYCAN, EMU, HPSUD] ")
         sys.exit(9)
@@ -147,9 +161,9 @@ def main(argv):
         print("Error, please specify a correct port for the ELM327 device ")
         sys.exit(9)
 
-    # Check output type 
-    if output_type not in ["JSON", "CSV", "CLOUD", "DB"]:
-        print("Error, please specify a correct output_type [JSON, CSV, CLOUD]")
+    # Check output type
+    if output_type not in PLUGIN_LIST:
+        print("Error, please specify a correct output_type [" + PLUGIN_STRING + "]")
         sys.exit(9)
 
     # Check Plugin type
@@ -163,7 +177,7 @@ def main(argv):
         sys.exit(9)
 
     n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
-    
+
 
 
 
@@ -190,7 +204,7 @@ def main(argv):
 #
     # create dictionary for the jobs
     timed_jobs=dict()
-    if read_from_conf_file: 
+    if read_from_conf_file:
         if len(config.options('JOBS')):
             for each_key in config.options('JOBS'):
                 job_period=config.get('JOBS',each_key)
@@ -198,13 +212,13 @@ def main(argv):
                     timed_jobs["timer_" + job_period]=[]
                 timed_jobs["timer_" + job_period].append(each_key)
             wanted_periods=list(timed_jobs.keys())
-        
+
         else:
             print("Error, please specify a value to query in config file ")
             sys.exit(9)
 
 
-    
+
 
 
         # now its time to call the hpsu and do the REAL can query, but only every 2 seconds
@@ -235,9 +249,9 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
 
     ##if not driver:
     ##    print("Error, please specify driver [ELM327 or PYCAN, EMU, HPSUD]")
-    ##    sys.exit(9)        
+    ##    sys.exit(9)
 
-    arrResponse = []   
+    arrResponse = []
     for c in n_hpsu.commands:
         if c['name'] not in "version":
             setValue = None
@@ -248,7 +262,7 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
             i = 0
             while i <= 3:
                 rc = n_hpsu.sendCommand(c, setValue)
-                if rc != "KO":            
+                if rc != "KO":
                     i = 4
                     if not setValue:
                         response = n_hpsu.parseCommand(cmd=c, response=rc, verbose=verbose)
@@ -263,7 +277,8 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
                         n_hpsu.printd('error', 'command %s failed' % (c["name"]))
 
     if output_type == "JSON":
-        print(arrResponse)
+        if len(arrResponse)!=0:
+            print(arrResponse)
     elif output_type == "CSV":
         for r in arrResponse:
             print("%s\t%s\t%s" % (r["timestamp"], r["name"], r["resp"]))
@@ -278,12 +293,15 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
 
     elif output_type == "DB":
         module = importlib.import_module("HPSU.plugins.db")
-        db = module.Db(hpsu=n_hpsu, logger=logger, config_file=conf_file)
+        db = module.db(hpsu=n_hpsu, logger=logger, config_file=conf_file)
         db.pushValues(vars=arrResponse)
 
+    elif output_type == "FHEM":
+        module = importlib.import_module("HPSU.plugins.fhem")
+        hpsu_plugin = module.fhem(hpsu=n_hpsu, logger=logger, config_file=conf_file)
+        hpsu_plugin.pushValues(vars=arrResponse)
 
 
 
 if __name__ == "__main__":
     main(sys.argv[1:])
-    

@@ -8,7 +8,7 @@ import sys
 import os
 from distutils.version import StrictVersion
 
-class Db():
+class db():
     hpsu = None
 
     def __init__(self, hpsu=None, logger=None, config_file=None, config=None):
@@ -21,12 +21,11 @@ class Db():
        
         db_config = configparser.ConfigParser()
         if not self.config_file:
-            self.config_file="../etc/pyHPSU/pyHPSU.conf"
+            self.config_file="/etc/pyHPSU/pyHPSU.conf"
     
         if os.path.isfile(self.config_file):
             db_config.read(self.config_file)
         else:
-            print("mist....")
             sys.exit(9)
         if db_config.has_option('DATABASE','DB_HOST'):
             db_host=db_config['DATABASE']['DB_HOST']
