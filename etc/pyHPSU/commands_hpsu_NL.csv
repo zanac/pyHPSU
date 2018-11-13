@@ -48,3 +48,4 @@ heat_slope;Stook lijn;Stook lijn
 t_dhw_setpoint1;TWW Soll 1;Sollwert der Warmwassertemperatur in C, welche fur den 1. Schaltzeitzyklus der Zeitprogramme [Automatik 1] und [Automatik 2] gilt
 hyst_hp;Hysteresis WW;Instelling van de hysteresis voor warmwater bereiding. De warmwater bereiding wordt geactiveerd als de temperatuur gemeten door de warm water sensor onder de warmtwater doel temperatuur min de ingestelde waarde ligt.
 t_flow_cooling;T-Flow Cooling;Setting the cooling inflow target temperature (fixed value) when cooling mode is active
+error;foutmelding;foutmelding code
