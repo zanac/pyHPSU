@@ -47,6 +47,12 @@ class fhem():
         else:
             self.fhemdevice = 'HPSU'
 
+        # method to put the data 
+        if self.config_has_option('FHEM','METHOD'):
+            self.method=self.config['FHEM']['METHOD']
+        else:
+            self.method="telnet"
+
     def netcat(self, hostname, fhemport, content):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((hostname, fhemport))

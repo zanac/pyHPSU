@@ -175,11 +175,48 @@ def main(argv):
     if lg_code not in languages:
         print("Error, please specify a correct language [%s]" % " ".join(languages))
         sys.exit(9)
+    # ------------------------------------
+    # try to query different commands in different periods
+    # Read them from config and group them
+    #
+    # create dictionary for the jobs
+    timed_jobs=dict()
+    if read_from_conf_file:                                         # if config is read from file
+        if len(config.options('JOBS')):                             # if there are configured jobs
+            for each_key in config.options('JOBS'):                 # for each value to query
+                job_period=config.get('JOBS',each_key)              # get the period
+                if not "timer_" + job_period in timed_jobs.keys():  # if this period isn't still in the dict
+                    timed_jobs["timer_" + job_period]=[]            # create a list for this period 
+                timed_jobs["timer_" + job_period].append(each_key)  # and add the value to this period
+            wanted_periods=list(timed_jobs.keys())
+        else:
+            print("Error, please specify a value to query in config file ")
+            sys.exit(9)
 
-    n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
 
 
 
+        #
+        # now its time to call the hpsu and do the REAL can query
+        # and handle the data as configured
+        #
+    if daemon:
+        while loop:
+            ticker+=1
+            collected_cmds=[]
+            for period_string in timed_jobs.keys():
+                period=period_string.split("_")[1]
+                if not ticker % int(period):
+                    for job in timed_jobs[period_string]:
+                        collected_cmds.append(str(job))
+            if len(collected_cmds):
+                n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=collected_cmds, lg_code=lg_code)
+                exec('thread_%s = threading.Thread(target=read_can, args=(driver,logger,port,collected_cmds,lg_code,verbose,output_type))' % (period))
+                exec('thread_%s.start()' % (period))
+            time.sleep(1)
+    else:
+        n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
+        read_can(driver, logger, port, cmd, lg_code,verbose,output_type)
 
     #
     # Print help
@@ -199,58 +236,16 @@ def main(argv):
                 print("%12s - %-10s - %s" % (c['name'], c['label'], c['desc']))
         sys.exit(0)
 
-# try to query different commands in different periods
-# Read them from config and group them
-#
-    # create dictionary for the jobs
-    timed_jobs=dict()
-    if read_from_conf_file:
-        if len(config.options('JOBS')):
-            for each_key in config.options('JOBS'):
-                job_period=config.get('JOBS',each_key)
-                if not job_period in timed_jobs.keys():
-                    timed_jobs["timer_" + job_period]=[]
-                timed_jobs["timer_" + job_period].append(each_key)
-            wanted_periods=list(timed_jobs.keys())
-
-        else:
-            print("Error, please specify a value to query in config file ")
-            sys.exit(9)
-
-
-
-
-
-        # now its time to call the hpsu and do the REAL can query, but only every 2 seconds
-        # and handle the data as configured
-        #
-    if daemon:
-        while loop:
-            ticker+=1
-            collected_cmds=[]
-            for period_string in timed_jobs.keys():
-                period=period_string.split("_")[1]
-                if not ticker % int(period):
-                    for job in timed_jobs[period_string]:
-                        collected_cmds.append(str(job))
-            if len(collected_cmds):
-                exec('thread_%s = threading.Thread(target=read_can, args=(driver,logger,port,collected_cmds,lg_code,verbose,output_type))' % (period))
-                exec('thread_%s.start()' % (period))
-            time.sleep(1)
-    else:
-        hpsu = read_can(driver, logger, port, cmd, lg_code,verbose,output_type)
-
 
 
 
 def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
     global conf_file
     # really needed? Driver is checked above
-
-    ##if not driver:
-    ##    print("Error, please specify driver [ELM327 or PYCAN, EMU, HPSUD]")
-    ##    sys.exit(9)
-
+    #if not driver:
+    #    print("Error, please specify driver [ELM327 or PYCAN, EMU, HPSUD]")
+    #    sys.exit(9)
+    
     arrResponse = []
     for c in n_hpsu.commands:
         if c['name'] not in "version":
