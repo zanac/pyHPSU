@@ -1,9 +1,10 @@
 [Unit]
 Description=HPSUD
 After=network.target
+Requires=rabbitmq-server.service
 
 [Service]
-Type=forking
+Type=simple
 ExecStartPre=
 EnvironmentFile=/etc/pyHPSU/pyhpsu.conf
 ExecStart=/usr/bin/pyHPSUd.py -d ${PYHPSU_DEVICE} -l ${PYHPSU_LANG}
