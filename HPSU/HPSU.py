@@ -230,14 +230,14 @@ class HPSU(object):
         
         if cmd["um"] == HPSU.UM_INT:
             if hexValues[2] == 0xfa:
-                resp = float(self.toSigned(hexValues[5], cmd)) / int(cmd["div"])
+                resp = self.toSigned(hexValues[5], cmd) // int(cmd["div"])
             else:
-                resp = float(self.toSigned(hexValues[3], cmd)) / int(cmd["div"])
+                resp = self.toSigned(hexValues[3], cmd) // int(cmd["div"])
         else:
             if hexValues[2] == 0xfa:
-                resp = float(self.toSigned(hexValues[5]*0x100+hexValues[6], cmd)) / int(cmd["div"])
+                resp = self.toSigned(hexValues[5]*0x100+hexValues[6], cmd) // int(cmd["div"])
             else:
-                resp = float(self.toSigned(hexValues[3]*0x100+hexValues[4], cmd)) / int(cmd["div"])
+                resp = self.toSigned(hexValues[3]*0x100+hexValues[4], cmd) // int(cmd["div"])
         
         if verbose == "2":
             timestamp = datetime.datetime.now().isoformat()
