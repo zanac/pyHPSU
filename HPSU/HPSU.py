@@ -2,12 +2,6 @@
 # -*- coding: utf-8 -*-
 import platform
 import sys
-"""if platform.system() == "Windows":
-    sys.path.append('C:/Sec/apps/Apache24/htdocs/domon')
-else:
-    sys.path.append('/home/domon/domon/')
-    sys.path.append('/home/domon/domon/web/')
-    sys.path.append('/home/domon/domon/web/waterpump/')"""
 from HPSU.canelm327 import CanELM327
 from HPSU.canemu import CanEMU
 from HPSU.canpi import CanPI
@@ -40,10 +34,6 @@ class HPSU(object):
 
         listCmd = [r.split(":")[0] for r in cmd]
 
-        
-        if platform.system() == "Windows":
-            self.pathCOMMANDS = "C:/Sec/apps/Apache24/htdocs/domon/waterpump%s" % self.pathCOMMANDS        
-        
         if not self.listCommands: #if we don't get a dict with commands
 
             # get language, if non given, take it from the system
@@ -137,7 +127,6 @@ class HPSU(object):
             print("%s - %s" % (level, msg))
     
     def sendCommandWithParse(self, cmd, setValue=None, priority=1):
-        print("sendCommandWithParse")
         response = None
         verbose = "1"        
         i = 1

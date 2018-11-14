@@ -48,7 +48,7 @@ class fhem():
             self.fhemdevice = 'HPSU'
 
         # method to put the data 
-        if self.config_has_option('FHEM','METHOD'):
+        if self.config.has_option('FHEM','METHOD'):
             self.method=self.config['FHEM']['METHOD']
         else:
             self.method="telnet"

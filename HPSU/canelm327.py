@@ -65,7 +65,7 @@ class CanELM327(object):
                 else:  
                     self.hpsu.printd("error", "Error sending AT SP C (rc:%s)" % rc)
                     count_2+=1
-                    sys.exit(9)
+                    time.sleep(1)
 
     def sendCommand(self, cmd, setValue=None, um=None):
         if setValue:

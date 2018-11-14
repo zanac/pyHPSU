@@ -75,7 +75,7 @@ class MainHPSU(object):
                     print("Error, please specify a correct language [%s]" % " ".join(languages))
                     sys.exit(9)                  
             elif opt in ("-g", "--log"):
-                logger = logging.getLogger('domon')
+                logger = logging.getLogger('pyHPSUd')
                 hdlr = logging.FileHandler(arg)
                 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
                 hdlr.setFormatter(formatter)
@@ -101,26 +101,19 @@ class MainHPSU(object):
         time.sleep(sec)
         
         rc = "KO"
-        print ("1")
         for cmd in self.hpsu.commands:
-            print ("1.5")
             if name == cmd["name"]:
-                print(str(cmd))
-                print(name)
-                print("set:%s:" % value)
+
                 rc = self.hpsu.sendCommand(cmd, value)
-                print ("1.7")
-        print ("2")
+
         
         if type == "sync":
             priority = 2
             response = rc
-            print(rc)
             ch.basic_publish(exchange='',
                              routing_key=props.reply_to,
                              properties=pika.BasicProperties(priority=priority, correlation_id = props.correlation_id),
                              body=str(response))
-            print("spedito"+props.reply_to)
         ch.basic_ack(delivery_tag = method.delivery_tag)    
 
     
