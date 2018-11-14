@@ -37,9 +37,19 @@ class CanELM327(object):
             rc = self.sendCommand("ATE0")
                         
             rc = self.sendCommand("AT PP 2F ON")
-            if rc != "OK":
+            """ if rc != "OK":
                 self.hpsu.printd("error", "Error sending AT PP 2F ON (rc:%s)" % rc)
-                sys.exit(9)
+                sys.exit(9) """
+            count_1=0
+            while rc != "OK":
+                if count_1==15:
+                    self.hpsu.printd("error", "can adapter not responding: (rc:%s)" % rc)
+                    sys.exit(9)
+                else:
+                    self.hpsu.printd("error", "Error sending AT PP 2F ON (rc:%s)" % rc)
+                    count_1+=1
+                    time.sleep(1)
+                
             
             """rc = self.sendCommand("AT D")
             if rc != "OK":
@@ -47,9 +57,15 @@ class CanELM327(object):
                 sys.exit(9)"""
             
             rc = self.sendCommand("AT SP C")
-            if rc != "OK":
-                self.hpsu.printd("error", "Error sending AT SP C (rc:%s)" % rc)
-                sys.exit(9)
+            count_2=0
+            while rc != "OK":
+                if count_2==15:
+                    self.hpsu.printd("error", "can adapter not responding: (rc:%s)" % rc)
+                    sys.exit(9)
+                else:  
+                    self.hpsu.printd("error", "Error sending AT SP C (rc:%s)" % rc)
+                    count_2+=1
+                    sys.exit(9)
 
     def sendCommand(self, cmd, setValue=None, um=None):
         if setValue:
