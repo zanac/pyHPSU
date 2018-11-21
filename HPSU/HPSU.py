@@ -61,18 +61,14 @@ class HPSU(object):
                 for row in pyHPSUCSV:
                     if len(row)==0:
                         pass    # skip empty lines
-
                     elif row[0]=="name":
                         pass    # skip the header
-                        
                     elif row[0].lower().startswith("version"):
-                        
                         name=row[0].lower()
                         desc=row[1]
                         c ={ "name":name,
-                        "desc":desc}  
+                        "desc":desc}
                         self.command_dict.update({name:c})
-                    
                     else:
                         name = row[0]
                         command = row[1]

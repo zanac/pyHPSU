@@ -88,7 +88,6 @@ class db():
         if self.db_version:
             # update the version if a newer is available in commands_hpsu.csv
             if StrictVersion(self.commands_file_version) > StrictVersion(self.db_version):
-                print("Braucht Update")
                 UpdateQuery="UPDATE commands SET descr='%s' WHERE name='%s'" %  (self.hpsu.command_dict['version']['desc'],self.hpsu.command_dict['version']['name'])
                 cursor.execute(UpdateQuery)
                 # update all commands or insert the new ones
@@ -106,7 +105,6 @@ class db():
 
     def update_db(self,cursor):
         # and update all commands or insert the new ones
-        # INSERT INTO table (id, name, age) VALUES(1, "A", 19) ON DUPLICATE KEY UPDATE name="A", age=19
         for com in self.hpsu.command_dict:
             if com not in "version":
                 n_name=self.hpsu.command_dict[com]['name']

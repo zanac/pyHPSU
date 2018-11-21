@@ -136,16 +136,16 @@ def main(argv):
 
 
         config.read(conf_file)
-        if config.has_option('DAEMON','PYHPSU_DEVICE'):
-            driver=config['DAEMON']['PYHPSU_DEVICE']
-        if config.has_option('DAEMON','PYHPSU_PORT'):
-            port=config['DAEMON']['PYHPSU_PORT']
-        if config.has_option('DAEMON','PYHPSU_LANG'):
-            lg_code=config['DAEMON']['PYHPSU_LANG']
-        if config.has_option('DAEMON','OUTPUT_TYPE'):
-            output_type=config['DAEMON']['OUTPUT_TYPE']
-        if config.has_option('DAEMON','EMONCMS'):
-            cloud_plugin=config['DAEMON']['EMONCMS']
+        if config.has_option('PYHPSU','PYHPSU_DEVICE'):
+            driver=config['PYHPSU']['PYHPSU_DEVICE']
+        if config.has_option('PYHPSU','PYHPSU_PORT'):
+            port=config['PYHPSU']['PYHPSU_PORT']
+        if config.has_option('PYHPSU','PYHPSU_LANG'):
+            lg_code=config['PYHPSU']['PYHPSU_LANG']
+        if config.has_option('PYHPSU','OUTPUT_TYPE'):
+            output_type=config['PYHPSU']['OUTPUT_TYPE']
+        if config.has_option('PYHPSU','EMONCMS'):
+            cloud_plugin=config['PYHPSU']['EMONCMS']
 
 
 
