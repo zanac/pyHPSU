@@ -1,6 +1,6 @@
 [Unit]
 Description=HPSUD
-After=network.target
+After=network.target rabbitmq-server.service
 Requires=rabbitmq-server.service
 
 [Service]
