@@ -8,7 +8,7 @@ import sys
 import os
 from distutils.version import StrictVersion
 
-class Db():
+class db():
     hpsu = None
 
     def __init__(self, hpsu=None, logger=None, config_file=None, config=None):
@@ -21,12 +21,11 @@ class Db():
        
         db_config = configparser.ConfigParser()
         if not self.config_file:
-            self.config_file="../etc/pyHPSU/pyHPSU.conf"
+            self.config_file="/etc/pyHPSU/pyHPSU.conf"
     
         if os.path.isfile(self.config_file):
             db_config.read(self.config_file)
         else:
-            print("mist....")
             sys.exit(9)
         if db_config.has_option('DATABASE','DB_HOST'):
             db_host=db_config['DATABASE']['DB_HOST']
@@ -89,7 +88,6 @@ class Db():
         if self.db_version:
             # update the version if a newer is available in commands_hpsu.csv
             if StrictVersion(self.commands_file_version) > StrictVersion(self.db_version):
-                print("Braucht Update")
                 UpdateQuery="UPDATE commands SET descr='%s' WHERE name='%s'" %  (self.hpsu.command_dict['version']['desc'],self.hpsu.command_dict['version']['name'])
                 cursor.execute(UpdateQuery)
                 # update all commands or insert the new ones
@@ -107,7 +105,6 @@ class Db():
 
     def update_db(self,cursor):
         # and update all commands or insert the new ones
-        # INSERT INTO table (id, name, age) VALUES(1, "A", 19) ON DUPLICATE KEY UPDATE name="A", age=19
         for com in self.hpsu.command_dict:
             if com not in "version":
                 n_name=self.hpsu.command_dict[com]['name']

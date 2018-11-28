@@ -1,13 +1,13 @@
 [Unit]
 Description=HPSUD
-After=network.target
+After=network.target rabbitmq-server.service
+Requires=rabbitmq-server.service
 
 [Service]
-Type=forking
+Type=simple
 ExecStartPre=
 EnvironmentFile=/etc/pyHPSU/pyhpsu.conf
-ExecStart=/usr/bin/pyHPSUd.py -d ${PYHPSU_DEVICE} -l ${PYHPSU_LANG}
-#ExecStart=/usr/bin/pyHPSUd.py -d PYCAN -l IT
+ExecStart=/usr/bin/pyHPSUd.py -d ${PYHPSUD_DEVICE} -l ${PYHPSUD_LANG} -p ${PYHPSUD_PORT}
 ExecReload=
 ExecStop=
 
