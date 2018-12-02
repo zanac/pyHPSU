@@ -37,7 +37,6 @@ def main(argv):
     verbose = "1"
     show_help = False
     output_type = "JSON"
-    cloud_plugin = None
     upload = False
     lg_code = "EN"
     languages = ["EN", "IT", "DE", "NL"]
@@ -71,7 +70,7 @@ def main(argv):
             PLUGIN_LIST.append(PLUGIN)
 
     try:
-        opts, args = getopt.getopt(argv,"Ahc:p:d:v:o:u:l:g:f:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log=", "config_file="])
+        opts, args = getopt.getopt(argv,"Ahc:p:d:v:o:l:g:f:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log=", "config_file="])
     except getopt.GetoptError:
         print('pyHPSU.py -d DRIVER -c COMMAND')
         print(' ')
@@ -82,7 +81,6 @@ def main(argv):
         print('           -o  --output_type     output type: [' + PLUGIN_STRING + '] default JSON')
         print('           -c  --cmd             command: [see commands domain]')
         print('           -v  --verbose         verbosity: [1, 2]   default 1')
-        print('           -u  --upload          upload on cloud: [_PLUGIN_]')
         print('           -l  --language        set the language to use [%s], default is \"EN\" ' % " ".join(languages))
         print('           -g  --log             set the log to file [_filename]')
         print('           -h  --help            show help')
@@ -106,9 +104,6 @@ def main(argv):
             verbose = arg
         elif opt in ("-o", "--output_type"):
             output_type = arg.upper()
-        elif opt in ("-u", "--upload"):
-            upload=True
-            cloud_plugin = arg.upper()
         elif opt in ("-l", "--language"):
             lg_code = arg.upper()
         elif opt in ("-g", "--log"):
@@ -144,8 +139,6 @@ def main(argv):
             lg_code=config['PYHPSU']['PYHPSU_LANG']
         if config.has_option('PYHPSU','OUTPUT_TYPE'):
             output_type=config['PYHPSU']['OUTPUT_TYPE']
-        if config.has_option('PYHPSU','EMONCMS'):
-            cloud_plugin=config['PYHPSU']['EMONCMS']
 
 
 
@@ -164,11 +157,6 @@ def main(argv):
     # Check output type
     if output_type not in PLUGIN_LIST:
         print("Error, please specify a correct output_type [" + PLUGIN_STRING + "]")
-        sys.exit(9)
-
-    # Check Plugin type
-    if cloud_plugin not in ["EMONCMS"] and upload:
-        print("Error, please specify a correct plugin")
         sys.exit(9)
 
     # Check Language
@@ -277,25 +265,33 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
     elif output_type == "CSV":
         for r in arrResponse:
             print("%s\t%s\t%s" % (r["timestamp"], r["name"], r["resp"]))
-    elif output_type == "CLOUD":
-        if not cloud_plugin:
-            print ("Error, please specify a cloud_plugin")
-            sys.exit(9)
 
-        module = importlib.import_module("HPSU.plugins.cloud")
-        cloud = module.Cloud(plugin=cloud_plugin, hpsu=n_hpsu, logger=logger)
-        cloud.pushValues(vars=arrResponse)
-
-    elif output_type == "DB":
-        module = importlib.import_module("HPSU.plugins.db")
-        db = module.db(hpsu=n_hpsu, logger=logger, config_file=conf_file)
-        db.pushValues(vars=arrResponse)
-
-    elif output_type == "FHEM":
-        module = importlib.import_module("HPSU.plugins.fhem")
-        hpsu_plugin = module.fhem(hpsu=n_hpsu, logger=logger, config_file=conf_file)
+    else:
+        module_name=output_type.lower()
+        module = importlib.import_module("HPSU.plugins." + module_name)
+        hpsu_plugin = module.export(hpsu=n_hpsu, logger=logger, config_file=conf_file)
         hpsu_plugin.pushValues(vars=arrResponse)
 
+    
+    #elif output_type.upper() == "EMONCMS":
+    #    module = importlib.import_module("HPSU.plugins." + output_type.lower())
+    #    hpsu_plugin = module.output_type.lower()(hpsu=n_hpsu, logger=logger, config_file=conf_file)
+    #    hpsu_plugin.pushValus(vars=arrRespone)
+
+    #elif output_type.upper() == "DB":
+    #    module = importlib.import_module("HPSU.plugins." + output_type.lower())
+    #    hpsu_plugin = module.output_type.lower()(hpsu=n_hpsu, logger=logger, config_file=conf_file)
+    #    hpsu_plugin.pushValues(vars=arrResponse)
+
+    #elif output_type.upper() == "FHEM":
+    #    module = importlib.import_module("HPSU.plugins." + output_type.lower())
+    #    hpsu_plugin = module.output_type.lower()(hpsu=n_hpsu, logger=logger, config_file=conf_file)
+    #    hpsu_plugin.pushValues(vars=arrResponse)
+    
+    #elif output_type.upper() == "HOMEMATIC":
+    #    module = importlib.import_module("HPSU.plugins." + output_type.lower())
+    #    hpsu_plugin = module.homematic(hpsu=n_hpsu, logger=logger, config_file=conf_file)
+    #    hpsu_plugin.pushValues(vars=arrResponse)
 
 
 if __name__ == "__main__":

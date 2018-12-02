@@ -11,7 +11,6 @@
 
 import socket
 import configparser
-import requests
 import sys
 import os
 
