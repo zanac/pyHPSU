@@ -6,8 +6,16 @@ import requests
 import sys
 import os
 
+# config inf conf_file (defaults):
+# [EMONCMS]
+# URL = https://emoncms.or
+# node_1 = t_hs, t_hs_setpoint
+# node_2 = qoh....
+# ......
+# ......
 
-class Cloud():
+
+class export():
     hpsu = None
     
     def get_with_default(self, config, section, name, default):
