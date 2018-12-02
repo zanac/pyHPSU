@@ -15,7 +15,7 @@ import sys
 import os
 
 
-class fhem():
+class export():
     hpsu = None
 
     def __init__(self, hpsu=None, logger=None, config_file=None):
@@ -46,7 +46,7 @@ class fhem():
         else:
             self.fhemdevice = 'HPSU'
 
-        # method to put the data 
+        # method to put the data
         if self.config.has_option('FHEM','METHOD'):
             self.method=self.config['FHEM']['METHOD']
         else:
