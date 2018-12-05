@@ -46,12 +46,12 @@ def main(argv):
     global conf_file
     conf_file = "/etc/pyHPSU/pyhpsu.conf"
     read_from_conf_file=False
-    global daemon
+    global auto
     global ticker
     #global command_dict
     ticker=0
     loop=True
-    daemon=False
+    auto=False
     #commands = []
     #listCommands = []
     global config 
@@ -71,26 +71,26 @@ def main(argv):
             PLUGIN_LIST.append(PLUGIN)
 
     try:
-        opts, args = getopt.getopt(argv,"Dhc:p:d:v:o:u:l:g:f:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log=", "config_file="])
+        opts, args = getopt.getopt(argv,"Ahc:p:d:v:o:u:l:g:f:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log=", "config_file="])
     except getopt.GetoptError:
         print('pyHPSU.py -d DRIVER -c COMMAND')
         print(' ')
-        print('           -D  --daemon           run as daemon')
-        print('           -f  --config           Configfile, overrides given commandline arguments')
-        print('           -d  --driver           driver name: [ELM327, PYCAN, EMU, HPSUD], Default: PYCAN')
-        print('           -p  --port             port (eg COM or /dev/tty*, only for ELM327 driver)')
-        print('           -o  --output_type      output type: [' + PLUGIN_STRING + '] default JSON')
-        print('           -c  --cmd              command: [see commands domain]')
-        print('           -v  --verbose          verbosity: [1, 2]   default 1')
-        print('           -u  --upload           upload on cloud: [_PLUGIN_]')
-        print('           -l  --language         set the language to use [%s], default is \"EN\" ' % " ".join(languages))
-        print('           -g  --log              set the log to file [_filename]')
-        print('           -h  --help             show help')
+        print('           -d  --auto            do atomatic queries')
+        print('           -f  --config          Configfile, overrides given commandline arguments')
+        print('           -d  --driver          driver name: [ELM327, PYCAN, EMU, HPSUD], Default: PYCAN')
+        print('           -p  --port            port (eg COM or /dev/tty*, only for ELM327 driver)')
+        print('           -o  --output_type     output type: [' + PLUGIN_STRING + '] default JSON')
+        print('           -c  --cmd             command: [see commands domain]')
+        print('           -v  --verbose         verbosity: [1, 2]   default 1')
+        print('           -u  --upload          upload on cloud: [_PLUGIN_]')
+        print('           -l  --language        set the language to use [%s], default is \"EN\" ' % " ".join(languages))
+        print('           -g  --log             set the log to file [_filename]')
+        print('           -h  --help            show help')
         sys.exit(2)
 
     for opt, arg in opts:
-        if opt in ("-D", "--daemon"):
-            daemon = True
+        if opt in ("-A", "--auto"):
+            auto = True
         if opt in ("-f", "--config"):
             read_from_conf_file = True
             conf_file = arg
@@ -200,7 +200,7 @@ def main(argv):
         # now its time to call the hpsu and do the REAL can query
         # and handle the data as configured
         #
-    if daemon:
+    if auto:
         while loop:
             ticker+=1
             collected_cmds=[]
