@@ -11,6 +11,7 @@ import datetime
 import locale
 import sys
 import csv
+import json
 import os.path
 import time
 
@@ -31,9 +32,8 @@ class HPSU(object):
         self.listCommands = []          # all usable commands from csv
         self.logger = logger
         self.command_dict={}
-
+        
         listCmd = [r.split(":")[0] for r in cmd]
-
         if not self.listCommands: #if we don't get a dict with commands
 
             # get language, if non given, take it from the system
@@ -44,7 +44,8 @@ class HPSU(object):
             commands_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, LANG_CODE)
             if not os.path.isfile(commands_hpsu):
                 commands_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, "EN")
-
+            # check, if commands are json or csv
+            # read all known commands
             with open(commands_hpsu, 'rU',encoding='utf-8') as csvfile:
                 pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
                 next(pyHPSUCSV, None) # skip the header
@@ -53,8 +54,20 @@ class HPSU(object):
                     label = row[1]
                     desc = row[2]
                     hpsuDict.update({name:{"label":label, "desc":desc}})
-                
-            with open('%s/commands_hpsu.csv' % self.pathCOMMANDS, 'rU',encoding='utf-8') as csvfile:
+            # read all known commands
+
+            with open('%s/commands_hpsu.json' % self.pathCOMMANDS, 'rU',encoding='utf-8') as jsonfile:
+                self.all_commands = json.load(jsonfile)
+                self.command_dict=self.all_commands["commands"]
+                for single_command in self.command_dict:
+                    if single_command in hpsuDict:
+                        self.command_dict[single_command].update({ "desc" : hpsuDict[single_command]["desc"]})
+                        self.command_dict[single_command].update({ "label" : hpsuDict[single_command]["label"]})
+
+                    if (single_command in listCmd) or (len(listCmd) == 0):                        
+                        self.commands.append(self.command_dict[single_command])
+
+            """ with open('%s/commands_hpsu.csv' % self.pathCOMMANDS, 'rU',encoding='utf-8') as csvfile:
                 pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
                 
                 
@@ -90,7 +103,7 @@ class HPSU(object):
                 
                         self.command_dict.update({name:c})
                         if (name in listCmd) or (len(listCmd) == 0):                        
-                            self.commands.append(self.command_dict[name])
+                            self.commands.append(self.command_dict[name]) """
                 
                     
         
@@ -122,7 +135,7 @@ class HPSU(object):
         else:
             print("%s - %s" % (level, msg))
     
-    def sendCommandWithParse(self, cmd, setValue=None, priority=1):
+    """ def sendCommandWithParse(self, cmd, setValue=None, priority=1):
         response = None
         verbose = "1"        
         i = 1
@@ -139,7 +152,7 @@ class HPSU(object):
                 i += 1
                 time.sleep(2.0)
         return response
-
+ """
     
     #
     # don't found out where this function is called.....
@@ -188,7 +201,7 @@ class HPSU(object):
     # funktion to set/read a value
     def sendCommand(self, cmd, setValue=None, priority=1):     
         if setValue:
-            FormattedSetValue=int(setValue)*int(cmd["div"])
+            FormattedSetValue=int(setValue)*int(cmd["divisor"])
             setValue=FormattedSetValue 
         rc = self.can.sendCommandWithID(cmd=cmd, setValue=setValue, priority=priority)
         if rc not in ["KO", "OK"]:
@@ -203,7 +216,7 @@ class HPSU(object):
         return (datetime.datetime.now() - epoch).total_seconds() * 1000.0
         
     def toSigned(self, n, cmd):
-        if cmd["um"] == "d":
+        if cmd["unit"] == "d":
             n = n & 0xffff
             return (n ^ 0x8000) - 0x8000
         else:
@@ -213,16 +226,16 @@ class HPSU(object):
     def parseCommand(self, cmd, response, verbose):
         hexValues = [int(r, 16) for r in response.split(" ")]
         
-        if cmd["um"] == HPSU.UM_INT:
+        if cmd["unit"] == HPSU.UM_INT:
             if hexValues[2] == 0xfa:
-                resp = self.toSigned(hexValues[5], cmd) // int(cmd["div"])
+                resp = self.toSigned(hexValues[5], cmd) // int(cmd["divisor"])
             else:
-                resp = self.toSigned(hexValues[3], cmd) // int(cmd["div"])
+                resp = self.toSigned(hexValues[3], cmd) // int(cmd["divisor"])
         else:
             if hexValues[2] == 0xfa:
-                resp = self.toSigned(hexValues[5]*0x100+hexValues[6], cmd) // int(cmd["div"])
+                resp = self.toSigned(hexValues[5]*0x100+hexValues[6], cmd) // int(cmd["divisor"])
             else:
-                resp = self.toSigned(hexValues[3]*0x100+hexValues[4], cmd) // int(cmd["div"])
+                resp = self.toSigned(hexValues[3]*0x100+hexValues[4], cmd) // int(cmd["divisor"])
         
         if verbose == "2":
             timestamp = datetime.datetime.now().isoformat()
@@ -234,20 +247,21 @@ class HPSU(object):
         return {"resp":resp, "timestamp":timestamp}
     
     def umConversion(self, cmd, response, verbose):
+        # convert into different units
         resp = response["resp"]
 
-        if cmd["um"] == HPSU.UM_DEGREE:
+        if cmd["unit"] == HPSU.UM_DEGREE:
             resp = locale.format("%.2f", round(response["resp"], 2))
             if verbose == "2":
                 resp = "%s c" % resp
-        elif cmd["um"] == HPSU.UM_BOOLEAN:
+        elif cmd["unit"] == HPSU.UM_BOOLEAN:
             resp = int(response["resp"])
             if verbose == "2":
                 resp = "ON" if resp == 1 else "OFF"
-        elif cmd["um"] == HPSU.UM_PERCENT:
+        elif cmd["unit"] == HPSU.UM_PERCENT:
             if verbose == "2":
                 resp = "%s%%" % int(response["resp"])
-        elif cmd["um"] == HPSU.UM_INT:
+        elif cmd["unit"] == HPSU.UM_INT:
             resp = str(response["resp"])
         else:
             resp = str(response["resp"])

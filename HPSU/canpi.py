@@ -51,7 +51,7 @@ class CanPI(object):
         if setValue:
             receiver_id = 0x680
         else:
-            receiver_id = int(cmd["receiver_id"], 16)
+            receiver_id = int(cmd["id"], 16)
         command = cmd["command"]
 
         if setValue:
@@ -67,7 +67,6 @@ class CanPI(object):
             if cmd["um"] == "i":
                 setValue = int(setValue)
                 command = command+" %02X 00" % (setValue)
-                
         msg_data = [int(r, 16) for r in command.split(" ")]
         notTimeout = True
         i = 0
@@ -75,6 +74,7 @@ class CanPI(object):
         try:
             msg = can.Message(arbitration_id=receiver_id, data=msg_data, extended_id=False, dlc=7)
             self.bus.send(msg)
+
         except Exception:
             self.hpsu.printd('exception', 'Error sending msg')
 
@@ -87,9 +87,9 @@ class CanPI(object):
             rcBUS = None
             try:
                 rcBUS = self.bus.recv(timeout)
+                
             except Exception:
                 self.hpsu.printd('exception', 'Error recv')
-
 
             if rcBUS:
                 if (msg_data[2] == 0xfa and msg_data[3] == rcBUS.data[3] and msg_data[4] == rcBUS.data[4]) or (msg_data[2] != 0xfa and msg_data[2] == rcBUS.data[2]):

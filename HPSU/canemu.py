@@ -74,7 +74,7 @@ class CanEMU(object):
                             setValue = 0x10000+setValue
                         command = command+" %02X %02X" % (setValue >> 8, setValue & 0xff)
                         print(command)
-                    if cmd["um"] == "i":
+                    if cmd["unit"] == "i":
                         setValue = int(setValue)
                         command = command+" %02X 00" % (setValue)
                     return "OK"

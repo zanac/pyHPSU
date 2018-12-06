@@ -215,7 +215,6 @@ def main(argv):
             print("%12s - %-10s" % ('COMMAND', 'LABEL'))
             print("%12s---%-10s" % ('------------', '----------'))
             for cmd in n_hpsu.command_dict:
-                if cmd not in "version":
                     print("%12s - %-10s" % (n_hpsu.command_dict[cmd]['name'], n_hpsu.command_dict[cmd]['label']))
         else:
             print("%12s - %-10s - %s" % ('COMMAND', 'LABEL', 'DESCRIPTION'))
@@ -236,7 +235,6 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
     
     arrResponse = []
     for c in n_hpsu.commands:
-        if c['name'] not in "version":
             setValue = None
             for i in cmd:
                 if ":" in i and c["name"] == i.split(":")[0]:
