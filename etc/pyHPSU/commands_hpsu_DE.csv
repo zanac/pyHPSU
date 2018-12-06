@@ -119,9 +119,9 @@ screed_day26;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizu
 screed_day27;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung „- - - -„ definiert
 screed_day28;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung „- - - -„ definiert
 t_out_lim_day;Heizgrenze Tag;Einstellung der automatischen Sommerabschaltung des Heizbetriebs
-t_out_lim_night;Heizgrenze Nacht;Einstellung der Heizgrenze zur "Abschaltung" des Heizkreises während der Absenkzeit
-t_flow_day;T-Vorlauf Tag;Einstellung der Vorlauf-Solltemperatur für den Heizkreis während der Heizzeit bei Betriebsart: "Automatik 1", "Automatik 2", "Heizen"
-t_flow_night;T-Vorlauf Nacht;Einstellung der Vorlauf-Solltemperatur für den Heizkreis während der Absenkzeit bei Betriebsart: "Automatik 1", "Automatik 2", "Absenken"
+t_out_lim_night;Heizgrenze Nacht;Einstellung der Heizgrenze zur Abschaltung des Heizkreises während der Absenkzeit
+t_flow_day;T-Vorlauf Tag;Einstellung der Vorlauf-Solltemperatur für den Heizkreis während der Heizzeit bei Betriebsart: Automatik 1, Automatik 2, Heizen
+t_flow_night;T-Vorlauf Nacht;Einstellung der Vorlauf-Solltemperatur für den Heizkreis während der Absenkzeit bei Betriebsart: Automatik 1,Automatik 2, Absenken
 max_t_flow;Max T-Vorlauf;Die ermittelte Vorlauf-Solltemperatur des Heizkreises wird auf den hier eingestellten Maximalwert begrenzt
 min_t_flow;Min T-Vorlauf;Die ermittelte Vorlauf-Solltemperatur des Heizkreises wird auf den hier eingestellten Minimalwert begrenzt
 hc_adapt;Heizk Adaption;
