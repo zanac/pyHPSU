@@ -25,10 +25,10 @@ class CanPI(object):
             sys.exit(9)
             
         config = configparser.ConfigParser()
-        iniFile = '%s/%s.conf' % (self.hpsu.pathCOMMANDS, "canpi")
+        iniFile = '%s/%s.conf' % (self.hpsu.pathCOMMANDS, "pyhpsu")
         config.read(iniFile)
-        self.timeout = float(self.get_with_default(config=config, section="config", name="timeout", default=0.05))
-        self.retry = float(self.get_with_default(config=config, section="config", name="retry", default=15))
+        self.timeout = float(self.get_with_default(config=config, section="CANPI", name="timeout", default=0.05))
+        self.retry = float(self.get_with_default(config=config, section="CANPI", name="retry", default=15))
             
     
     def get_with_default(self, config, section, name, default):
@@ -51,7 +51,7 @@ class CanPI(object):
         if setValue:
             receiver_id = 0x680
         else:
-            receiver_id = int(cmd["receiver_id"], 16)
+            receiver_id = int(cmd["id"], 16)
         command = cmd["command"]
 
         if setValue:
@@ -59,15 +59,14 @@ class CanPI(object):
             if command[6:8] != "FA":
                 command = command[:3]+"00 FA"+command[2:8]
             command = command[:14]
-            if cmd["um"] == "d":
+            if cmd["unit"] == "deg":
                 setValue = int(setValue)
                 if setValue < 0:
                     setValue = 0x10000+setValue
                 command = command+" %02X %02X" % (setValue >> 8, setValue & 0xff)
-            if cmd["um"] == "i":
+            if cmd["unit"] == "i":
                 setValue = int(setValue)
                 command = command+" %02X 00" % (setValue)
-                
         msg_data = [int(r, 16) for r in command.split(" ")]
         notTimeout = True
         i = 0
@@ -75,6 +74,7 @@ class CanPI(object):
         try:
             msg = can.Message(arbitration_id=receiver_id, data=msg_data, extended_id=False, dlc=7)
             self.bus.send(msg)
+
         except Exception:
             self.hpsu.printd('exception', 'Error sending msg')
 
@@ -87,9 +87,9 @@ class CanPI(object):
             rcBUS = None
             try:
                 rcBUS = self.bus.recv(timeout)
+                
             except Exception:
                 self.hpsu.printd('exception', 'Error recv')
-
 
             if rcBUS:
                 if (msg_data[2] == 0xfa and msg_data[3] == rcBUS.data[3] and msg_data[4] == rcBUS.data[4]) or (msg_data[2] != 0xfa and msg_data[2] == rcBUS.data[2]):

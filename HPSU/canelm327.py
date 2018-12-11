@@ -96,14 +96,14 @@ class CanELM327(object):
         if setValue:
             rc = self.sendCommand("ATSH680")
         else:
-            rc = self.sendCommand("ATSH"+cmd["receiver_id"])
+            rc = self.sendCommand("ATSH"+cmd["id"])
         if rc != "OK":
             #self.eprint("Error setting ID %s (rc:%s)" % (cmd["receiver_id"], rc))
             self.resetInterface()
-            self.hpsu.printd('warning', "Error setting ID %s (rc:%s)" % (cmd["receiver_id"], rc))
+            self.hpsu.printd('warning', "Error setting ID %s (rc:%s)" % (cmd["id"], rc))
             return "KO"
         
-        rc = self.sendCommand(cmd["command"], setValue, cmd["um"])
+        rc = self.sendCommand(cmd["command"], setValue, cmd["unit"])
         if setValue:
             return rc
 

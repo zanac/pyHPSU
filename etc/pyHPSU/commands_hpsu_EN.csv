@@ -1,4 +1,4 @@
-name;label;description
+Temp scrred day 1;label;description
 t_hs;T-HS;The current temperature (TVBH) of the heat generator is displayed in C.
 t_hs_set;T-HS Setpoint;The current Inflow target temperature of the heat generator is displayed in C
 water_pressure;Water Pressure;The current water pressure is displayed in bar.
@@ -6,7 +6,7 @@ t_ext;T-Outside;The average external temperature is displayed C.
 t_dhw;T-DHW;The current temperature of the hot water storage tank is displayed in C. If there is no hot water function activated, --- is displayed.
 t_dhw_set;T-DHW Setpoint;The current target hot water temperature is displayed in C. If there is no hot water function activated, --- is displayed. The current set value is here always the maximum value of all relevant demands for this hot water circuit
 t_return;T-Return;The current return flow temperature of the heat generator is displayed in C. If there is no relevant sensor connected to the heat generator, --- is displayed.
-flow_rate;Flow Rate;
+flow_rate;Flow Rate;The filtered value of the current volume flow in litres per hour
 t_hc;T-HC;The inflow temperature in the direct heating circuit is displayed in C.
 t_hc_set;T-HC Setpoint;The set temperature of the flow in the direct heating circuit is displayed in C.
 status_pump;Status HS Pump;The current status of the internal heat circulation pump in the ROTEX HPSU compact is displayed.
@@ -19,9 +19,9 @@ qsc;Qsc;The quantity of heat in the heat pump for cooling is displayed in kWh.
 qch;Qch;The quantity of heat in the heat pump for heating is displayed in kWh.
 qwp;QWP;The total amount of heat in the heat pump is displayed in kWh.
 qdhw;Qdhw;The quantity of heat for hot water generation is displayed in kWh.
-sw_vers_01;Versione SW 1;
-sw_vers_02;Versione SW 2;
-sw_vers_03;Versione SW 3;
+sw_vers_01;Version SW 1;Version SW 1
+sw_vers_02;Version SW 2;Version SW 2
+sw_vers_03;Version SW 3;Version SW 3
 mode_01;Modo ?;Modo Rotex
 tvbh2;TVBH2 [C];Current heating inflow temperature or temp. after heating support heat exchanger (tV,BH).
 tliq2;Tliq2 [C];Current coolant temperature (tliq2).
@@ -49,3 +49,98 @@ t_dhw_setpoint1;T-ACS nom 1;Nominal value of the hot water temperature in C, whi
 hyst_hp;Hyst HP;Switching threshold hot water charging. Setting of the temperature difference to which the temperature in the domestic hot water storage tank compared to the current target hot water temperature [T-DHW Setpoint] can drop before the heat pump is switched on to provide hot water
 t_flow_cooling;T-Flow Cooling;Setting the cooling inflow target temperature (fixed value) when cooling mode is active
 error;error;errorcode
+outdoor_type;Outdoor type;Type exterior heat pump unit
+indoor_unit;Indoor unit;Type of interior heat pump unit
+func_heating;Function Heating;Setting as to whether there is an additional heat generator (WEZ) for hot water generation and heating support
+hzu;HUZ;Heating support from domestic hot water storage tanks when the minimum temperature is exceeded 
+equi_func;Equilibrium Function;The bivalence function is relevant for operation of the optional ancillary heater based on a backup demand (room heating operation)
+smart_grid;SMART GRID;Smart Grid
+modus_sg;Mode SG;Only if parameter [SMART GRID] = 1:Used for a possible target temperature increase in the case of aSMART GRID start command
+ht_nt_func;HT/NT Function;Setting which specifies which heat sources are switched off when the standard signal is received from the energy supply company (EVU) in the case of the customer having an off-peak tariff network connection
+hat_nt_contact;HT/NT Contact;Specifies whether the HT/NT input is an NC or NO contact
+room_therm;Room thermostat;Configuration of a room thermostat connected to the port J16 on the ROTEX HPSU compact using potential-free contacts
+interlink;Interlink fct;Configuration for systems operating with 2 different inflow target temperatures
+air_purge;Air Purge;Activation of automatic bleeding of the ROTEX HPSU compact and the connected heating circuit 
+max_perf_pump;Max Perform Pump;Upper limit for modulation of the pump output
+min_perf_pump;Min Perform Pump;Lower limit for modulation of the pump output
+outside_conf;Outside Config;Configuration of the optional external temperature sensor RoCon OT1
+storage_conf;Storage Config;Configuration of water heating
+pres_conf;Pressure Config;Configuring the sensor for assessment of the system water pressure
+out_temp_adapt;Outside Temp Adap;Individual adapting for the measured value of the outdoor temperature relevant for the Controller
+power_dhw;Power DHW;Heating output of electric auxiliary heater for hot water generation
+buh_s1_pow;BUH s1 power;Heat capacity of the ancillary electric heater in Stage 1 heating support
+buh_s2_pow;BUH s2 power;Heat capacity of the ancillary electric heater in Stage 2 heating support
+power_biv;Power BIV;Setting limits the output of the heating support
+tdiff_dhw_ch;TDiff-DHW CH;TDiff-DHW CH
+t_vbh1_max;T vbh1 max;Setting limits the inflow temperature (measured at tV, BH) with active heating support function
+equi_temp;Equilibrium Temp;Setting affects the operation of the potential-free AUX switching contact (toggle switch utput A) defined in the parameter [AUX Fct]
+quiet_mode;Quiet Mode;Mode for low-noise operation with reduced output
+aux_fct;AUX Fct;Setting assigns the switching conditions to the potential-free AUX contact (toggle switch output A)
+aux_time;AUX time;AUX switching contact (A) switches with a delay when the switching condition is pending for longer than the set time
+t_dhw_1_min;T-DHW 1 min;Switching threshold storage tank temperature (Tdhw) for AUX switching contact (see parameter [AUX Fct])
+delta_t_ch;Delta-T CH;Set outdoor temperature spread The ROTEX HPSU compact heating circulation pump controls the flow rate in order to achieve the set spread between the inflow target temperature and the return flow temperature (tV, BH – tR1)
+v_var;V var;Current minimum necessary volume flow in the system (calculated value, not configurable)
+t_flow_ch_adj;T-Flow CH adj;Only when parameter [Interlink fct] = On. With a closed cooling RT switching contact, the inflow target temperature is increased by the set value
+t_flow_cool_adj;T-Flow Cooling adj;Only when parameter [Interlink fct] = On. With a closed cooling RT switching contact, the cooling inflow target temperature is reduced by the set value
+min_pressure;Min Pressure;Defines the minimum water pressure
+max_pressure;Max Pressure;Defines the maximum water pressure
+max_pressure_drop;Max Pressuredrop;Defines the maximum acceptable pressure drop in the heating system
+setpoint_pressure;Set Point Pressure;Defines the set water pressure
+hc_func;HC Function;Setting defines the type of inflow temperature control
+t_frost_protect;T-Frost Protect;0=No frost protection of the heating circuit, Otherwise: If the outside temperature falls below the programmed value, the system switches into the frost protection mode (switches the pumps on). The function ceases once the outside temperature has risen to the set value +1 K 
+insulation;Insulation;Setting the insulation standard of the building. This affects the way the heating curve and the heating times automatically adapt to the outside temperature.
+screed;Screed;Function for screed drying
+screed_day1;Temp scrred day 1;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day2;Temp scrred day 2;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day3;Temp scrred day 3;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day4;Temp scrred day 4;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day5;Temp scrred day 5;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day6;Temp scrred day 6;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day7;Temp scrred day 7;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day8;Temp scrred day 8;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day9;Temp scrred day 9;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day10;Temp scrred day 10;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day11;Temp scrred day 11;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day12;Temp scrred day 12;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day13;Temp scrred day 13;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day14;Temp scrred day 14;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day15;Temp scrred day 15;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day16;Temp scrred day 16;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day17;Temp scrred day 17;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day18;Temp scrred day 18;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day19;Temp scrred day 19;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day20;Temp scrred day 20;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day21;Temp scrred day 21;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day22;Temp scrred day 22;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day23;Temp scrred day 23;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day24;Temp scrred day 24;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day25;Temp scrred day 25;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day26;Temp scrred day 26;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day27;Temp scrred day 27;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+screed_day28;Temp scrred day 28;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+t_out_lim_day;T-Outside lim day;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
+t_out_lim_night;T-Outside lim night;"Parameter for setting the heating limit for ""Switch-off"" of the heating circuit during economy mode"
+t_flow_day;T-Flow Day;"Setting the inflow target temperature for the heating circuit during the heating time when in operating mode: ""Automatic 1"", ""Automatic 2"", ""Heating"""
+t_flow_night;T-Flow night;" Setting the inflow target temperature for the heating circuit during the setback time when in operating mode: ""Automatic 1"", ""Automatic 2"", ""Reducing"""
+max_t_flow;Max T-Flow;The inflow temperature determined for the heating circuit is limited to the maximum value set here
+min_t_flow;Min T-Flow;The inflow temperature determined for the heating circuit is limited to the minimum value set here
+hc_adapt;HC Adaption;HC Adapation
+start_tout_cool;Start T-Out Cooling;Setting from which outside temperature the cooling operation with the highest cooling infeed target temperature
+max_tout_cool;Max T-Out Cooling;Setting to determine from which outdoor temperature the lowest cooling flow temperature
+t_flow_cool_start;T-Flow Cooling start;Setting the cooling inflow target temperature at the start of cooling mode
+t_flow_cool_max;T-Flow Cooling max;Setting the minimum cooling inflow target temperature. This is kept constant relative to the outside temperature
+min_t_flow_cool;Min T-Flow Cooling;Setting the absolute lower limit of the cooling inflow target temperature. The limitation is effective if a lower cooling inflow target temperature is determined based on other parameter settings
+t_flow_cool;T-Flow Cooling;Setting the cooling inflow target temperature (fixed value) when cooling mode is active
+cool_setpoint_adj;Cooling Setpoint adj;Parallel displacement of the cooling characteristic curve to match the set value
+circ_pump_dhw;Circl-Pump DHW;Setting for activating a circulation pump
+circ_pump_interval;Circl-Pump Interval;Setting the interval control for an optional circulation pump
+anti_leg_day;Anti-Legionella day;Setting the day for the thermal disinfection of the circulating tank
+anti_leg_time;Anti-Legionella time;Setting the start time of the thermal disinfection of the hot water circulating tank
+anti_leg_temp;Anti-Legionella temp;Setting the hot water target temperature during thermal disinfection of the hot water circulating tank
+max_dhw_loading;Max DHW loading;Setting limits the time period for hot water generation to the set target value
+dhw_off_time;DHW Off Time;Setting the block time following completion or interruption of a hot water generation cycle. New demand of hot water generation is satisfied only after expiry of this block time
+one_hot_water;1x Hot Water;Start of the one-off heating up of the hot water and the set value [T-DHW Setpoint 1], independent of the heating programmes
+hyst_hp;Hyst HP;Switching threshold hot water charging
+timer_boh;Timer BOH;Delay time after which the reserve heating may support the heat pump in hot water charging
+t_reduced;T-Reduced;Target room temperature for the setback times for the permanent timer programmes [Automatic 1] and [Automatic 2]
+t_absence;T-Absence;Target room temperature for the setback times for the temporary timer programmes  [Away] and [Vacation]
