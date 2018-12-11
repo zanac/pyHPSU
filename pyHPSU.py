@@ -295,7 +295,7 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
             print(arrResponse)
     elif output_type == "CSV":
         for r in arrResponse:
-            print("%s\t%s\t%s" % (r["timestamp"], r["name"], r["resp"]))
+            print("%s,%s,%s" % (r["timestamp"], r["name"], r["resp"]))
     elif output_type == "BACKUP":
         print("Writing Backup to " + str(backup_file)) 
         try:
@@ -313,25 +313,7 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
         hpsu_plugin.pushValues(vars=arrResponse)
 
 
-    #elif output_type.upper() == "EMONCMS":
-    #    module = importlib.import_module("HPSU.plugins." + output_type.lower())
-    #    hpsu_plugin = module.output_type.lower()(hpsu=n_hpsu, logger=logger, config_file=conf_file)
-    #    hpsu_plugin.pushValus(vars=arrRespone)
-
-    #elif output_type.upper() == "DB":
-    #    module = importlib.import_module("HPSU.plugins." + output_type.lower())
-    #    hpsu_plugin = module.output_type.lower()(hpsu=n_hpsu, logger=logger, config_file=conf_file)
-    #    hpsu_plugin.pushValues(vars=arrResponse)
-
-    #elif output_type.upper() == "FHEM":
-    #    module = importlib.import_module("HPSU.plugins." + output_type.lower())
-    #    hpsu_plugin = module.output_type.lower()(hpsu=n_hpsu, logger=logger, config_file=conf_file)
-    #    hpsu_plugin.pushValues(vars=arrResponse)
-
-    #elif output_type.upper() == "HOMEMATIC":
-    #    module = importlib.import_module("HPSU.plugins." + output_type.lower())
-    #    hpsu_plugin = module.homematic(hpsu=n_hpsu, logger=logger, config_file=conf_file)
-    #    hpsu_plugin.pushValues(vars=arrResponse)
+    
 
 
 if __name__ == "__main__":

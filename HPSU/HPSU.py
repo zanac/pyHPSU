@@ -71,45 +71,7 @@ class HPSU(object):
                         self.commands.append(self.command_dict[single_command])
                     if (self.command_dict[single_command]["writable"]=="true"):
                         self.backup_commands.append(self.command_dict[single_command]["name"])
-
-            """ with open('%s/commands_hpsu.csv' % self.pathCOMMANDS, 'rU',encoding='utf-8') as csvfile:
-                pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
-                
-                
-                for row in pyHPSUCSV:
-                    if len(row)==0:
-                        pass    # skip empty lines
-                    elif row[0]=="name":
-                        pass    # skip the header
-                    elif row[0].lower().startswith("version"):
-                        name=row[0].lower()
-                        desc=row[1]
-                        c ={ "name":name,
-                        "desc":desc}
-                        self.command_dict.update({name:c})
-                    else:
-                        name = row[0]
-                        command = row[1]
-                        receiver_id = row[2]
-                        um = row[3]
-                        divisor = row[4]
-                        flagRW = row[5]
-                        label = hpsuDict[name]["label"]
-                        desc = hpsuDict[name]["desc"]
-                    
-                        c = {"name":name,
-                            "desc":desc,
-                            "label":label,
-                            "command":command,
-                            "receiver_id":receiver_id,
-                            "um":um,
-                            "divisor":div,
-                            "flagRW":flagRW}
-                
-                        self.command_dict.update({name:c})
-                        if (name in listCmd) or (len(listCmd) == 0):                        
-                            self.commands.append(self.command_dict[name]) """
-                
+            
                     
         
         self.driver = driver
@@ -140,7 +102,7 @@ class HPSU(object):
         else:
             print("%s - %s" % (level, msg))
     
-    """ def sendCommandWithParse(self, cmd, setValue=None, priority=1):
+    def sendCommandWithParse(self, cmd, setValue=None, priority=1):
         response = None
         verbose = "1"        
         i = 1
@@ -157,13 +119,8 @@ class HPSU(object):
                 i += 1
                 time.sleep(2.0)
         return response
- """
     
-    #
-    # don't found out where this function is called.....
-    #
-    
-    """ def getParameterValue(self, parameter, priority=1):
+    def getParameterValue(self, parameter, priority=1):
         print("getParameterValue")
         response = None
         cmd = None
@@ -177,13 +134,9 @@ class HPSU(object):
         if cmd:
             response = self.sendCommandWithParse(cmd=cmd, priority=priority)
         
-        return response """
-
-
-    #
-    # don't found out where this function is called.....
-    #
-    """ def setParameterValue(self, parameter, setValue, priority=1):
+        return response 
+    
+    def setParameterValue(self, parameter, setValue, priority=1):
         response = None
         cmd = None
         for c in self.commands:
@@ -194,7 +147,7 @@ class HPSU(object):
         if cmd:
             response = self.sendCommandWithParse(cmd=cmd, setValue=setValue, priority=priority)
         
-        return response """
+        return response 
                 
 
     def initInterface(self, portstr=None, baudrate=38400, init=False):
