@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 
 
+
+# Entries in pyhpsu.conf
+# [DATABASE]
+# DB_HOST = localhost
+# DB_PORT = 3306
+# DB_NAME = HPSU
+# DB_USER = HPSU_USER
+# DB_PASSWORD = HPSU_PASSWORD
+
 import mysql.connector
 from mysql.connector import errorcode
 import configparser

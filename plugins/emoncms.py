@@ -8,7 +8,7 @@ import os
 
 # config inf conf_file (defaults):
 # [EMONCMS]
-# URL = https://emoncms.or
+# URL = https://emoncms.org
 # node_1 = t_hs, t_hs_setpoint
 # node_2 = qoh....
 # ......

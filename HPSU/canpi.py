@@ -25,10 +25,10 @@ class CanPI(object):
             sys.exit(9)
             
         config = configparser.ConfigParser()
-        iniFile = '%s/%s.conf' % (self.hpsu.pathCOMMANDS, "canpi")
+        iniFile = '%s/%s.conf' % (self.hpsu.pathCOMMANDS, "pyhpsu")
         config.read(iniFile)
-        self.timeout = float(self.get_with_default(config=config, section="config", name="timeout", default=0.05))
-        self.retry = float(self.get_with_default(config=config, section="config", name="retry", default=15))
+        self.timeout = float(self.get_with_default(config=config, section="CANPI", name="timeout", default=0.05))
+        self.retry = float(self.get_with_default(config=config, section="CANPI", name="retry", default=15))
             
     
     def get_with_default(self, config, section, name, default):
