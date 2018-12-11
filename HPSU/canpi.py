@@ -59,12 +59,12 @@ class CanPI(object):
             if command[6:8] != "FA":
                 command = command[:3]+"00 FA"+command[2:8]
             command = command[:14]
-            if cmd["um"] == "d":
+            if cmd["unit"] == "deg":
                 setValue = int(setValue)
                 if setValue < 0:
                     setValue = 0x10000+setValue
                 command = command+" %02X %02X" % (setValue >> 8, setValue & 0xff)
-            if cmd["um"] == "i":
+            if cmd["unit"] == "i":
                 setValue = int(setValue)
                 command = command+" %02X 00" % (setValue)
         msg_data = [int(r, 16) for r in command.split(" ")]

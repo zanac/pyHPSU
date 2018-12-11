@@ -18,10 +18,12 @@ import time
 class HPSU(object):
     commands = []
     listCommands = []
-    UM_DEGREE = "d"
-    UM_BOOLEAN = "b"
-    UM_PERCENT = "perc"
+    UM_DEGREE = "deg"
+    UM_BOOLEAN = "bool"
+    UM_PERCENT = "percent"
     UM_INT = "i"
+    UM_BAR = "bar"
+    UM_HOUR = "hour"
     driver = None
     
     pathCOMMANDS = "/etc/pyHPSU"    
@@ -32,8 +34,10 @@ class HPSU(object):
         self.listCommands = []          # all usable commands from csv
         self.logger = logger
         self.command_dict={}
+        self.backup_commands=[]
         
         listCmd = [r.split(":")[0] for r in cmd]
+
         if not self.listCommands: #if we don't get a dict with commands
 
             # get language, if non given, take it from the system
@@ -54,6 +58,7 @@ class HPSU(object):
                     label = row[1]
                     desc = row[2]
                     hpsuDict.update({name:{"label":label, "desc":desc}})
+
             # read all known commands
 
             with open('%s/commands_hpsu.json' % self.pathCOMMANDS, 'rU',encoding='utf-8') as jsonfile:
@@ -61,11 +66,11 @@ class HPSU(object):
                 self.command_dict=self.all_commands["commands"]
                 for single_command in self.command_dict:
                     if single_command in hpsuDict:
-                        self.command_dict[single_command].update({ "desc" : hpsuDict[single_command]["desc"]})
-                        self.command_dict[single_command].update({ "label" : hpsuDict[single_command]["label"]})
-
+                        self.command_dict[single_command].update({ "label" : hpsuDict[single_command]["label"], "desc" : hpsuDict[single_command]["desc"]})
                     if (single_command in listCmd) or (len(listCmd) == 0):                        
                         self.commands.append(self.command_dict[single_command])
+                    if (self.command_dict[single_command]["writable"]=="true"):
+                        self.backup_commands.append(self.command_dict[single_command]["name"])
 
             """ with open('%s/commands_hpsu.csv' % self.pathCOMMANDS, 'rU',encoding='utf-8') as csvfile:
                 pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
@@ -87,7 +92,7 @@ class HPSU(object):
                         command = row[1]
                         receiver_id = row[2]
                         um = row[3]
-                        div = row[4]
+                        divisor = row[4]
                         flagRW = row[5]
                         label = hpsuDict[name]["label"]
                         desc = hpsuDict[name]["desc"]
@@ -98,7 +103,7 @@ class HPSU(object):
                             "command":command,
                             "receiver_id":receiver_id,
                             "um":um,
-                            "div":div,
+                            "divisor":div,
                             "flagRW":flagRW}
                 
                         self.command_dict.update({name:c})
@@ -199,9 +204,9 @@ class HPSU(object):
             self.can.initInterface()
     
     # funktion to set/read a value
-    def sendCommand(self, cmd, setValue=None, priority=1):     
+    def sendCommand(self, cmd, setValue=None, priority=1):    
         if setValue:
-            FormattedSetValue=int(setValue)*int(cmd["divisor"])
+            FormattedSetValue=float(setValue)*int(cmd["divisor"])
             setValue=FormattedSetValue 
         rc = self.can.sendCommandWithID(cmd=cmd, setValue=setValue, priority=priority)
         if rc not in ["KO", "OK"]:
@@ -228,15 +233,15 @@ class HPSU(object):
         
         if cmd["unit"] == HPSU.UM_INT:
             if hexValues[2] == 0xfa:
-                resp = self.toSigned(hexValues[5], cmd) // int(cmd["divisor"])
+                resp = self.toSigned(hexValues[5], cmd) / int(cmd["divisor"])
             else:
-                resp = self.toSigned(hexValues[3], cmd) // int(cmd["divisor"])
+                resp = self.toSigned(hexValues[3], cmd) / int(cmd["divisor"])
         else:
             if hexValues[2] == 0xfa:
-                resp = self.toSigned(hexValues[5]*0x100+hexValues[6], cmd) // int(cmd["divisor"])
+                resp = self.toSigned(hexValues[5]*0x100+hexValues[6], cmd) / float(cmd["divisor"])
             else:
-                resp = self.toSigned(hexValues[3]*0x100+hexValues[4], cmd) // int(cmd["divisor"])
-        
+                resp = self.toSigned(hexValues[3]*0x100+hexValues[4], cmd) / float(cmd["divisor"])
+
         if verbose == "2":
             timestamp = datetime.datetime.now().isoformat()
         else:
@@ -259,6 +264,7 @@ class HPSU(object):
             if verbose == "2":
                 resp = "ON" if resp == 1 else "OFF"
         elif cmd["unit"] == HPSU.UM_PERCENT:
+            resp = int(response["resp"])
             if verbose == "2":
                 resp = "%s%%" % int(response["resp"])
         elif cmd["unit"] == HPSU.UM_INT:

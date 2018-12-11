@@ -76,7 +76,7 @@ class db():
         # gets command from a dict HPSU created
         # Looks, if a version id could be found
         # if not or version_id is higher then in DB, commands are put into DB
-        self.commands_file_version=self.hpsu.command_dict['version']['desc']
+        self.commands_file_version=self.hpsu.all_commands["version"]
         self.db_conn= mysql.connector.connect(**self.db_params)
         cursor=self.db_conn.cursor()
         cursor.execute("SELECT descr from commands WHERE name = 'version'")

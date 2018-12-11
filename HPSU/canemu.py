@@ -68,7 +68,7 @@ class CanEMU(object):
                     if command[6:8] != "FA":
                         command = command[:3]+"00 FA"+command[2:8]
                     command = command[:14]
-                    if cmd["um"] == "d":
+                    if cmd["unit"] == "d":
                         setValue = int(setValue)
                         if setValue < 0:
                             setValue = 0x10000+setValue
