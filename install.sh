@@ -5,6 +5,8 @@ CONF_DIR="/etc/pyHPSU"
 BIN_DIR="/usr/bin/"
 PACKAGE_DIR="/usr/share/doc/packages/pyHPSU"
 DIST_DIR="/usr/lib/python3/dist-packages/HPSU"
+SYSTEMD_DIR="/etc/systemd/system/hpsud.service"
+
 
 
 if [ ! -d $CONF_DIR ]; then
@@ -27,11 +29,19 @@ if [ ! -d $DIST_DIR ]; then
 	mkdir -p $DIST_DIR
 fi
 
+if [ -d $SYSTEMD_DIR ]; then
+	echo "Creting directory for systemd files"
+	mkdir -p $SYSTEMD_DIR
+fi
+
 # copy configs
-cp etc/pyHPSU/emoncms.conf $CONF_DIR/emoncms.conf
-cp etc/pyHPSU/canpi.conf $CONF_DIR/canpi.conf
 cp etc/pyHPSU/commands* $CONF_DIR/
-cp etc/pyHPSU/pyhpsu.conf $CONF_DIR/
+if [ ! -f $CONF_DIR/pyhpsu.conf ]; then
+	cp etc/pyHPSU/pyhpsu.conf $CONF_DIR/
+else 
+	cp etc/pyHPSU/pyhpsu.conf $CONF_DIR/pyhpsu.conf.new
+fi
+
 
 # copy the rest
 #cp -r can $SHARE_DIR 
@@ -41,8 +51,10 @@ cp -r examples $PACKAGE_DIR
 cp -r plugins $DIST_DIR
 
 # copy service file
-#cp hpsud.service /etc/systemd/system/
-#systemctl --system daemon-reload
+cp hpsud.service $SYSTEMD_DIR
+if [ -x /bin/systemctl ]; then 
+	systemctl --system daemon-reload
+fi
 
 # copy binarys
 cp pyHPSU.py $BIN_DIR
