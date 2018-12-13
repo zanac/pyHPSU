@@ -110,8 +110,8 @@ At the "jobs" section add the value and the period (as shown by the examples) an
 e.g.  
 root@rotex:~# pyHPSU.py -a 
 
-3. With Message Broker (only needed with serial intrerfaces like Elm327)
-A serial line can only be used by one process at a time. SO, if you query more then one value at a time or you run multiple instances of pyHPSU.py you can run in errors.  
+3. With Message Broker (only needed with serial intrerfaces like Elm327)  
+A serial line can only be used by one process at a time. So, if you query more then one value at a time or you run multiple instances of pyHPSU.py you can run in errors.  
 In this mode, every query from pyHPSU.py is sent to the pyHPSUD.py. This daemon deals with the message broker "rabbitmq" which sends one query at a time and sorts the answers to the correct sending process.  
 For that,install the message broker "rabbitmq".
 You also have to configure the config file /etc/pyHPSU/pyhpsu.conf at section "PYHPSUD".  
