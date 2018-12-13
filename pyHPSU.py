@@ -43,7 +43,8 @@ def main(argv):
     logger = None
     pathCOMMANDS = "/etc/pyHPSU"
     global conf_file
-    conf_file = "/etc/pyHPSU/pyhpsu.conf"
+    global default_conf_file
+    default_conf_file = "/etc/pyHPSU/pyhpsu.conf"
     read_from_conf_file=False
     global auto
     global ticker
@@ -74,11 +75,11 @@ def main(argv):
             PLUGIN_LIST.append(PLUGIN)
 
     try:
-        opts, args = getopt.getopt(argv,"Ahc:p:d:v:o:l:g:f:b:r:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log=", "config_file="])
+        opts, args = getopt.getopt(argv,"ahc:p:d:v:o:l:g:f:b:r:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log=", "config_file="])
     except getopt.GetoptError:
         print('pyHPSU.py -d DRIVER -c COMMAND')
         print(' ')
-        print('           -d  --auto            do atomatic queries')
+        print('           -a  --auto            do atomatic queries')
         print('           -f  --config          Configfile, overrides given commandline arguments')
         print('           -d  --driver          driver name: [ELM327, PYCAN, EMU, HPSUD], Default: PYCAN')
         print('           -p  --port            port (eg COM or /dev/tty*, only for ELM327 driver)')
@@ -93,7 +94,7 @@ def main(argv):
         sys.exit(2)
 
     for opt, arg in opts:
-        if opt in ("-A", "--auto"):
+        if opt in ("-a", "--auto"):
             auto = True
         if opt in ("-f", "--config"):
             read_from_conf_file = True
@@ -130,7 +131,12 @@ def main(argv):
     if verbose == "2":
         locale.setlocale(locale.LC_ALL, '')
 
-# get config from file if given....
+    # config if in auto mode
+    if auto:
+        read_from_conf_file=True
+        conf_file=default_conf_file
+
+    # get config from file if given....
     if read_from_conf_file:
         if conf_file=="":
             print("Error, please provide a config file")
@@ -182,18 +188,19 @@ def main(argv):
     # Read them from config and group them
     #
     # create dictionary for the jobs
-    timed_jobs=dict()
-    if read_from_conf_file:                                         # if config is read from file
-        if len(config.options('JOBS')):                             # if there are configured jobs
-            for each_key in config.options('JOBS'):                 # for each value to query
-                job_period=config.get('JOBS',each_key)              # get the period
-                if not "timer_" + job_period in timed_jobs.keys():  # if this period isn't still in the dict
-                    timed_jobs["timer_" + job_period]=[]            # create a list for this period
-                timed_jobs["timer_" + job_period].append(each_key)  # and add the value to this period
-            wanted_periods=list(timed_jobs.keys())
-        else:
-            print("Error, please specify a value to query in config file ")
-            sys.exit(9)
+    if auto:
+        timed_jobs=dict()
+        if read_from_conf_file:                                         # if config is read from file
+            if len(config.options('JOBS')):                             # if there are configured jobs
+                for each_key in config.options('JOBS'):                 # for each value to query
+                    job_period=config.get('JOBS',each_key)              # get the period
+                    if not "timer_" + job_period in timed_jobs.keys():  # if this period isn't still in the dict
+                        timed_jobs["timer_" + job_period]=[]            # create a list for this period
+                    timed_jobs["timer_" + job_period].append(each_key)  # and add the value to this period
+                wanted_periods=list(timed_jobs.keys())
+            else:
+                print("Error, please specify a value to query in config file ")
+                sys.exit(9)
 
 
     #
@@ -314,7 +321,6 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
 
 
     
-
 
 if __name__ == "__main__":
     main(sys.argv[1:])
