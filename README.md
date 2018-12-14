@@ -1,5 +1,3 @@
-# Welcome to pyHPSU
-pyHPSU is a set of python scripts and other files to read and modify the values of the Rotex® HPSU (possibly) also identical heating pumps from daikin®).
 
 **Using pyHPSU may cause _damage_ to the heating system. The use of pyHPSU is at your own risk. The creator can not be held responsible for damage.**
 
@@ -7,6 +5,8 @@ pyHPSU is a set of python scripts and other files to read and modify the values 
 
 **This software is not supported by the manufacturer!!!!**
 
+# Welcome to pyHPSU
+pyHPSU is a set of python scripts and other files to read and modify the values of the Rotex® HPSU (possibly) also identical heating pumps from daikin®).
 
 It is based on the idea and the work of 
  **[Vanni Brutto alias Zanac](https://github.com/zanac/pyHPSU)**
