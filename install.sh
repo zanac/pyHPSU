@@ -29,7 +29,11 @@ fi
 
 # copy configs
 cp etc/pyHPSU/commands* $CONF_DIR/
-cp etc/pyHPSU/pyhpsu.conf $CONF_DIR/
+if [ -f /etc/pyHPSU/pyhpsu.conf ]; then
+	cp etc/pyHPSU/pyhpsu.conf $CONF_DIR/pyhpsu.conf.new
+else 
+	cp etc/pyHPSU/pyhpsu.conf $CONF_DIR/
+fi
 
 # copy the rest
 #cp -r can $SHARE_DIR 
