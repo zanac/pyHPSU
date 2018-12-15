@@ -28,8 +28,6 @@ if [ ! -d $DIST_DIR ]; then
 fi
 
 # copy configs
-cp etc/pyHPSU/emoncms.conf $CONF_DIR/emoncms.conf
-cp etc/pyHPSU/canpi.conf $CONF_DIR/canpi.conf
 cp etc/pyHPSU/commands* $CONF_DIR/
 cp etc/pyHPSU/pyhpsu.conf $CONF_DIR/
 
