@@ -21,7 +21,7 @@ class HPSU(object):
     UM_DEGREE = "deg"
     UM_BOOLEAN = "bool"
     UM_PERCENT = "percent"
-    UM_INT = "i"
+    UM_INT = "int"
     UM_BAR = "bar"
     UM_HOUR = "hour"
     driver = None
@@ -186,9 +186,9 @@ class HPSU(object):
         
         if cmd["unit"] == HPSU.UM_INT:
             if hexValues[2] == 0xfa:
-                resp = self.toSigned(hexValues[5], cmd) / int(cmd["divisor"])
+                resp = self.toSigned(hexValues[5], cmd) // int(cmd["divisor"])
             else:
-                resp = self.toSigned(hexValues[3], cmd) / int(cmd["divisor"])
+                resp = self.toSigned(hexValues[3], cmd) // int(cmd["divisor"])
         else:
             if hexValues[2] == 0xfa:
                 resp = self.toSigned(hexValues[5]*0x100+hexValues[6], cmd) / float(cmd["divisor"])

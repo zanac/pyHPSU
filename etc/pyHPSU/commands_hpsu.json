@@ -87,7 +87,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "false", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"runtime_comp" : { 
 			"name" : "runtime_comp", 
@@ -191,7 +191,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "i"
+			"unit" : "int"
 		},
 		"tvbh2" : { 
 			"name" : "tvbh2", 
@@ -239,7 +239,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "false", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"mode" : { 
 			"name" : "mode", 
@@ -247,7 +247,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "false", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"pump" : { 
 			"name" : "pump", 
@@ -263,7 +263,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "false", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"ehs" : { 
 			"name" : "ehs", 
@@ -279,7 +279,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "false", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"bpv" : { 
 			"name" : "bpv", 
@@ -399,7 +399,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "false", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"outdoor_type" : { 
 			"name" : "outdoor_type", 
@@ -407,7 +407,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"indoor_unit" : { 
 			"name" : "indoor_unit", 
@@ -415,7 +415,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"func_heating" : { 
 			"name" : "func_heating", 
@@ -423,7 +423,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"hzu" : { 
 			"name" : "hzu", 
@@ -431,7 +431,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"equi_func" : { 
 			"name" : "equi_func", 
@@ -439,7 +439,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"smart_grid" : { 
 			"name" : "smart_grid", 
@@ -447,7 +447,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"modus_sg" : { 
 			"name" : "modus_sg", 
@@ -455,7 +455,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"ht_nt_func" : { 
 			"name" : "ht_nt_func", 
@@ -463,7 +463,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"ht_nt_contact" : { 
 			"name" : "hat_nt_contact", 
@@ -471,7 +471,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"room_therm" : { 
 			"name" : "room_therm", 
@@ -479,7 +479,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"interlink" : { 
 			"name" : "interlink", 
@@ -487,7 +487,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"air_purge" : { 
 			"name" : "air_purge", 
@@ -495,7 +495,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"max_perf_pump" : { 
 			"name" : "max_perf_pump", 
@@ -607,7 +607,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"aux_fct" : { 
 			"name" : "aux_fct", 
@@ -615,7 +615,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"aux_time" : { 
 			"name" : "aux_time", 
@@ -703,7 +703,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"t_frost_protect" : { 
 			"name" : "t_frost_protect", 
@@ -719,7 +719,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"screed" : { 
 			"name" : "screed", 
@@ -727,7 +727,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"screed_day1" : { 
 			"name" : "screed_day1", 
@@ -1007,7 +1007,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"start_tout_cool" : { 
 			"name" : "start_tout_cool", 
@@ -1071,7 +1071,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"circ_pump_interval" : { 
 			"name" : "circ_pump_interval", 
@@ -1079,7 +1079,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"anti_leg_day" : { 
 			"name" : "anti_leg_day", 
@@ -1087,7 +1087,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"anti_leg_time" : { 
 			"name" : "anti_leg_time", 
@@ -1095,7 +1095,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "val"
+			"unit" : "int"
 		},
 		"anti_leg_temp" : { 
 			"name" : "anti_leg_temp", 
