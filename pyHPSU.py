@@ -43,6 +43,7 @@ def main(argv):
     logger = None
     pathCOMMANDS = "/etc/pyHPSU"
     global conf_file
+    conf_file = None
     global default_conf_file
     default_conf_file = "/etc/pyHPSU/pyhpsu.conf"
     read_from_conf_file=False
@@ -138,7 +139,7 @@ def main(argv):
 
     # get config from file if given....
     if read_from_conf_file:
-        if conf_file=="":
+        if conf_file==None:
             print("Error, please provide a config file")
             sys.exit(9)
         else:
@@ -148,8 +149,6 @@ def main(argv):
             except IOError:
                 print("Error: config file not found")
                 sys.exit(9)
-
-
         config.read(conf_file)
         if config.has_option('PYHPSU','PYHPSU_DEVICE'):
             driver=config['PYHPSU']['PYHPSU_DEVICE']
@@ -160,7 +159,8 @@ def main(argv):
         if config.has_option('PYHPSU','OUTPUT_TYPE'):
             output_type=config['PYHPSU']['OUTPUT_TYPE']
 
-
+    else:
+        conf_file=default_conf_file
 
     #
     # now we should have all options...let's check them
@@ -266,12 +266,14 @@ def main(argv):
 
 
 def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
-    global conf_file
     global backup_file
     # really needed? Driver is checked above
     #if not driver:
     #    print("Error, please specify driver [ELM327 or PYCAN, EMU, HPSUD]")
     #    sys.exit(9)
+
+
+    print(conf_file)
     arrResponse = []
     
     for c in n_hpsu.commands:
