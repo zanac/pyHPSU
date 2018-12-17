@@ -174,7 +174,7 @@ class HPSU(object):
         return (datetime.datetime.now() - epoch).total_seconds() * 1000.0
         
     def toSigned(self, n, cmd):
-        if cmd["unit"] == "d":
+        if cmd["unit"] == "deg":
             n = n & 0xffff
             return (n ^ 0x8000) - 0x8000
         else:
