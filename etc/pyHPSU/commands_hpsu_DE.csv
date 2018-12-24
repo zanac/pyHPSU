@@ -19,9 +19,9 @@ qsc;Energie Kuehlung;Angezeigt wird die Waermemenge der Waermepumpe fuer den Kue
 qch;Energie Heizung;Angezeigt wird die Waermemenge der Waermepumpe fuer den Heizbetrieb in kWh.
 qwp;Energie erzeugt;Angezeigt wird die gesamte Waermemenge der Waermepumpe in kWh.
 qdhw;Energie fuer WW;Angezeigt wird die Waermemenge fuer die Warmwasserbereitung in kWh.
-sw_vers_01;Versione SW 1;
-sw_vers_02;Versione SW 2;
-sw_vers_03;Versione SW 3;
+sw_vers_01;Version SW 1;Software Version 1
+sw_vers_02;Version SW 2;Software Version 2
+sw_vers_03;Version SW 3;Software version 3
 mode_01;Modus;Modus Rotex
 tvbh2;TVBH2 [C];Aktuelle Temperatur Heizung Vorlauf ggf. nach Heizungsunterstuetzungswaermetauscher (tV,BH).
 tliq2;Tliq2 [C];Aktuelle Kältemitteltemperatur (tliq2).
@@ -47,5 +47,100 @@ t_room3_setpoint;T Room 3 Setpoint; Setpoint 3 value
 heat_slope;Heat-Slope; Heat Slope
 t_dhw_setpoint1;T-WW Soll 1;Sollwert der Warmwassertemperatur in Grad C, welche fuer den 1. Schaltzeitzyklus der Zeitprogramme [Automatik 1] und [Automatik 2] gilt
 hyst_hp;Hysterese WW; Einstellung der Hysterese fuer die Warmwasserbereitung. Die Warmwasserbereitung wird aktiviert, wenn die am Warmwasserfuehler gemessene Temperatur unter die aktuelle Warmwasser-Solltemperatur minus dem hier eingestellten Wert liegt. Eine Warmwasserbereitung istbeendet, wenn die am Warmwasserfuehler gemessene Temperatur ueber der aktuellen Warmwasser-Solltemperatur liegt
-t_flow_cooling;T-Flow Kuehlung;
-error;Fehler;Fehlercode
+t_flow_cooling;T-Flow Kuehlung;T-Flow Kühlung
+error;Fehler;Fehlercodename
+outdoor_type;Aussengerät;Typ Wärmepumpenaußengerät
+indoor_unit;Innengerät;Typ Wärmepumpeninnengerät
+func_heating;Funktion EHS;Einstellung ob zusätzlicher Wärmeerzeuger (WEZ) für Warmwasserbereitung und Heizungsunterstützung vorhanden ist
+hzu;HZ Unterstützung;Heizungsunterstützung aus Warmwasserspeicher, wenn Mindesttemperatur überschritten ist
+equi_func;Bivalenzfunktion;Die Bivalenzfunktion ist für den Betrieb des optionalen Zuheizers aufgrund einer Backup-Anforderung (Raumheizbetrieb) relevant.
+smart_grid;SMART GRID;Auswertung des SG-Signals
+modus_sg;Modus SG;Nur wenn Parameter [SMART GRID] = 1: Dient zu einer möglichen Soll-Temperaturerhöhung bei einem SMART GRID-Einschaltbefehl
+ht_nt_func;HT/NT Funktion;Einstellung, welche Wärmequellen ausgeschaltet werden, wenn bei einem Niedertarif-Netzanschluss das vom Energieversorgungsunternehmen (EVU) ausgegebene Signal für Hochtarif empfangen wird.
+hat_nt_contact;HT/NT Anschluss;Festlegung, ob der HT-/NT-Eingang als Öffner- oder Schließerkontakt ausgewertet wird
+room_therm;Raumthermostat;Konfiguration eines am Anschluss J16 der ROTEX HPSU compact angeschlossenen Raumthermostats mit potenzialfreien Kontakten
+interlink;Interlinkfunktion;Konfiguration für Anlagen, die mit 2 verschiedenen Vorlauf-Solltemperaturen betrieben werden
+air_purge;Entlüftungsfunktion;Aktivierung der automatischen Entlüftung der ROTEX HPSU compact und des angeschlossenen Heizkreislaufs
+max_perf_pump;Max Leistung Pumpe;Obergrenze für die Modulation der Pumpenleistung
+min_perf_pump;Min Leistung Pumpe;Untergrenze für die Modulation der Pumpenleistung
+outside_conf;SKonfig T-Aussen;Konfiguration des optionalen Außentemperaturfühlers RoCon OT1
+storage_conf;SKonfig T-WW;Konfiguration der Warmwasserbereitung
+pres_conf;SKonfig Druck;Konfiguration des Sensors zur Erfassung des Wasserdrucks der Anlage
+out_temp_adapt;AF Anpassung;Individuelle Anpassung für den Messwert der für die Regelung relevanten Außentemperatur
+power_dhw;Leistung WW;Wärmeleistung des elektrischen Zuheizers für Warmwasserbereitung
+buh_s1_pow;Leistung EHS Stufe 1;Wärmeleistung des elektrischen Zuheizers bei Heizungsunterstützung Stufe 1
+buh_s2_pow;Leistung EHS Stufe 2;Wärmeleistung des elektrischen Zuheizers bei Heizungsunterstützung Stufe 2
+power_biv;Leistung BIV;Einstellung begrenzt Leistung der Heizungsunterstützung
+tdiff_dhw_ch;TDiff-WW HZU;TDiff-WW HZU
+t_vbh1_max;Max Temp Heizung;Einstellung begrenzt die Vorlauf-Solltemperatur (gemessen an tV, BH) bei aktiver Heizungsunterstützungsfunktion
+equi_temp;Bivalenztemperatur;Einstellung beeinflusst die im Parameter [Sonderfkt Schaltk] definierte Wirkungsweise des potenzialfreien AUX-Schaltkontakts (Wechselschaltausgang A)
+quite_mode;Flüsterbetrieb;Modus für geräuscharmen Betrieb bei reduzierter Leistung
+aux_fct;Sonderfkt Schaltk;Einstellung weist die Schaltbedingungen für den potenzialfreien AUX-Schaltkontakt zu
+aux_time;Wartezeit Sonderfkt;AUX-Schaltkontakt (A) schaltet erst verzögert, wenn die Schaltbedingung
+t_dhw_1_min;Schaltschwelle TDHW;Schaltschwelle Speichertemperatur (Tdhw) für AUX-Schaltkontakt
+delta_t_ch;Spreizung Mod HZ;Sollspreizung für Raumheizung. Die Heizungsumwälzpumpe der ROTEX HPSU compact regelt den Durchfluss, um die in dem Parameter hinterlegte Sollspreizung zwischen Vorlauf-Solltemperatur und Rücklauftemperatur (tV, BH - tR1), zu erreichen
+v_var;DurchflussBer;Aktuell benötigter Mindest-Volumenstrom der Anlage
+t_flow_ch_adj;Anpass T-VL Heizen;Nur wenn Parameter [Interlinkfunktion] = Ein. Vorlauf-Solltemperatur wird bei geschlossenem RT-Schaltkontakt Kühlen um den eingestellten Wert erhöht
+t_flow_cool_adj;Anpass T-VL Kühlen;Nur wenn Parameter [Interlinkfunktion] = Ein. Kühlvorlauf-Solltemperatur wird bei geschlossenem RT-Schaltkontakt Kühlen um den eingestellten Wert reduziert
+min_pressure;Min Druck;Definiert den minimalen Wasserdruck
+max_pressure;Max Druck;Definiert den maximalen Wasserdruck
+setpoint_pressure;Soll Druck;Definiert den Soll-Wasserdruck
+max_pressure_drop;Max Druckverlust;Definiert den maximal akzeptablen Druckverlust in der Heizungsanlage
+hc_func;HK Funktion;Einstellung definiert Art der Vorlauftemperaturregelung
+t_frost_protect;T-Frostschutz;Aus: Kein Frostschutz des Heizkreises Sonst: Wenn die Außentemperatur unter den eingestellten Wert sinkt, schaltet die Anlage in den Frostschutzbetrieb (Einschalten der Pumpen). Die Funktion wird beendet,wenn die Außentemperatur über den eingestellten Wert +1 K steigt
+insulation;Gebäudedämmung;Einstellung des Gebäudedämmstandards. Dadurch werden die gemittelte Außentemperatur und die automatischen Anpassungen der Heizkurve und der Heizzeiten beeinflusst
+screed;Estrich;Funktion zur Estrichtrocknung
+screed_day1;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day2;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day3;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day4;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day5;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day6;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day7;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day8;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day9;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day10;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day11;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day12;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day13;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day14;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day15;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day16;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day17;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day18;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day19;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day20;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day21;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day22;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day23;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day24;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day25;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day26;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day27;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+screed_day28;Estrichprogramm;Einstellung des Ablaufprogramms der Estrichaufheizung. Für eine Dauer von maximal 28 Tagen kann separat für jeden Tag eine eigene Vorlauf-Solltemperatur eingestellt werden. Das Ende des Estrichprogramms wird durch den 1. Tag mit der Sollwerteinstellung - - - - definiert
+t_out_lim_day;Heizgrenze Tag;Einstellung der automatischen Sommerabschaltung des Heizbetriebs
+t_out_lim_night;Heizgrenze Nacht;"Einstellung der Heizgrenze zur ""Abschaltung"" des Heizkreises während der Absenkzeit"
+t_flow_day;T-Vorlauf Tag;"Einstellung der Vorlauf-Solltemperatur für den Heizkreis während der Heizzeit bei Betriebsart: ""Automatik 1"", ""Automatik 2"", ""Heizen"""
+t_flow_night;T-Vorlauf Nacht;"Einstellung der Vorlauf-Solltemperatur für den Heizkreis während der Absenkzeit bei Betriebsart: ""Automatik 1"", ""Automatik 2"", ""Absenken"""
+max_t_flow;Max T-Vorlauf;Die ermittelte Vorlauf-Solltemperatur des Heizkreises wird auf den hier eingestellten Maximalwert begrenzt
+min_t_flow;Min T-Vorlauf;Die ermittelte Vorlauf-Solltemperatur des Heizkreises wird auf den hier eingestellten Minimalwert begrenzt
+hc_adapt;Heizk Adaption;Heizk Adaption
+start_tout_cool;Start Kühlen A-Temp;Einstellung, ab welcher Außentemperatur der Kühlbetrieb mit der höchsten Kühlvorlauf- Solltemperatur startet
+max_tout_cool;Max Kühlen A-Temp;Einstellung, bei welcher Außentemperatur die niedrigste Kühlvorlauf-Solltemperatur vorgegeben wird
+t_flow_cool_start;VL-Soll Start Kühlen;Einstellung der Kühlvorlauf-Solltemperatur beim Start des Kühlbetriebs
+t_flow_cool_max;VL-Soll Max Kühlen;Einstellung der minimalen Kühlvorlauf-Solltemperatur. Diese wird ab der Außentemperatur
+min_t_flow_cool;Min VL-Soll Kühlen;Einstellung der absoluten Untergrenze der Kühlvorlauf-Solltemperatur. Begrenzung wirkt, falls aus anderen Parametereinstellungen eine niedrigere Kühlvorlauf-Solltemperatur ermittelt würde
+t_flow_cool;T-VL Kühlen;Einstellung der Kühlvorlauf-Solltemperatur (Festwert) bei aktivem Kühlbetrieb
+cool_setpoint_adj;Kühlsollwert Korr;Parallelverschiebung der Kühl-Kennlinie um den eingestellten Wert
+circ_pump_dhw;Zirk mit WW-Prog;Einstellung zur Ansteuerung einer Zirkulationspumpe
+circ_pump_interval;Zirk Intervall;Einstellung der Intervallsteuerung für optionale Zirkulationspumpe
+anti_leg_day;Antileg Tag;Einstellung des Tages zur thermischen Desinfektion des Warmwasserspeichers
+anti_leg_time;Antileg Zeit;Einstellung der Startzeit der thermischen Desinfektion des Warmwasserspeichers
+anti_leg_temp;Antileg Temp;Einstellung der Warmwasser-Solltemperatur während der thermischen Desinfektion des Warmwasserspeichers
+max_dhw_loading;Max WW Ladezeit;Einstellung begrenzt den Zeitraum für die Warmwasserbereitung auf den eingestellten Sollwert
+dhw_off_time;WW Sperrzeit;Einstellung der Sperrzeit nach Abschluss oder Abbruch eines Warmwasserbereitungszyklus
+one_hot_water;1x Warmwasser;Start der einmaligen Aufheizung des Warmwassers auf den eingestellten Sollwert 
+hyst_hp;WP Hyst TDHW;Schaltschwelle Warmwasserladung
+timer_boh;Wartezeit BOH;Verzögerungszeit, ab wann der zusätzliche Wärmeerzeuger die Wärmepumpe bei einer Warmwasserladung unterstützen darf
+t_reduced;T-Absenkung;Raum-Solltemperatur für die Absenkzeiten der permanenten Zeitprogramme [Automatik 1] und [Automatik 2] gilt
+t_absence;T-Abwesend;Raum-Solltemperatur für die Absenkzeiten der temporären Zeitprogramme [Abwesend] + [Urlaub]
