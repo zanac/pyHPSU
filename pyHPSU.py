@@ -1,15 +1,6 @@
 #!/usr/bin/env python3
 #
 # -*- coding: utf-8 -*-
-# v 0.0.4 by Vanni Brutto (Zanac)
-#todo:
-#
-# utilizzare la formattazione del locale corrente (se ho settato Italy devo vedere date giuste, punti/virgole giusti)
-# monitor mode (sniff)
-# tcp_con = serial.serial_for_url('socket://<my_ip>:<my_port>')
-#
-#Lo script di lettura e pubblicazione deve essere facilmente schedulabile in modo controllato:
-#- frequenza di aggiornamento (l'ideale sarebbe poterla personalizzare per singola variabile ma lasciamo stare)
 
 
 import serial
@@ -49,7 +40,6 @@ def main(argv):
     read_from_conf_file=False
     global auto
     global ticker
-    #global command_dict
     ticker=0
     loop=True
     auto=False
@@ -63,6 +53,8 @@ def main(argv):
     backup_mode=False
     global backup_file
     restore_mode=False
+    global options_list
+    options_list={}
     #
     # get all plugins
     #
@@ -97,31 +89,51 @@ def main(argv):
     for opt, arg in opts:
         if opt in ("-a", "--auto"):
             auto = True
+            options_list["auto"]=""
+
         if opt in ("-f", "--config"):
             read_from_conf_file = True
             conf_file = arg
+            options_list["config"]=arg
            
         if opt in ("-b", "--backup"):
             backup_mode=True
             backup_file = arg
             output_type = "BACKUP" 
+            options_list["backup"]=arg
+
         if opt in ("-r", "--restore"):
             restore_mode=True
             backup_file = arg
+            options_list["restore"]=arg
+
         if opt in ("-h", "--help"):
             show_help = True
+            options_list["help"]=""
+
         elif opt in ("-d", "--driver"):
             driver = arg.upper()
+            options_list["driver"]=arg.upper()
+
         elif opt in ("-p", "--port"):
             port = arg
+            options_list["port"]=arg
+
         elif opt in ("-c", "--cmd"):
             cmd.append(arg)
+
         elif opt in ("-v", "--verbose"):
             verbose = arg
+            options_list["verbose"]=""
+
         elif opt in ("-o", "--output_type"):
             output_type = arg.upper()
+            options_list["output_type"]=arg.upper()
+
         elif opt in ("-l", "--language"):
             lg_code = arg.upper()
+            options_list["language"]=arg.upper()
+
         elif opt in ("-g", "--log"):
             logger = logging.getLogger('pyhpsu')
             hdlr = logging.FileHandler(arg)
@@ -129,6 +141,7 @@ def main(argv):
             hdlr.setFormatter(formatter)
             logger.addHandler(hdlr)
             logger.setLevel(logging.ERROR)
+        options_list["cmd"]=cmd
     if verbose == "2":
         locale.setlocale(locale.LC_ALL, '')
 
@@ -210,10 +223,13 @@ def main(argv):
         n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
         if len(cmd) == 0:
             print("List available commands:")
-            print("%12s - %-10s" % ('COMMAND', 'LABEL'))
-            print("%12s---%-10s" % ('------------', '----------'))
+            print("%20s - %-10s" % ('COMMAND', 'LABEL'))
+            print("%20s---%-10s" % ('------------', '----------'))
             for cmd in sorted(n_hpsu.command_dict) :
-                print("%12s - %-10s" % (n_hpsu.command_dict[cmd]['name'], n_hpsu.command_dict[cmd]['label']))
+                try:
+                    print("%20s - %-10s" % (n_hpsu.command_dict[cmd]['name'], n_hpsu.command_dict[cmd]['label']))
+                except KeyError:
+                    print("""!!!!!! No translation for "%12s" !!!!!!!""" % (n_hpsu.command_dict[cmd]['name']))
         else:
             print("%12s - %-10s - %s" % ('COMMAND', 'LABEL', 'DESCRIPTION'))
             print("%12s---%-10s---%s" % ('------------', '----------', '---------------------------------------------------'))
@@ -273,7 +289,6 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
     #    sys.exit(9)
 
 
-    print(conf_file)
     arrResponse = []
     
     for c in n_hpsu.commands:
@@ -318,7 +333,7 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
     else:
         module_name=output_type.lower()
         module = importlib.import_module("HPSU.plugins." + module_name)
-        hpsu_plugin = module.export(hpsu=n_hpsu, logger=logger, config_file=conf_file)
+        hpsu_plugin = module.export(hpsu=n_hpsu, logger=logger, config_file=conf_file,options)
         hpsu_plugin.pushValues(vars=arrResponse)
 
 

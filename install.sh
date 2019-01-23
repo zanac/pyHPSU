@@ -26,6 +26,10 @@ if [ ! -d $DIST_DIR ]; then
 	echo "Creating directory for python includes files"
 	mkdir -p $DIST_DIR
 fi
+if [ ! -d $SHARE_DIR ]; then
+	echo "Creating directory for resource files"
+	mkdir -p $SHARE_DIR
+fi
 
 # copy configs
 cp etc/pyHPSU/commands* $CONF_DIR/
@@ -36,7 +40,7 @@ else
 fi
 
 # copy the rest
-#cp -r can $SHARE_DIR 
+cp -r resources/* $SHARE_DIR 
 cp -r HPSU/* $DIST_DIR
 cp -r scripts $PACKAGE_DIR
 cp -r examples $PACKAGE_DIR
