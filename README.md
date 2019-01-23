@@ -60,15 +60,15 @@ pyHPSU only runs on unix/linux based systems.
 - OutputFormat: JSON (other formats or output devices can be specified with "-o", the usage via "pyHPSU.py -?")
 
 To get a list of all available commands call:  
-root@rotex:~# pyHPSU.py -h
+root@rotex:# pyHPSU.py -h
 
 To get a bit more information about a single command:  
-root@rotex:~# pyHPSU.py -h -c \<command>  
+root@rotex:# pyHPSU.py -h -c \<command>  
 e.g.
-root@rotex:~# pyHPSU.py -h -c t_hs  
+root@rotex:# pyHPSU.py -h -c t_hs  
 
 To query a value (e.g. t_hs):
-root@rotex:~# pyHPSU.py -c t_hs
+root@rotex:# pyHPSU.py -c t_hs
 
 The default setting is the output to the console in json format, so the output will look like this:
 [{'name': 't_hs', 'resp': '32.00', 'timestamp': 1544534667.414178}]
@@ -98,17 +98,17 @@ pyHPSU.py can be run un different modes.
 1. Standalone
 You can run the pyHPSU.py in standalone mode forom the command line.  
 e.g. query the value of t_hs, output in CSV format, using an elm327 interface on port /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_-if00-port0  
-root@rotex:~# pyHPSU.py -c t_hs -d elm327 -p /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_-if00-port0 -o CSV  
+root@rotex:# pyHPSU.py -c t_hs -d elm327 -p /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_-if00-port0 -o CSV  
 e.g. ask the heating pump for an pending error, output in JSON format, using an SocketCan interface  
-root@rotex:~# pyHPSU.py -c error -o JSON -d canpi  
+root@rotex:# pyHPSU.py -c error -o JSON -d canpi  
 or simply (cause JSON and canpi are the defaults):  
-root@rotex:~# pyHPSU.py -c error
+root@rotex:# pyHPSU.py -c error
 
 2. Auto Mode
 The pyHPSU.py can be run in "auto mode". You can define values which should be querried in different periods. This is done at /etc/pyHPSU/pyhpsu.conf.  
 At the "jobs" section add the value and the period (as shown by the examples) and addopt the section "PYHPSU" to your needs. Then, run the pyHPSU.py with the parameter "-a"  
 e.g.  
-root@rotex:~# pyHPSU.py -a 
+root@rotex:# pyHPSU.py -a 
 
 3. With Message Broker (only needed with serial intrerfaces like Elm327)  
 A serial line can only be used by one process at a time. So, if you query more then one value at a time or you run multiple instances of pyHPSU.py you can run in errors.  
@@ -117,8 +117,8 @@ For that,install the message broker "rabbitmq".
 You also have to configure the config file /etc/pyHPSU/pyhpsu.conf at section "PYHPSUD".  
 Here, specify the driver, language and serial port to use.  
 The pyHPSUD.py is started via systemd:  
-root@rotex:~# systemctl enable hpsud.service  
-root@rotex:~# systemctl start hpsud.service  
+root@rotex:# systemctl enable hpsud.service  
+root@rotex:# systemctl start hpsud.service  
 Now, you can query multiple values or run multiple pyHPSU.py processes. Simply set as driver "CANTCP" via commandline or the config file (PYHPSU section)
 
 
