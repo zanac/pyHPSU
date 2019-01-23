@@ -57,7 +57,7 @@ equi_func;Equilibrium Function;The bivalence function is relevant for operation 
 smart_grid;SMART GRID;Smart Grid
 modus_sg;Mode SG;Only if parameter [SMART GRID] = 1:Used for a possible target temperature increase in the case of aSMART GRID start command
 ht_nt_func;HT/NT Function;Setting which specifies which heat sources are switched off when the standard signal is received from the energy supply company (EVU) in the case of the customer having an off-peak tariff network connection
-hat_nt_contact;HT/NT Contact;Specifies whether the HT/NT input is an NC or NO contact
+ht_nt_contact;HT/NT Contact;Specifies whether the HT/NT input is an NC or NO contact
 room_therm;Room thermostat;Configuration of a room thermostat connected to the port J16 on the ROTEX HPSU compact using potential-free contacts
 interlink;Interlink fct;Configuration for systems operating with 2 different inflow target temperatures
 air_purge;Air Purge;Activation of automatic bleeding of the ROTEX HPSU compact and the connected heating circuit 

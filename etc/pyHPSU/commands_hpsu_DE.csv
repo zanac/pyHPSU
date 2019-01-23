@@ -57,7 +57,7 @@ equi_func;Bivalenzfunktion;Die Bivalenzfunktion ist für den Betrieb des optiona
 smart_grid;SMART GRID;Auswertung des SG-Signals
 modus_sg;Modus SG;Nur wenn Parameter [SMART GRID] = 1: Dient zu einer möglichen Soll-Temperaturerhöhung bei einem SMART GRID-Einschaltbefehl
 ht_nt_func;HT/NT Funktion;Einstellung, welche Wärmequellen ausgeschaltet werden, wenn bei einem Niedertarif-Netzanschluss das vom Energieversorgungsunternehmen (EVU) ausgegebene Signal für Hochtarif empfangen wird.
-hat_nt_contact;HT/NT Anschluss;Festlegung, ob der HT-/NT-Eingang als Öffner- oder Schließerkontakt ausgewertet wird
+ht_nt_contact;HT/NT Anschluss;Festlegung, ob der HT-/NT-Eingang als Öffner- oder Schließerkontakt ausgewertet wird
 room_therm;Raumthermostat;Konfiguration eines am Anschluss J16 der ROTEX HPSU compact angeschlossenen Raumthermostats mit potenzialfreien Kontakten
 interlink;Interlinkfunktion;Konfiguration für Anlagen, die mit 2 verschiedenen Vorlauf-Solltemperaturen betrieben werden
 air_purge;Entlüftungsfunktion;Aktivierung der automatischen Entlüftung der ROTEX HPSU compact und des angeschlossenen Heizkreislaufs
