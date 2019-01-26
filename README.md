@@ -93,6 +93,21 @@ Configure it in /etc/pyHPSU/pyhpsu.conf (look ath the code of /usr/lib/python3/d
 - HOMEMATIC:
 Send the data to homematic. Therefore the xmlapi has to be installed on the ccu, a system variable has to be configured and the ise_id of this variable must be configured in the pyHPSU.conf. Look ath the code of /usr/lib/python3/dist-packages/HPSU/fhem.py to find a template
 
+- OPENHAB
+Send the data to openHAB. Create an item for every command you want to use. You have to use a Prefix like `Rotex_`for item names.
+For example, if you want to send commands mode and t_dhw1 to openHAB, create those items in you openHAB item config.
+`
+Number Rotex_mode      "Modus [MAP(heatpump_mode.map):%s]"
+Number Rotex_t_dhw1    "Temperatur im Warmwasserspeicher [%.1f °C]"
+`
+Point pyHPSU to your openHAB setup in /etc/pyHPSU/pyhpsu.conf file.
+`
+[OPENHAB]
+HOST = hostname_or_ip
+PORT = 8080
+ITEMPREFIX = Rotex_
+`
+
 #### Modes:
 pyHPSU.py can be run un different modes.
 1. Standalone
