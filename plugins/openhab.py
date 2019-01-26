@@ -8,11 +8,10 @@
 # PORT = 8080
 # ITEMPREFIX = Rotex_
 
-import socket
 import configparser
+import requests
 import sys
 import os
-import requests
 
 
 class export():
@@ -47,7 +46,7 @@ class export():
             self.openhabitemprefix = 'Rotex_'
 
     def rest_send(self, name, data):
-        url = "http://" + str(self.openhabhost) + ":" + str(self.openhabport) + "/rest/items/" + self.openhabitemprefix + name + "/state"
+        url = "http://%s:%s/rest/items/%s%s/state" % (self.openhabhost, str(self.openhabport), self.openhabitemprefix, name)
         headers = "Content-Type: text/plain"
         try:
             r = requests.put(url, data=data, headers=headers)
