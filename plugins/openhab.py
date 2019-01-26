@@ -45,18 +45,18 @@ class export():
         else:
             self.openhabitemprefix = 'Rotex_'
 
-    def rest_send(self, name, data):
-        url = "http://%s:%s/rest/items/%s%s/state" % (self.openhabhost, str(self.openhabport), self.openhabitemprefix, name)
-        headers = "Content-Type: text/plain"
+    def rest_send(self, item, value):
+        url = "http://%s:%s/rest/items/%s%s/state" % (self.openhabhost, str(self.openhabport), self.openhabitemprefix, item)
         try:
-            r = requests.put(url, data=data, headers=headers)
-        except (r.ConnectionError, r.HTTPError) as e:
+            r = requests.put(url, data=value)
+        except requests.exceptions.RequestException as e:
             rc = "ko"
             self.hpsu.printd("exception", "Error " + str(e.code) + ": " + str(e.reason))
 
     def pushValues(self, vars=None):
         for r in vars:
-            self.rest_send(self, r['name'], r['resp']) 
+            self.rest_send(r['name'], r['resp'])
+
 
     #if __name__ == '__main__':
     #    app = openhab()
