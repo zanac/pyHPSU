@@ -43,6 +43,7 @@ fi
 cp -r resources/* $SHARE_DIR 
 cp -r HPSU/* $DIST_DIR
 cp -r plugins $DIST_DIR
+cp -r contrib $DIST_DIR
 
 # copy service file
 #cp hpsud.service /etc/systemd/system/
