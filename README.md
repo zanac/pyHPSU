@@ -18,7 +18,7 @@ It works with [SocketCan](https://elinux.org/CAN_Bus) __OR__ the [elm327](https:
 The advantage of SocketCan: it can handle multiple instances or programs talking over the same can interface or you can query multiple values with one command. Message queuing is done by the kernel. For serial can interfaces (like the Elm327) you need a server which handles the messages. To do this, pyHPSUd.py is there. It handles multiple pyHPSU.py session via rabbitMQ.
 
 
-## Hardware setup
+# Hardware setup
 1. Via Elm327 interface
 - Most cheap china replicas will not work because the "AT PP" command is not implemented. A purchase recommendation is as follows: https://www.totalcardiagnostics.com/elm327
 - It is recommended to order a matching obd2 socket (16pol) to connect the can adapter
@@ -37,7 +37,7 @@ The advantage of SocketCan: it can handle multiple instances or programs talking
 
 
 
-## Software setup
+# Software setup
 
 pyHPSU only runs on unix/linux based systems.
 1. To run pyHPSU you need:
@@ -54,8 +54,8 @@ pyHPSU only runs on unix/linux based systems.
 4. chmod +x install.sh
 5. sh install.sh
 
-## Using pyHPSU  
-#### PyHPSU defaults:
+# Using pyHPSU  
+## PyHPSU defaults
 - can-device: SocketCan (Driver canpi, for elm327 specify the driver with -d canelm327 and the line with e.g. -p /dev/ttyUSB )
 - OutputFormat: JSON (other formats or output devices can be specified with "-o", the usage via "pyHPSU.py -?")
 
@@ -74,26 +74,47 @@ The default setting is the output to the console in json format, so the output w
 [{'name': 't_hs', 'resp': '32.00', 'timestamp': 1544534667.414178}]
 
 
-#### Output options ("-o \<output>"):
-- CSV:
+## Output options ("-o \<output>")
+### CSV
 Output is send to console in CSV format (comma separated value)
 
-- DB:
+### DB
 If a database should be used simply create a mysql DB with collation "utf8_bin", edit the pyhpsu.conf and select "DB" as output type
 Configure it in /etc/pyHPSU/pyhpsu.conf (look ath the code of /usr/lib/python3/dist-packages/HPSU/db.py to find a template)
 
-- EMONCMS:
+### EMONCMS
 Send the data to an emoncms instance (locally or the web version)
 Configure it in /etc/pyHPSU/pyhpsu.conf (look ath the code of /usr/lib/python3/dist-packages/HPSU/emoncms.py to find a template)
 
-- FHEM:
+### FHEM
 Send the data to a fhem instance. Atm only pushing the values via telnet to port 7072 is supported.
 Configure it in /etc/pyHPSU/pyhpsu.conf (look ath the code of /usr/lib/python3/dist-packages/HPSU/fhem.py to find a template)
 
-- HOMEMATIC:
+### HOMEMATIC
 Send the data to homematic. Therefore the xmlapi has to be installed on the ccu, a system variable has to be configured and the ise_id of this variable must be configured in the pyHPSU.conf. Look ath the code of /usr/lib/python3/dist-packages/HPSU/fhem.py to find a template
 
-#### Modes:
+### OPENHAB
+Send the data to openHAB. Create an item for every command you want to use. You have to use a Prefix like `Rotex_` for all pyHPSU related item names. So pyHPSU will push every value to a item named [Prefix][command].
+For example, if you want to send commands mode and t_dhw1 to openHAB, create those items in you [openHAB item config](https://www.openhab.org/docs/configuration/items.html).
+```
+Number Rotex_mode      "Modus [MAP(heatpump_mode.map):%s]"
+Number Rotex_t_dhw1    "Temperatur im Warmwasserspeicher [%.1f °C]"
+```
+For commands like mode, which a number represents a state, you can use openHABs [mapping feature](https://www.openhab.org/addons/transformations/map/) to map state numbers to a textual description.
+
+Point pyHPSU to your openHAB system in /etc/pyHPSU/pyhpsu.conf file. Also use Auto Mode and configure your commands in `[JOBS]` section.
+```
+[OPENHAB]
+HOST = hostname_or_ip
+PORT = 8080
+ITEMPREFIX = Rotex_
+
+[JOBS]
+mode = 30
+t_dhw1 = 60
+```
+
+## Modes
 pyHPSU.py can be run un different modes.
 1. Standalone
 You can run the pyHPSU.py in standalone mode forom the command line.  
