@@ -42,9 +42,8 @@ fi
 # copy the rest
 cp -r resources/* $SHARE_DIR 
 cp -r HPSU/* $DIST_DIR
-cp -r scripts $PACKAGE_DIR
-cp -r examples $PACKAGE_DIR
 cp -r plugins $DIST_DIR
+cp -r contrib $DIST_DIR
 
 # copy service file
 #cp hpsud.service /etc/systemd/system/

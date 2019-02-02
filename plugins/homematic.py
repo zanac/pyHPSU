@@ -32,7 +32,7 @@ class export():
         if self.config.has_option('HOMEMATIC', 'HOST'):
             self.homematichost = self.config['HOMEMATIC']['HOST']
         else:
-            self.fhost = 'localhost'
+            self.homematichost = 'localhost'
 
         # homematic's port
         if self.config.has_option('HOMEMATIC', 'PORT'):
