@@ -121,16 +121,11 @@ class HPSU(object):
         return response
     
     def getParameterValue(self, parameter, priority=1):
-        print("getParameterValue")
         response = None
         cmd = None
         for c in self.commands:
             if c["name"] == parameter:
                 cmd = c
-                print("cmd ist " + cmd + " gerParameterValue")
-
-
-
         if cmd:
             response = self.sendCommandWithParse(cmd=cmd, priority=priority)
         
@@ -142,7 +137,6 @@ class HPSU(object):
         for c in self.commands:
             if c["name"] == parameter:
                 cmd = c
-                print("cmd ist " + cmd + " setParameterValue")
         
         if cmd:
             response = self.sendCommandWithParse(cmd=cmd, setValue=setValue, priority=priority)
@@ -159,9 +153,24 @@ class HPSU(object):
     # funktion to set/read a value
     def sendCommand(self, cmd, setValue=None, priority=1):    
         if setValue:
-            FormattedSetValue=float(setValue)*int(cmd["divisor"])
-            setValue=FormattedSetValue 
+            if not cmd["type"] == "value":
+                FormattedSetValue=float(setValue)*int(cmd["divisor"])
+                setValue=FormattedSetValue 
+            # Look, if there is a value_code dict and search for the value in it 
+            # and set it as new setValue
+            #value_vaild=False 
+            #if cmd["value_code"]:
+            #    for code,value in cmd["value_code"].items():
+            #        if value == setValue:
+            #            setValue=code
+            #            value_vaild=True
+            #    if not value_vaild:
+            #        print("Wanted value not legal, cannot set this value")
+            #        rc="KO"
+            #        sys.exit(9)
+        
         rc = self.can.sendCommandWithID(cmd=cmd, setValue=setValue, priority=priority)
+
         if rc not in ["KO", "OK"]:
             try:
                 hexValues = [int(r, 16) for r in rc.split(" ")]
@@ -183,17 +192,23 @@ class HPSU(object):
         
     def parseCommand(self, cmd, response, verbose):
         hexValues = [int(r, 16) for r in response.split(" ")]
+        hexArray = response.split(" ")
         
-        if cmd["unit"] == HPSU.UM_INT:
+        if cmd["type"] == "int":
             if hexValues[2] == 0xfa:
                 resp = self.toSigned(hexValues[5], cmd) // int(cmd["divisor"])
             else:
                 resp = self.toSigned(hexValues[3], cmd) // int(cmd["divisor"])
-        else:
+        elif cmd["type"] == "float":
             if hexValues[2] == 0xfa:
                 resp = self.toSigned(hexValues[5]*0x100+hexValues[6], cmd) / float(cmd["divisor"])
             else:
                 resp = self.toSigned(hexValues[3]*0x100+hexValues[4], cmd) / float(cmd["divisor"])
+        elif cmd["type"] == "value":
+            if hexValues[2] == 0xfa:
+                resp = int(str(hexArray[5]) + str(hexArray[6]),16) // int(cmd["divisor"])
+            else:
+                resp = int(str(hexArray[3]) + str(hexArray[4]),16) // int(cmd["divisor"])
 
         if verbose == "2":
             timestamp = datetime.datetime.now().isoformat()
@@ -224,5 +239,6 @@ class HPSU(object):
             resp = str(response["resp"])
         else:
             resp = str(response["resp"])
-        
+        #if cmd["value_code"]:
+        #    resp=cmd["value_code"][resp]
         return resp
