@@ -69,18 +69,29 @@ class CanELM327(object):
 
     def sendCommand(self, cmd, setValue=None, um=None):
         if setValue:
-            cmd = cmd[:1] + '2' + cmd[2:]
-            if cmd[6:8] != "FA":
-                cmd = cmd[:3]+"00 FA"+cmd[2:8]
-            cmd = cmd[:14]
-            if um == "d":
+            command = command[:1] + '2' + command[2:]
+            if command[6:8] != "FA":
+                command = command[:3]+"00 FA"+command[2:8]
+            command = command[:14]
+            """ if cmd["unit"] == "deg":
                 setValue = int(setValue)
                 if setValue < 0:
                     setValue = 0x10000+setValue
-                cmd = cmd+" %02X %02X" % (setValue >> 8, setValue & 0xff)
-            if um == "i":
+                command = command+" %02X %02X" % (setValue >> 8, setValue & 0xff)
+            if cmd["unit"] == "int" :
                 setValue = int(setValue)
-                cmd = cmd+" %02X 00" % (setValue)    
+                command = command+" %02X 00" % (setValue) """
+            if cmd["type"] == "int":
+                setValue = int(setValue)
+                command = command+" %02X 00" % (setValue)
+            if cmd["type"] == "float":
+                setValue = int(setValue)
+                if setValue < 0:
+                    setValue = 0x10000+setValue
+                command = command+" %02X %02X" % (setValue >> 8, setValue & 0xff)
+            if cmd["type"] == "value":
+                setValue = int(setValue)
+                command = command+" 00 %02X" % (setValue) 
     
         self.ser.write(bytes(str("%s\r\n" % cmd).encode('utf-8')))
         time.sleep(50.0 / 1000.0)
