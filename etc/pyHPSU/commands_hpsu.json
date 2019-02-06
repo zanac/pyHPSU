@@ -506,7 +506,8 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "value"
+			"unit" : "int",
+			"type" : "value"
 		},
 		"hzu" : { 
 			"name" : "hzu", 
