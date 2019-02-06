@@ -3,7 +3,7 @@
 
 
 # Entries in pyhpsu.conf
-# [DATABASE]
+# [MYSQL]
 # DB_HOST = localhost
 # DB_PORT = 3306
 # DB_NAME = HPSU
@@ -36,30 +36,30 @@ class db():
             db_config.read(self.config_file)
         else:
             sys.exit(9)
-        if db_config.has_option('DATABASE','DB_HOST'):
-            db_host=db_config['DATABASE']['DB_HOST']
+        if db_config.has_option('MYSQL','DB_HOST'):
+            db_host=db_config['MYSQL']['DB_HOST']
         else:
             db_host="localhost"
 
-        if db_config.has_option('DATABASE','DB_PORT'):
-            db_port=db_config['DATABASE']['DB_PORT']
+        if db_config.has_option('MYSQL','DB_PORT'):
+            db_port=db_config['MYSQL']['DB_PORT']
         else:
             db_port="3306" 
         
-        if db_config.has_option('DATABASE','DB_NAME'):
-            db_name=db_config['DATABASE']['DB_NAME'] 
+        if db_config.has_option('MYSQL','DB_NAME'):
+            db_name=db_config['MYSQL']['DB_NAME'] 
         else:
             print("No database name defined in config file .")
             sys.exit(9)
 
-        if db_config.has_option('DATABASE','DB_USER'):
-            db_user=db_config['DATABASE']['DB_USER']
+        if db_config.has_option('MYSQL','DB_USER'):
+            db_user=db_config['MYSQL']['DB_USER']
         else: 
             print("No database user defined in config file.")
             sys.exit(9)
 
-        if db_config.has_option('DATABASE','DB_PASSWORD'):
-            db_password=db_config['DATABASE']['DB_PASSWORD']
+        if db_config.has_option('MYSQL','DB_PASSWORD'):
+            db_password=db_config['MYSQL']['DB_PASSWORD']
         else:
             print("No password for the database user defined in config file")
             sys.exit(9)

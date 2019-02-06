@@ -199,6 +199,12 @@ class HPSU(object):
                 resp = self.toSigned(hexValues[5], cmd) // int(cmd["divisor"])
             else:
                 resp = self.toSigned(hexValues[3], cmd) // int(cmd["divisor"])
+        elif cmd["type"] == "longint":
+            if hexValues[2] == 0xfa:
+                resp = self.toSigned(hexValues[5]*0x100+hexValues[6], cmd) // int(cmd["divisor"])
+            else:
+                resp = self.toSigned(hexValues[3]*0x100+hexValues[4], cmd) // int(cmd["divisor"])
+
         elif cmd["type"] == "float":
             if hexValues[2] == 0xfa:
                 resp = self.toSigned(hexValues[5]*0x100+hexValues[6], cmd) / float(cmd["divisor"])
