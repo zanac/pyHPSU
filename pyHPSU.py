@@ -333,7 +333,7 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
     else:
         module_name=output_type.lower()
         module = importlib.import_module("HPSU.plugins." + module_name)
-        hpsu_plugin = module.export(hpsu=n_hpsu, logger=logger, config_file=conf_file,options)
+        hpsu_plugin = module.export(hpsu=n_hpsu, logger=logger, config_file=conf_file)
         hpsu_plugin.pushValues(vars=arrResponse)
 
 
