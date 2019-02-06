@@ -59,18 +59,30 @@ class CanPI(object):
             if command[6:8] != "FA":
                 command = command[:3]+"00 FA"+command[2:8]
             command = command[:14]
-            if cmd["unit"] == "deg":
+            """ if cmd["unit"] == "deg":
                 setValue = int(setValue)
                 if setValue < 0:
                     setValue = 0x10000+setValue
                 command = command+" %02X %02X" % (setValue >> 8, setValue & 0xff)
-            if cmd["unit"] == "i":
+            if cmd["unit"] == "int" :
+                setValue = int(setValue)
+                command = command+" %02X 00" % (setValue) """
+            if cmd["type"] == "int":
                 setValue = int(setValue)
                 command = command+" %02X 00" % (setValue)
+            if cmd["type"] == "float":
+                setValue = int(setValue)
+                if setValue < 0:
+                    setValue = 0x10000+setValue
+                command = command+" %02X %02X" % (setValue >> 8, setValue & 0xff)
+            if cmd["type"] == "value":
+                setValue = int(setValue)
+                command = command+" 00 %02X" % (setValue)
+            
         msg_data = [int(r, 16) for r in command.split(" ")]
         notTimeout = True
         i = 0
-        
+        #print("sent: " + str(command))
         try:
             msg = can.Message(arbitration_id=receiver_id, data=msg_data, extended_id=False, dlc=7)
             self.bus.send(msg)
@@ -95,6 +107,7 @@ class CanPI(object):
                 if (msg_data[2] == 0xfa and msg_data[3] == rcBUS.data[3] and msg_data[4] == rcBUS.data[4]) or (msg_data[2] != 0xfa and msg_data[2] == rcBUS.data[2]):
                     rc = "%02X %02X %02X %02X %02X %02X %02X" % (rcBUS.data[0], rcBUS.data[1], rcBUS.data[2], rcBUS.data[3], rcBUS.data[4], rcBUS.data[5], rcBUS.data[6])
                     notTimeout = False
+                    #print("got:  " + str(rc))
                 else:
                     self.hpsu.printd('error', 'SEND:%s' % (str(msg_data)))
                     self.hpsu.printd('error', 'RECV:%s' % (str(rcBUS.data)))
