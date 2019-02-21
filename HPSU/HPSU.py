@@ -194,11 +194,19 @@ class HPSU(object):
         hexValues = [int(r, 16) for r in response.split(" ")]
         hexArray = response.split(" ")
         
+
         if cmd["type"] == "int":
             if hexValues[2] == 0xfa:
-                resp = self.toSigned(hexValues[5], cmd) // int(cmd["divisor"])
+                resp = int(self.toSigned(hexValues[5], cmd) // float(cmd["divisor"]))
             else:
-                resp = self.toSigned(hexValues[3], cmd) // int(cmd["divisor"])
+                resp = int(self.toSigned(hexValues[3], cmd) // float(cmd["divisor"]))
+    
+        elif cmd["type"] == "longint":
+            if hexValues[2] == 0xfa:
+                resp = int(self.toSigned(hexValues[5]*0x100+hexValues[6], cmd) // float(cmd["divisor"]))
+            else:
+                resp = int(self.toSigned(hexValues[3]*0x100+hexValues[4], cmd) // float(cmd["divisor"]))
+
         elif cmd["type"] == "float":
             if hexValues[2] == 0xfa:
                 resp = self.toSigned(hexValues[5]*0x100+hexValues[6], cmd) / float(cmd["divisor"])
@@ -217,7 +225,9 @@ class HPSU(object):
                 timestamp = datetime.datetime.now().timestamp()
             else:
                 timestamp = self.timestamp()
+
         return {"resp":resp, "timestamp":timestamp}
+
     
     def umConversion(self, cmd, response, verbose):
         # convert into different units

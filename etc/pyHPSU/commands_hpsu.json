@@ -71,7 +71,7 @@
 			"divisor" : "1", 
 			"writable" : "false", 
 			"unit" : "lh",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"t_hc" : { 
 			"name" : "t_hc", 
@@ -97,7 +97,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "false", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "off",
@@ -111,7 +111,7 @@
 			"divisor" : "1", 
 			"writable" : "false", 
 			"unit" : "hour",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"runtime_pump" : { 
 			"name" : "runtime_pump", 
@@ -119,8 +119,8 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "false", 
-			"unit" : "int",
-			"type" : "int"
+			"unit" : "longint",
+			"type" : "longint"
 		},
 		"posmix" : { 
 			"name" : "posmix", 
@@ -129,7 +129,7 @@
 			"divisor" : "1", 
 			"writable" : "false", 
 			"unit" : "percent",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"qboh" : { 
 			"name" : "qboh", 
@@ -138,7 +138,7 @@
 			"divisor" : "1", 
 			"writable" : "false", 
 			"unit" : "kwh",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"qchhp" : { 
 			"name" : "qchhp", 
@@ -147,7 +147,7 @@
 			"divisor" : "1", 
 			"writable" : "false", 
 			"unit" : "kwh",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"qsc" : { 
 			"name" : "qsc", 
@@ -156,7 +156,7 @@
 			"divisor" : "1", 
 			"writable" : "false", 
 			"unit" : "kwh",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"qch" : { 
 			"name" : "qch", 
@@ -165,7 +165,7 @@
 			"divisor" : "1", 
 			"writable" : "false", 
 			"unit" : "",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"qwp" : { 
 			"name" : "qwp", 
@@ -174,7 +174,7 @@
 			"divisor" : "1", 
 			"writable" : "false", 
 			"unit" : "kwh",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"qdhw" : { 
 			"name" : "qdhw", 
@@ -183,7 +183,7 @@
 			"divisor" : "1", 
 			"writable" : "false", 
 			"unit" : "kwh",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"sw_vers_01" : { 
 			"name" : "sw_vers_01", 
@@ -192,7 +192,7 @@
 			"divisor" : "1", 
 			"writable" : "false", 
 			"unit" : "",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"sw_vers_02" : { 
 			"name" : "sw_vers_02", 
@@ -201,7 +201,7 @@
 			"divisor" : "1", 
 			"writable" : "false", 
 			"unit" : "",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"sw_vers_03" : { 
 			"name" : "sw_vers_03", 
@@ -210,7 +210,7 @@
 			"divisor" : "1", 
 			"writable" : "false", 
 			"unit" : "",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"mode_01" : { 
 			"name" : "mode_01", 
@@ -218,7 +218,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "",
 			"type" : "value"
 		},
 		"tvbh2" : { 
@@ -272,7 +272,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "false", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "off",
@@ -286,7 +286,8 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "false", 
-			"unit" : "int",
+			"unit" : "longint",
+			"type" : "longint",
 			"value_code" : {
 				"0" : "standby",
 				"1" : "heating",
@@ -301,7 +302,7 @@
 			"divisor" : "1", 
 			"writable" : "false", 
 			"unit" : "percent",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"ext" : { 
 			"name" : "ext", 
@@ -309,8 +310,8 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "false", 
-			"unit" : "int",
-			"type" : "int"
+			"unit" : "longint",
+			"type" : "longint"
 		},
 		"ehs" : { 
 			"name" : "ehs", 
@@ -319,7 +320,7 @@
 			"divisor" : "1", 
 			"writable" : "false", 
 			"unit" : "kwh",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"rt" : { 
 			"name" : "rt", 
@@ -327,8 +328,8 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "false", 
-			"unit" : "int",
-			"type" : "int"
+			"unit" : "longint",
+			"type" : "longint"
 		},
 		"bpv" : { 
 			"name" : "bpv", 
@@ -337,7 +338,7 @@
 			"divisor" : "1", 
 			"writable" : "false", 
 			"unit" : "percent",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"t_v1" : { 
 			"name" : "t_v1", 
@@ -391,7 +392,7 @@
 			"divisor" : "1", 
 			"writable" : "false", 
 			"unit" : "lh",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"t_room1_setpoint" : { 
 			"name" : "t_room1_setpoint", 
@@ -489,7 +490,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : " ",
@@ -505,7 +506,8 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "value"
+			"unit" : "int",
+			"type" : "value"
 		},
 		"hzu" : { 
 			"name" : "hzu", 
@@ -513,7 +515,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "off",
@@ -526,7 +528,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "off",
@@ -539,7 +541,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "off",
@@ -552,7 +554,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "comfort",
@@ -566,7 +568,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "deactivated",
@@ -581,7 +583,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "NO",
@@ -594,7 +596,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "off",
@@ -607,7 +609,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "off",
@@ -620,7 +622,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "off",
@@ -634,7 +636,7 @@
 			"divisor" : "1", 
 			"writable" : "true", 
 			"unit" : "percent",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"min_perf_pump" : { 
 			"name" : "min_perf_pump", 
@@ -643,7 +645,7 @@
 			"divisor" : "1", 
 			"writable" : "true", 
 			"unit" : "percent",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"outside_conf" : { 
 			"name" : "outside_conf", 
@@ -701,7 +703,7 @@
 			"divisor" : "0.1", 
 			"writable" : "true", 
 			"unit" : "w",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"buh_s1_pow" : { 
 			"name" : "buh_s1_pow", 
@@ -710,7 +712,7 @@
 			"divisor" : "0.1", 
 			"writable" : "true", 
 			"unit" : "w",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"buh_s2_pow" : { 
 			"name" : "buh_s2_pow", 
@@ -719,7 +721,7 @@
 			"divisor" : "0.1", 
 			"writable" : "true", 
 			"unit" : "w",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"power_biv" : { 
 			"name" : "power_biv", 
@@ -728,7 +730,7 @@
 			"divisor" : "0.1", 
 			"writable" : "true", 
 			"unit" : "w",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"tdiff_dhw_ch" : { 
 			"name" : "tdiff_dhw_ch", 
@@ -737,7 +739,7 @@
 			"divisor" : "10", 
 			"writable" : "true", 
 			"unit" : "",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"t_vbh1_max" : { 
 			"name" : "t_vbh1_max", 
@@ -763,7 +765,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "off",
@@ -777,7 +779,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value"
 		},
 		"aux_time" : { 
@@ -787,7 +789,7 @@
 			"divisor" : "1", 
 			"writable" : "true", 
 			"unit" : "sec",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"t_dhw_1_min" : { 
 			"name" : "t_dhw_1_min", 
@@ -814,7 +816,7 @@
 			"divisor" : "10", 
 			"writable" : "false", 
 			"unit" : "lh",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"t_flow_ch_adj" : { 
 			"name" : "t_flow_ch_adj", 
@@ -876,7 +878,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "weather controlled",
@@ -890,7 +892,7 @@
 			"divisor" : "1", 
 			"writable" : "true", 
 			"unit" : "deg",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"insulation" : { 
 			"name" : "insulation", 
@@ -898,7 +900,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "off",
@@ -914,7 +916,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "off",
@@ -1233,7 +1235,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "off",
@@ -1309,7 +1311,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "off",
@@ -1322,7 +1324,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value"
 		},
 		"anti_leg_day" : { 
@@ -1331,7 +1333,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "off",
@@ -1351,7 +1353,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value"
 		},
 		"anti_leg_temp" : { 
@@ -1370,7 +1372,7 @@
 			"divisor" : "1", 
 			"writable" : "true", 
 			"unit" : "min",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"dhw_off_time" : { 
 			"name" : "dhw_off_time", 
@@ -1387,7 +1389,7 @@
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
-			"unit" : "int",
+			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
 				"0" : "off",
@@ -1401,7 +1403,7 @@
 			"divisor" : "1", 
 			"writable" : "true", 
 			"unit" : "min",
-			"type" : "int"
+			"type" : "longint"
 		},
 		"t_reduced" : { 
 			"name" : "t_reduced", 
