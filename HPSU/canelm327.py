@@ -67,35 +67,33 @@ class CanELM327(object):
                     count_2+=1
                     time.sleep(1)
 
-    def sendCommand(self, cmd, setValue=None, um=None):
-        if setValue:
-            command = command[:1] + '2' + command[2:]
+    def sendCommand(self, cmd, setValue=None, type=None):
+        command = ""
+        
+        if setValue and type:
+            command = cmd[:1] + '2' + cmd[2:]
             if command[6:8] != "FA":
                 command = command[:3]+"00 FA"+command[2:8]
             command = command[:14]
-            """ if cmd["unit"] == "deg":
-                setValue = int(setValue)
-                if setValue < 0:
-                    setValue = 0x10000+setValue
-                command = command+" %02X %02X" % (setValue >> 8, setValue & 0xff)
-            if cmd["unit"] == "int" :
-                setValue = int(setValue)
-                command = command+" %02X 00" % (setValue) """
-            if cmd["type"] == "int":
+
+            if type == "int":
                 setValue = int(setValue)
                 command = command+" %02X 00" % (setValue)
-            if cmd["type"] == "float":
+            if type == "float":
                 setValue = int(setValue)
                 if setValue < 0:
                     setValue = 0x10000+setValue
                 command = command+" %02X %02X" % (setValue >> 8, setValue & 0xff)
-            if cmd["type"] == "value":
+            if type == "value":
                 setValue = int(setValue)
-                command = command+" 00 %02X" % (setValue) 
-    
+                command = command+" 00 %02X" % (setValue)
+
+            #self.hpsu.printd("info", "cmd: %s cmdMod: %s" % (cmd, command))
+            cmd = command
+
         self.ser.write(bytes(str("%s\r\n" % cmd).encode('utf-8')))
         time.sleep(50.0 / 1000.0)
-        if setValue:
+        if setValue and type:
             return "OK"
 
         ser_read = self.ser.read(size=100)
@@ -114,7 +112,7 @@ class CanELM327(object):
             self.hpsu.printd('warning', "Error setting ID %s (rc:%s)" % (cmd["id"], rc))
             return "KO"
         
-        rc = self.sendCommand(cmd["command"], setValue, cmd["unit"])
+        rc = self.sendCommand(cmd["command"], setValue, cmd["type"])
         if setValue:
             return rc
 
