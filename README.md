@@ -140,6 +140,7 @@ Here, specify the driver, language and serial port to use.
 The pyHPSUD.py is started via systemd:  
 root@rotex:# systemctl enable hpsud.service  
 root@rotex:# systemctl start hpsud.service  
-Now, you can query multiple values or run multiple pyHPSU.py processes. Simply set as driver "CANTCP" via commandline or the config file (PYHPSU section)
 
+Now, you can query multiple values or run multiple pyHPSU.py processes. Simply set as driver HPSUD ("CANTCP") via commandline or the config file (PYHPSU section)
+i.e. root@rotex:# pyHPSU.py -d HPSUD -c t_dhw_setpoint1
 
