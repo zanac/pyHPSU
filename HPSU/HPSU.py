@@ -71,9 +71,7 @@ class HPSU(object):
                         self.commands.append(self.command_dict[single_command])
                     if (self.command_dict[single_command]["writable"]=="true"):
                         self.backup_commands.append(self.command_dict[single_command]["name"])
-            
-                    
-        
+
         self.driver = driver
         if self.driver == "ELM327":
             self.can = CanELM327(self)
@@ -151,24 +149,7 @@ class HPSU(object):
             self.can.initInterface()
     
     # funktion to set/read a value
-    def sendCommand(self, cmd, setValue=None, priority=1):    
-        if setValue:
-            if not cmd["type"] == "value":
-                FormattedSetValue=float(setValue)*int(cmd["divisor"])
-                setValue=FormattedSetValue 
-            # Look, if there is a value_code dict and search for the value in it 
-            # and set it as new setValue
-            #value_vaild=False 
-            #if cmd["value_code"]:
-            #    for code,value in cmd["value_code"].items():
-            #        if value == setValue:
-            #            setValue=code
-            #            value_vaild=True
-            #    if not value_vaild:
-            #        print("Wanted value not legal, cannot set this value")
-            #        rc="KO"
-            #        sys.exit(9)
-        
+    def sendCommand(self, cmd, setValue=None, priority=1):
         rc = self.can.sendCommandWithID(cmd=cmd, setValue=setValue, priority=priority)
 
         if rc not in ["KO", "OK"]:
