@@ -97,16 +97,12 @@ class MainHPSU(object):
         name = message["name"]
         value = message["value"]
         type = message["type"]
-        sec = 0
-        time.sleep(sec)
         
         rc = "KO"
         for cmd in self.hpsu.commands:
             if name == cmd["name"]:
+                rc = self.hpsu.sendCommand(cmd, value, cmd["type"])
 
-                rc = self.hpsu.sendCommand(cmd, value)
-
-        
         if type == "sync":
             priority = 2
             response = rc
@@ -114,9 +110,8 @@ class MainHPSU(object):
                              routing_key=props.reply_to,
                              properties=pika.BasicProperties(priority=priority, correlation_id = props.correlation_id),
                              body=str(response))
-        ch.basic_ack(delivery_tag = method.delivery_tag)    
+        ch.basic_ack(delivery_tag = method.delivery_tag)
 
-    
 def _exit():
     try:
         read_thread.exit()
