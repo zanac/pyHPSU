@@ -275,12 +275,6 @@ def main(argv):
         n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
         read_can(driver, logger, port, cmd, lg_code,verbose,output_type)
 
-
-    
-        
-        
-
-
 def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
     global backup_file
     # really needed? Driver is checked above
@@ -290,12 +284,14 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
 
 
     arrResponse = []
-    
+
     for c in n_hpsu.commands:
             setValue = None
             for i in cmd:
                 if ":" in i and c["name"] == i.split(":")[0]:
                     setValue = i.split(":")[1]
+                    if not c["type"] == "value":
+                        setValue = float(setValue)*float(c["divisor"])
 
             i = 0
             while i <= 3:
