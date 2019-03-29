@@ -48,7 +48,7 @@ class export():
     def rest_send(self, item, value):
         url = "http://%s:%s/rest/items/%s%s/state" % (self.openhabhost, str(self.openhabport), self.openhabitemprefix, item)
         try:
-            r = requests.put(url, data=value)
+            r = requests.put(url, data=str(value))
         except requests.exceptions.RequestException as e:
             rc = "ko"
             self.hpsu.printd("exception", "Error " + str(e.code) + ": " + str(e.reason))
