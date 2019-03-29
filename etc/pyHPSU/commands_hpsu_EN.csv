@@ -140,7 +140,6 @@ anti_leg_temp;Anti-Legionella temp;Setting the hot water target temperature duri
 max_dhw_loading;Max DHW loading;Setting limits the time period for hot water generation to the set target value
 dhw_off_time;DHW Off Time;Setting the block time following completion or interruption of a hot water generation cycle. New demand of hot water generation is satisfied only after expiry of this block time
 one_hot_water;1x Hot Water;Start of the one-off heating up of the hot water and the set value [T-DHW Setpoint 1], independent of the heating programmes
-hyst_hp;Hyst HP;Switching threshold hot water charging
 timer_boh;Timer BOH;Delay time after which the reserve heating may support the heat pump in hot water charging
 t_reduced;T-Reduced;Target room temperature for the setback times for the permanent timer programmes [Automatic 1] and [Automatic 2]
 t_absence;T-Absence;Target room temperature for the setback times for the temporary timer programmes  [Away] and [Vacation]
