@@ -140,7 +140,6 @@ anti_leg_temp;Antileg Temp;Einstellung der Warmwasser-Solltemperatur während de
 max_dhw_loading;Max WW Ladezeit;Einstellung begrenzt den Zeitraum für die Warmwasserbereitung auf den eingestellten Sollwert
 dhw_off_time;WW Sperrzeit;Einstellung der Sperrzeit nach Abschluss oder Abbruch eines Warmwasserbereitungszyklus
 one_hot_water;1x Warmwasser;Start der einmaligen Aufheizung des Warmwassers auf den eingestellten Sollwert 
-hyst_hp;WP Hyst TDHW;Schaltschwelle Warmwasserladung
 timer_boh;Wartezeit BOH;Verzögerungszeit, ab wann der zusätzliche Wärmeerzeuger die Wärmepumpe bei einer Warmwasserladung unterstützen darf
 t_reduced;T-Absenkung;Raum-Solltemperatur für die Absenkzeiten der permanenten Zeitprogramme [Automatik 1] und [Automatik 2] gilt
 t_absence;T-Abwesend;Raum-Solltemperatur für die Absenkzeiten der temporären Zeitprogramme [Abwesend] + [Urlaub]
