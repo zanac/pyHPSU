@@ -79,6 +79,9 @@ class CanELM327(object):
             if type == "int":
                 setValue = int(setValue)
                 command = command+" %02X 00" % (setValue)
+            if type == "longint":
+                setValue = int(setValue)
+                command = command+"00 %02X" % (setValue)
             if type == "float":
                 setValue = int(setValue)
                 if setValue < 0:
