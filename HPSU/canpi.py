@@ -63,10 +63,10 @@ class CanPI(object):
                 setValue = int(setValue)
                 if setValue < 0:
                     setValue = 0x10000+setValue
-                command = command+" %02X %02X" % (setValue >> 8, setValue & 0xff)
-            if cmd["unit"] == "int" :
+                command = command+" %02X %02X" % (setValue >> 8, setValue & 0xff)"""
+            if cmd["type"] == "longint" :
                 setValue = int(setValue)
-                command = command+" %02X 00" % (setValue) """
+                command = command+" 00 %02X" % (setValue) 
             if cmd["type"] == "int":
                 setValue = int(setValue)
                 command = command+" %02X 00" % (setValue)
