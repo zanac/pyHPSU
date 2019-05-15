@@ -143,3 +143,4 @@ one_hot_water;1x Hot Water;Start of the one-off heating up of the hot water and 
 timer_boh;Timer BOH;Delay time after which the reserve heating may support the heat pump in hot water charging
 t_reduced;T-Reduced;Target room temperature for the setback times for the permanent timer programmes [Automatic 1] and [Automatic 2]
 t_absence;T-Absence;Target room temperature for the setback times for the temporary timer programmes  [Away] and [Vacation]
+t_room;T-Room;Room temperature measured by an optional Rocon U1 room station
