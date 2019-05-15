@@ -143,3 +143,4 @@ one_hot_water;1x Warmwasser;Start der einmaligen Aufheizung des Warmwassers auf 
 timer_boh;Wartezeit BOH;Verzögerungszeit, ab wann der zusätzliche Wärmeerzeuger die Wärmepumpe bei einer Warmwasserladung unterstützen darf
 t_reduced;T-Absenkung;Raum-Solltemperatur für die Absenkzeiten der permanenten Zeitprogramme [Automatik 1] und [Automatik 2] gilt
 t_absence;T-Abwesend;Raum-Solltemperatur für die Absenkzeiten der temporären Zeitprogramme [Abwesend] + [Urlaub]
+t_room; T-Raum;Raumtemperatur, die von einer optionalen Rocon U1 Raumstation gemessen wird
