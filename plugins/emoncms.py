@@ -55,7 +55,7 @@ class export():
         for option in options:
             if option.startswith("node_"):
                 try:
-                    self.listNodes[option] = self.config.get("Emoncms", option).split(',')
+                    self.listNodes[option] = self.config.get("EMONCMS", option).split(',')
                     self.listCmd.extend(self.listNodes[option])
                     
                     for c in self.listNodes[option]:
@@ -101,9 +101,11 @@ class export():
                 try:
                     r = requests.get(_url, timeout=7)
                     rc = r.text
-                except (requests.exceptions.Timeout, e):
+                except (requests.exceptions.Timeout):
                     rc = "ko"
                     self.hpsu.printd("exception", "Connection timeout during get %s" % _urlNoApi)
+                except (requests.exceptions.ConnectionError):
+                    self.hpsu.printd("exception", "Failed to establish a new connection to %s" % _urlNoApi)
                 except Exception:
                     rc = "ko"
                     self.hpsu.printd("exception", "Exception on get %s" % _urlNoApi)
