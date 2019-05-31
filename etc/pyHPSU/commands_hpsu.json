@@ -439,6 +439,24 @@
 			"unit" : "deg",
 			"type" : "float"
 		},
+		"t_dhw_setpoint2" : { 
+			"name" : "t_dhw_setpoint2", 
+			"command" : "31 00 FA 0A 06 00 00", 
+			"id" : "190", 
+			"divisor" : "10", 
+			"writable" : "true", 
+			"unit" : "deg",
+			"type" : "float"
+		},
+		"t_dhw_setpoint3" : { 
+			"name" : "t_dhw_setpoint3", 
+			"command" : "31 00 FA 01 3E 00 00", 
+			"id" : "190", 
+			"divisor" : "10", 
+			"writable" : "true", 
+			"unit" : "deg",
+			"type" : "float"
+		},
 		"hyst_hp" : { 
 			"name" : "hyst_hp", 
 			"command" : "31 00 FA 06 91 00 00", 
