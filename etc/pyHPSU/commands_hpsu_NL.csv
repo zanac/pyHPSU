@@ -46,15 +46,15 @@ t_room2_setpoint;T Room 2 Setpoint; Setpoint 2 value
 t_room3_setpoint;T Room 3 Setpoint; Setpoint 3 value
 heat_slope;Stook lijn;Stook lijn
 t_dhw_setpoint1;TWW Soll 1;Instelpunt van de warmwatertemperatuur in C, dat geldt voor de 1e schakeltijdcyclus van de tijdprogramma's [Automatisch 1] en [Automatisch 2].
-t_dhw_setpoint1;TWW Soll 2;Instelpunt van de warmwatertemperatuur in C, dat geldt voor de 2e schakeltijdcyclus van de tijdprogramma's [Automatisch 1] en [Automatisch 2].
-t_dhw_setpoint1;TWW Soll 3;Instelpunt van de warmwatertemperatuur in C, dat geldt voor de 3e schakeltijdcyclus van de tijdprogramma's [Automatisch 1] en [Automatisch 2].
+t_dhw_setpoint2;TWW Soll 2;Instelpunt van de warmwatertemperatuur in C, dat geldt voor de 2e schakeltijdcyclus van de tijdprogramma's [Automatisch 1] en [Automatisch 2].
+t_dhw_setpoint3;TWW Soll 3;Instelpunt van de warmwatertemperatuur in C, dat geldt voor de 3e schakeltijdcyclus van de tijdprogramma's [Automatisch 1] en [Automatisch 2].
 hyst_hp;Hysteresis WW;Instelling van de hysteresis voor warmwater bereiding. De warmwater bereiding wordt geactiveerd als de temperatuur gemeten door de warm water sensor onder de warmtwater doel temperatuur min de ingestelde waarde ligt.
 t_flow_cooling;T-Flow Cooling;Setting the cooling inflow target temperature (fixed value) when cooling mode is active
 error;foutmelding;foutmelding code
 outdoor_type;Outdoor type;Type exterior heat pump unit
 indoor_unit;Indoor unit;Type of interior heat pump unit
 func_heating;Function Heating;Setting as to whether there is an additional heat generator (WEZ) for hot water generation and heating support
-hzu;HUZ;Heating support from domestic hot water storage tanks when the minimum temperature is exceeded 
+hzu;HUZ;Heating support from domestic hot water storage tanks when the minimum temperature is exceeded
 equi_func;Equilibrium Function;The bivalence function is relevant for operation of the optional ancillary heater based on a backup demand (room heating operation)
 smart_grid;SMART GRID;Smart Grid
 modus_sg;Mode SG;Only if parameter [SMART GRID] = 1:Used for a possible target temperature increase in the case of aSMART GRID start command
@@ -62,7 +62,7 @@ ht_nt_func;HT/NT Function;Setting which specifies which heat sources are switche
 ht_nt_contact;HT/NT Contact;Specifies whether the HT/NT input is an NC or NO contact
 room_therm;Room thermostat;Configuration of a room thermostat connected to the port J16 on the ROTEX HPSU compact using potential-free contacts
 interlink;Interlink fct;Configuration for systems operating with 2 different inflow target temperatures
-air_purge;Air Purge;Activation of automatic bleeding of the ROTEX HPSU compact and the connected heating circuit 
+air_purge;Air Purge;Activation of automatic bleeding of the ROTEX HPSU compact and the connected heating circuit
 max_perf_pump;Max Perform Pump;Upper limit for modulation of the pump output
 min_perf_pump;Min Perform Pump;Lower limit for modulation of the pump output
 outside_conf;Outside Config;Configuration of the optional external temperature sensor RoCon OT1
@@ -89,7 +89,7 @@ max_pressure;Max Pressure;Defines the maximum water pressure
 max_pressure_drop;Max Pressuredrop;Defines the maximum acceptable pressure drop in the heating system
 setpoint_pressure;Set Point Pressure;Defines the set water pressure
 hc_func;HC Function;Setting defines the type of inflow temperature control
-t_frost_protect;T-Frost Protect;0=No frost protection of the heating circuit, Otherwise: If the outside temperature falls below the programmed value, the system switches into the frost protection mode (switches the pumps on). The function ceases once the outside temperature has risen to the set value +1 K 
+t_frost_protect;T-Frost Protect;0=No frost protection of the heating circuit, Otherwise: If the outside temperature falls below the programmed value, the system switches into the frost protection mode (switches the pumps on). The function ceases once the outside temperature has risen to the set value +1 K
 insulation;Insulation;Setting the insulation standard of the building. This affects the way the heating curve and the heating times automatically adapt to the outside temperature.
 screed;Screed;Function for screed drying
 screed_day1;Temp scrred day 1;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
