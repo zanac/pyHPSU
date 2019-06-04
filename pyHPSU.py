@@ -30,7 +30,7 @@ def main(argv):
     output_type = "JSON"
     upload = False
     lg_code = "EN"
-    languages = ["EN", "IT", "DE", "NL"]
+    languages = ["EN", "IT", "DE"]
     logger = None
     pathCOMMANDS = "/etc/pyHPSU"
     global conf_file
@@ -95,11 +95,11 @@ def main(argv):
             read_from_conf_file = True
             conf_file = arg
             options_list["config"]=arg
-           
+
         if opt in ("-b", "--backup"):
             backup_mode=True
             backup_file = arg
-            output_type = "BACKUP" 
+            output_type = "BACKUP"
             options_list["backup"]=arg
 
         if opt in ("-r", "--restore"):
@@ -317,14 +317,14 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
         for r in arrResponse:
             print("%s,%s,%s" % (r["timestamp"], r["name"], r["resp"]))
     elif output_type == "BACKUP":
-        print("Writing Backup to " + str(backup_file)) 
+        print("Writing Backup to " + str(backup_file))
         try:
             with open(backup_file, 'w') as outfile:
                 json.dump(arrResponse, outfile, sort_keys = True, indent = 4, ensure_ascii = False)
         except FileNotFoundError:
             print("No such file or directory!!!")
             sys.exit(1)
-        
+
 
     else:
         module_name=output_type.lower()
@@ -333,7 +333,7 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
         hpsu_plugin.pushValues(vars=arrResponse)
 
 
-    
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])
