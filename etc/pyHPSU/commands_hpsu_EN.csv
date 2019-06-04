@@ -76,7 +76,7 @@ power_biv;Power BIV;Setting limits the output of the heating support
 tdiff_dhw_ch;TDiff-DHW CH;TDiff-DHW CH
 t_vbh1_max;T vbh1 max;Setting limits the inflow temperature (measured at tV, BH) with active heating support function
 equi_temp;Equilibrium Temp;Setting affects the operation of the potential-free AUX switching contact (toggle switch utput A) defined in the parameter [AUX Fct]
-quite_mode;Quite Mode;Mode for low-noise operation with reduced output
+quiet_mode;Quiet Mode;Mode for low-noise operation with reduced output
 aux_fct;AUX Fct;Setting assigns the switching conditions to the potential-free AUX contact (toggle switch output A)
 aux_time;AUX time;AUX switching contact (A) switches with a delay when the switching condition is pending for longer than the set time
 t_dhw_1_min;T-DHW 1 min;Switching threshold storage tank temperature (Tdhw) for AUX switching contact (see parameter [AUX Fct])

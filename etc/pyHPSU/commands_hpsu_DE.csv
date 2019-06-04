@@ -76,7 +76,7 @@ power_biv;Leistung BIV;Einstellung begrenzt Leistung der Heizungsunterstützung
 tdiff_dhw_ch;TDiff-WW HZU;TDiff-WW HZU
 t_vbh1_max;Max Temp Heizung;Einstellung begrenzt die Vorlauf-Solltemperatur (gemessen an tV, BH) bei aktiver Heizungsunterstützungsfunktion
 equi_temp;Bivalenztemperatur;Einstellung beeinflusst die im Parameter [Sonderfkt Schaltk] definierte Wirkungsweise des potenzialfreien AUX-Schaltkontakts (Wechselschaltausgang A)
-quite_mode;Flüsterbetrieb;Modus für geräuscharmen Betrieb bei reduzierter Leistung
+quiet_mode;Flüsterbetrieb;Modus für geräuscharmen Betrieb bei reduzierter Leistung
 aux_fct;Sonderfkt Schaltk;Einstellung weist die Schaltbedingungen für den potenzialfreien AUX-Schaltkontakt zu
 aux_time;Wartezeit Sonderfkt;AUX-Schaltkontakt (A) schaltet erst verzögert, wenn die Schaltbedingung
 t_dhw_1_min;Schaltschwelle TDHW;Schaltschwelle Speichertemperatur (Tdhw) für AUX-Schaltkontakt
@@ -141,7 +141,7 @@ anti_leg_time;Antileg Zeit;Einstellung der Startzeit der thermischen Desinfektio
 anti_leg_temp;Antileg Temp;Einstellung der Warmwasser-Solltemperatur während der thermischen Desinfektion des Warmwasserspeichers
 max_dhw_loading;Max WW Ladezeit;Einstellung begrenzt den Zeitraum für die Warmwasserbereitung auf den eingestellten Sollwert
 dhw_off_time;WW Sperrzeit;Einstellung der Sperrzeit nach Abschluss oder Abbruch eines Warmwasserbereitungszyklus
-one_hot_water;1x Warmwasser;Start der einmaligen Aufheizung des Warmwassers auf den eingestellten Sollwert 
+one_hot_water;1x Warmwasser;Start der einmaligen Aufheizung des Warmwassers auf den eingestellten Sollwert
 timer_boh;Wartezeit BOH;Verzögerungszeit, ab wann der zusätzliche Wärmeerzeuger die Wärmepumpe bei einer Warmwasserladung unterstützen darf
 t_reduced;T-Absenkung;Raum-Solltemperatur für die Absenkzeiten der permanenten Zeitprogramme [Automatik 1] und [Automatik 2] gilt
 t_absence;T-Abwesend;Raum-Solltemperatur für die Absenkzeiten der temporären Zeitprogramme [Abwesend] + [Urlaub]
