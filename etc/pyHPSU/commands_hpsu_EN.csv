@@ -54,7 +54,7 @@ error;error;errorcode
 outdoor_type;Outdoor type;Type exterior heat pump unit
 indoor_unit;Indoor unit;Type of interior heat pump unit
 func_heating;Function Heating;Setting as to whether there is an additional heat generator (WEZ) for hot water generation and heating support
-hzu;HUZ;Heating support from domestic hot water storage tanks when the minimum temperature is exceeded 
+hzu;HUZ;Heating support from domestic hot water storage tanks when the minimum temperature is exceeded
 equi_func;Equilibrium Function;The bivalence function is relevant for operation of the optional ancillary heater based on a backup demand (room heating operation)
 smart_grid;SMART GRID;Smart Grid
 modus_sg;Mode SG;Only if parameter [SMART GRID] = 1:Used for a possible target temperature increase in the case of aSMART GRID start command
@@ -62,7 +62,7 @@ ht_nt_func;HT/NT Function;Setting which specifies which heat sources are switche
 ht_nt_contact;HT/NT Contact;Specifies whether the HT/NT input is an NC or NO contact
 room_therm;Room thermostat;Configuration of a room thermostat connected to the port J16 on the ROTEX HPSU compact using potential-free contacts
 interlink;Interlink fct;Configuration for systems operating with 2 different inflow target temperatures
-air_purge;Air Purge;Activation of automatic bleeding of the ROTEX HPSU compact and the connected heating circuit 
+air_purge;Air Purge;Activation of automatic bleeding of the ROTEX HPSU compact and the connected heating circuit
 max_perf_pump;Max Perform Pump;Upper limit for modulation of the pump output
 min_perf_pump;Min Perform Pump;Lower limit for modulation of the pump output
 outside_conf;Outside Config;Configuration of the optional external temperature sensor RoCon OT1
@@ -76,7 +76,7 @@ power_biv;Power BIV;Setting limits the output of the heating support
 tdiff_dhw_ch;TDiff-DHW CH;TDiff-DHW CH
 t_vbh1_max;T vbh1 max;Setting limits the inflow temperature (measured at tV, BH) with active heating support function
 equi_temp;Equilibrium Temp;Setting affects the operation of the potential-free AUX switching contact (toggle switch utput A) defined in the parameter [AUX Fct]
-quiet_mode;Quiet Mode;Mode for low-noise operation with reduced output
+quite_mode;Quite Mode;Mode for low-noise operation with reduced output
 aux_fct;AUX Fct;Setting assigns the switching conditions to the potential-free AUX contact (toggle switch output A)
 aux_time;AUX time;AUX switching contact (A) switches with a delay when the switching condition is pending for longer than the set time
 t_dhw_1_min;T-DHW 1 min;Switching threshold storage tank temperature (Tdhw) for AUX switching contact (see parameter [AUX Fct])
@@ -86,10 +86,10 @@ t_flow_ch_adj;T-Flow CH adj;Only when parameter [Interlink fct] = On. With a clo
 t_flow_cool_adj;T-Flow Cooling adj;Only when parameter [Interlink fct] = On. With a closed cooling RT switching contact, the cooling inflow target temperature is reduced by the set value
 min_pressure;Min Pressure;Defines the minimum water pressure
 max_pressure;Max Pressure;Defines the maximum water pressure
-max_pressure_drop;Max Pressuredrop;Defines the maximum acceptable pressure drop in the heating system
 setpoint_pressure;Set Point Pressure;Defines the set water pressure
+max_pressure_drop;Max Pressuredrop;Defines the maximum acceptable pressure drop in the heating system
 hc_func;HC Function;Setting defines the type of inflow temperature control
-t_frost_protect;T-Frost Protect;0=No frost protection of the heating circuit, Otherwise: If the outside temperature falls below the programmed value, the system switches into the frost protection mode (switches the pumps on). The function ceases once the outside temperature has risen to the set value +1 K 
+t_frost_protect;T-Frost Protect;0=No frost protection of the heating circuit, Otherwise: If the outside temperature falls below the programmed value, the system switches into the frost protection mode (switches the pumps on). The function ceases once the outside temperature has risen to the set value +1 K
 insulation;Insulation;Setting the insulation standard of the building. This affects the way the heating curve and the heating times automatically adapt to the outside temperature.
 screed;Screed;Function for screed drying
 screed_day1;Temp scrred day 1;Setting the procedural program for screed heating. An individual inflow temperature can be set for each day for a maximum period of 28 days. The end of the screed programme is defined by the 1st. Day at target value setting
