@@ -219,17 +219,16 @@
 			"divisor" : "1", 
 			"writable" : "true", 
 			"unit" : "",
-			"type" : "int"
+			"type" : "int",
 			"value_code" : {
 				"1" : "standby",
 				"3" : "heat",
 				"4" : "sink", 
 				"5" : "summer",
-				"17" : "cool"
-				"11" : "auto 1"
+				"17" : "cool",
+				"11" : "auto 1",
 				"12" : "auto 2"
 			}
-			
 		},
 		"tvbh2" : { 
 			"name" : "tvbh2", 
