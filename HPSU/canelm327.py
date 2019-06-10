@@ -11,7 +11,7 @@ class CanELM327(object):
     hpsu = None
     def __init__(self, hpsu=None):
         self.hpsu = hpsu
-    
+
     def resetInterface(self):
         self.ser.flushInput()  #flush input buffer, discarding all its contents
         self.ser.flushOutput() #flush output buffer, aborting current output and discard all that is in buffer
@@ -20,7 +20,7 @@ class CanELM327(object):
         except:
             pass
         self.initInterface(self.portstr, 38400, True)
-    
+
     def initInterface(self, portstr=None, baudrate=38400, init=False):
         self.portstr = portstr
         try:
@@ -49,8 +49,7 @@ class CanELM327(object):
                     self.hpsu.printd("error", "Error sending AT PP 2F ON (rc:%s)" % rc)
                     count_1+=1
                     time.sleep(1)
-                
-            
+
             """rc = self.sendCommand("AT D")
             if rc != "OK":
                 print "Error sending AT D (rc:%s)" % rc
@@ -81,7 +80,7 @@ class CanELM327(object):
                 command = command+" %02X 00" % (setValue)
             if type == "longint":
                 setValue = int(setValue)
-                command = command+"00 %02X" % (setValue)
+                command = command+" 00 %02X" % (setValue)
             if type == "float":
                 setValue = int(setValue)
                 if setValue < 0:
@@ -110,7 +109,6 @@ class CanELM327(object):
         else:
             rc = self.sendCommand("ATSH"+cmd["id"])
         if rc != "OK":
-            #self.eprint("Error setting ID %s (rc:%s)" % (cmd["receiver_id"], rc))
             self.resetInterface()
             self.hpsu.printd('warning', "Error setting ID %s (rc:%s)" % (cmd["id"], rc))
             return "KO"
@@ -120,7 +118,6 @@ class CanELM327(object):
             return rc
 
         if rc[0:1] != cmd["command"][0:1]:
-            #self.eprint("Error sending cmd %s (rc:%s)" % (cmd["command"], rc))
             self.resetInterface()
             self.hpsu.printd('warning', 'sending cmd %s (rc:%s)' % (cmd["command"], rc))
             return "KO"
