@@ -98,7 +98,8 @@ class HPSU(object):
             elif level == 'exception':
                 self.logger.exception(msg)
         else:
-            print("%s - %s" % (level, msg))
+            if self.driver == "HPSUD":
+                print("%s - %s" % (level, msg))
     
     def sendCommandWithParse(self, cmd, setValue=None, priority=1):
         response = None
