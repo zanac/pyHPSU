@@ -291,7 +291,7 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
                     if not c["type"] == "value":
                         setValue = float(setValue)*float(c["divisor"])
                     else:
-                        n_hpsu.printd('error', 'type value not implemented' % (c["name"]))
+                        n_hpsu.printd('error', 'type "value" not implemented since yet')
                         return
 
             i = 0
