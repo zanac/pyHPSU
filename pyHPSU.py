@@ -215,7 +215,6 @@ def main(argv):
                 print("Error, please specify a value to query in config file ")
                 sys.exit(9)
 
-
     #
     # Print help
     #
@@ -282,7 +281,6 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
     #    print("Error, please specify driver [ELM327 or PYCAN, EMU, HPSUD]")
     #    sys.exit(9)
 
-
     arrResponse = []
 
     for c in n_hpsu.commands:
@@ -292,6 +290,9 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
                     setValue = i.split(":")[1]
                     if not c["type"] == "value":
                         setValue = float(setValue)*float(c["divisor"])
+                    else:
+                        n_hpsu.printd('error', 'type value not implemented' % (c["name"]))
+                        return
 
             i = 0
             while i <= 3:
@@ -324,16 +325,11 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
         except FileNotFoundError:
             print("No such file or directory!!!")
             sys.exit(1)
-
-
     else:
         module_name=output_type.lower()
         module = importlib.import_module("HPSU.plugins." + module_name)
         hpsu_plugin = module.export(hpsu=n_hpsu, logger=logger, config_file=conf_file)
         hpsu_plugin.pushValues(vars=arrResponse)
-
-
-
 
 if __name__ == "__main__":
     main(sys.argv[1:])
