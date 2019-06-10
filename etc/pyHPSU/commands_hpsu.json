@@ -219,7 +219,7 @@
 			"divisor" : "1", 
 			"writable" : "true", 
 			"unit" : "",
-			"type" : "value"
+			"type" : "int"
 		},
 		"tvbh2" : { 
 			"name" : "tvbh2", 
