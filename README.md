@@ -20,7 +20,7 @@ The advantage of SocketCan: it can handle multiple instances or programs talking
 
 # Hardware setup
 1. Via Elm327 interface
-- Most cheap china replicas will not work because the "AT PP" command is not implemented. A purchase recommendation is as follows: https://www.totalcardiagnostics.com/elm327
+- Most cheap china replicas will not work because the "AT PP" command is not implemented. A purchase recommendation is as follows: https://www.totalcardiagnostics.com/elm327 or ahermann86 is using https://www.amazon.de/dp/B06XJ6GQZX/ref=cm_sw_em_r_mt_dp_U_OLP.CbG0Z7YKR
 - It is recommended to order a matching obd2 socket (16pol) to connect the can adapter
 - Connect the CAN-High cable pin 6, the CAN-Low cable pin 14 and CAN signal ground pin 5 to the hpsu mainboards "J13" connector. (Power on the CAN-Side is not needed)
 - look at your systems "dmesg" while  connecting to get the device name 
