@@ -91,7 +91,7 @@ class export():
         for r in vars:
             msgs=[]
             if self.prefix:
-                ret=self.client.publish(self.prefix + "/" + r['name'],payload=r['resp'], qos=self.qos)
+                ret=self.client.publish(self.prefix + "/" + r['name'],payload=r['resp'], qos=int(self.qos))
                 topic=self.prefix + "/" + r['name']
             else:
                 ret=self.client.publish(r['name'],payload=r['resp'])
