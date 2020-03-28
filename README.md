@@ -12,7 +12,7 @@ It is based on the idea and the work of
  **[Vanni Brutto alias Zanac](https://github.com/zanac/pyHPSU)**
 
 It is expandable via plugins to send data to other systems and databases.
-At the momeent, Emoncms, fhem, homematic and mysql are supported.
+At the momeent, Emoncms, fhem, homematic, influxdb, mqtt, mysql and openhab are supported.
 
 It works with [SocketCan](https://elinux.org/CAN_Bus) __OR__ the [elm327](https://en.wikipedia.org/wiki/ELM327) based serial-can interfaces.  
 The advantage of SocketCan: it can handle multiple instances or programs talking over the same can interface or you can query multiple values with one command. Message queuing is done by the kernel. For serial can interfaces (like the Elm327) you need a server which handles the messages. To do this, pyHPSUd.py is there. It handles multiple pyHPSU.py session via rabbitMQ.
@@ -48,6 +48,7 @@ pyHPSU only runs on unix/linux based systems.
 - python3-requests
 - python3-mysql.connector (used by the db plugin)
 - python3-urllib3 (used by the homematic plugin)
+- python3-paho-mqtt (used by the mqtt plugin)
 
 2. git clone https://github.com/Spanni26/pyHPSU
 3. cd pyHPSU
@@ -80,18 +81,26 @@ Output is send to console in CSV format (comma separated value)
 
 ### DB
 If a database should be used simply create a mysql DB with collation "utf8_bin", edit the pyhpsu.conf and select "DB" as output type
-Configure it in /etc/pyHPSU/pyhpsu.conf (look ath the code of /usr/lib/python3/dist-packages/HPSU/db.py to find a template)
+Configure it in /etc/pyHPSU/pyhpsu.conf (look at the code of /usr/lib/python3/dist-packages/HPSU/plugins/db.py to find a template).
 
 ### EMONCMS
 Send the data to an emoncms instance (locally or the web version)
-Configure it in /etc/pyHPSU/pyhpsu.conf (look ath the code of /usr/lib/python3/dist-packages/HPSU/emoncms.py to find a template)
+Configure it in /etc/pyHPSU/pyhpsu.conf (look at the code of /usr/lib/python3/dist-packages/HPSU/plugins/emoncms.py to find a template).
 
 ### FHEM
 Send the data to a fhem instance. Atm only pushing the values via telnet to port 7072 is supported.
-Configure it in /etc/pyHPSU/pyhpsu.conf (look ath the code of /usr/lib/python3/dist-packages/HPSU/fhem.py to find a template)
+Configure it in /etc/pyHPSU/pyhpsu.conf (look at the code of /usr/lib/python3/dist-packages/HPSU/plugins/fhem.py to find a template).
 
 ### HOMEMATIC
-Send the data to homematic. Therefore the xmlapi has to be installed on the ccu, a system variable has to be configured and the ise_id of this variable must be configured in the pyHPSU.conf. Look ath the code of /usr/lib/python3/dist-packages/HPSU/fhem.py to find a template
+Send the data to homematic. Therefore the xmlapi has to be installed on the ccu, a system variable has to be configured and the ise_id of this variable must be configured in the pyHPSU.conf (look ath the code of /usr/lib/python3/dist-packages/HPSU/plugins/fhem.py to find a template).
+
+### INFLUXDB
+Send the data to the InfluxDB Time Series database.
+Configure it in /etc/pyHPSU/pyhpsu.conf (look at the code of /usr/lib/python3/dist-packages/HPSU/plugins/influxdb.py to find a template).
+
+### MQTT
+Send the data to an MQTT broker.
+Configure it in /etc/pyHPSU/pyhpsu.conf (look at the code of /usr/lib/python3/dist-packages/HPSU/plugins/mqtt.py to find a template).
 
 ### OPENHAB
 Send the data to openHAB. Create an item for every command you want to use. You have to use a Prefix like `Rotex_` for all pyHPSU related item names. So pyHPSU will push every value to a item named [Prefix][command].
@@ -134,7 +143,7 @@ root@rotex:# pyHPSU.py -a
 3. With Message Broker (only needed with serial intrerfaces like Elm327)  
 A serial line can only be used by one process at a time. So, if you query more then one value at a time or you run multiple instances of pyHPSU.py you can run in errors.  
 In this mode, every query from pyHPSU.py is sent to the pyHPSUD.py. This daemon deals with the message broker "rabbitmq" which sends one query at a time and sorts the answers to the correct sending process.  
-For that,install the message broker "rabbitmq".
+For that, install the message broker "rabbitmq".
 You also have to configure the config file /etc/pyHPSU/pyhpsu.conf at section "PYHPSUD".  
 Here, specify the driver, language and serial port to use.  
 The pyHPSUD.py is started via systemd:  
