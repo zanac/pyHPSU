@@ -53,6 +53,9 @@ class export():
         # MQTT Username
         if self.config.has_option('MQTT', 'USERNAME'):
             self.username = self.config['MQTT']['USERNAME']
+        else:
+            self.username = None
+            print("Username not set!!!!!")
 
         #MQTT Password
         if self.config.has_option('MQTT', "PASSWORD"):
