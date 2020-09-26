@@ -89,18 +89,19 @@ class export():
 
 
     def pushValues(self, vars=None):
-        self.client.connect(self.brokerhost, port=self.brokerport)
+        
         #self.msgs=[]
         for r in vars:
+            self.client.connect(self.brokerhost, port=self.brokerport)
             msgs=[]
             if self.prefix:
                 ret=self.client.publish(self.prefix + "/" + r['name'],payload=r['resp'], qos=int(self.qos))
                 topic=self.prefix + "/" + r['name']
             else:
-                ret=self.client.publish(r['name'],payload=r['resp'])
+                ret=self.client.publish(r['name'],payload=r['resp'], qos=int(self.qos))
                 topic=r['name']
             msg={'topic':topic,'payload':r['resp'], 'qos':self.qos, 'retain':False}
-        self.client.disconnect()
+            self.client.disconnect()
 
        
 
