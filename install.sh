@@ -5,7 +5,7 @@ CONF_DIR="/etc/pyHPSU"
 BIN_DIR="/usr/bin/"
 PACKAGE_DIR="/usr/share/doc/packages/pyHPSU"
 DIST_DIR="/usr/lib/python3/dist-packages/HPSU"
-
+SERVICE_DIR="/etc/systemd/system/"
 echo "Installing pyHPSU"
 if [ ! -d $CONF_DIR ]; then
         echo "Creating directory for config files"
@@ -45,8 +45,8 @@ cp -r HPSU/* $DIST_DIR
 cp -r contrib $DIST_DIR
 
 # copy service file
-#cp hpsud.service /etc/systemd/system/
-#systemctl --system daemon-reload
+cp systemd/* $SERVICE_DIR
+systemctl --system daemon-reload
 
 # copy binarys
 cp pyHPSU.py $BIN_DIR
