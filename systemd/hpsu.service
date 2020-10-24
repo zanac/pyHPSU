@@ -1,0 +1,15 @@
+[Unit]
+Description=HPSU in auto mode
+#Requires=influxd.service
+
+[Service]
+Type=simple
+ExecStartPre=
+EnvironmentFile=/etc/pyHPSU/pyhpsu.conf
+ExecStart=/usr/bin/pyHPSU.py -a 
+ExecReload=
+ExecStop=
+
+[Install]
+WantedBy=multi-user.target
+Alias=hpsu.service
