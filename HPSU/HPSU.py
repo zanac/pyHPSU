@@ -65,9 +65,9 @@ class HPSU(object):
                 self.all_commands = json.load(jsonfile)
                 self.command_dict=self.all_commands["commands"]
                 for single_command in self.command_dict:
-                    if single_command in hpsuDict:
-                        self.command_dict[single_command].update({ "label" : hpsuDict[single_command]["label"], "desc" : hpsuDict[single_command]["desc"]})
-                    if (single_command in listCmd) or (len(listCmd) == 0):                        
+                    if self.command_dict[single_command]["name"] in hpsuDict:
+                        self.command_dict[single_command].update({ "label" : hpsuDict[self.command_dict[single_command]["name"]]["label"], "desc" : hpsuDict[self.command_dict[single_command]["name"]]["desc"]})
+                    if (single_command in listCmd) or (len(listCmd) == 0):
                         self.commands.append(self.command_dict[single_command])
                     if (self.command_dict[single_command]["writable"]=="true"):
                         self.backup_commands.append(self.command_dict[single_command]["name"])
