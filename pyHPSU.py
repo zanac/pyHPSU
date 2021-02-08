@@ -43,6 +43,9 @@ def main(argv):
     ticker=0
     loop=True
     auto=False
+    LOG_LEVEL_STRING = 'DEBUG, INFO, WARNING, ERROR, CRITICAL'
+    # default to loggin.error if --log_level option not present
+    desired_log_level = logging.ERROR
     #commands = []
     #listCommands = []
     global config
@@ -68,7 +71,7 @@ def main(argv):
             PLUGIN_LIST.append(PLUGIN)
 
     try:
-        opts, args = getopt.getopt(argv,"ahc:p:d:v:o:l:g:f:b:r:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log=", "config_file="])
+        opts, args = getopt.getopt(argv,"ahc:p:d:v:o:l:g:f:b:r:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log=", "log_level=", "config_file="])
     except getopt.GetoptError:
         print('pyHPSU.py -d DRIVER -c COMMAND')
         print(' ')
@@ -82,7 +85,8 @@ def main(argv):
         print('           -l  --language        set the language to use [%s], default is \"EN\" ' % " ".join(languages))
         print('           -b  --backup          backup configurable settings to file [filename]')
         print('           -r  --restore         restore HPSU settings from file [filename]')
-        print('           -g  --log             set the log to file [_filename]')
+        print('           -g  --log             set the log to file [filename]')
+        print('           --log_level           set the log level to [' + LOG_LEVEL_STRING + ']')
         print('           -h  --help            show help')
         sys.exit(2)
 
@@ -140,8 +144,25 @@ def main(argv):
             formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
             hdlr.setFormatter(formatter)
             logger.addHandler(hdlr)
-            logger.setLevel(logging.ERROR)
+        elif opt in ("--log_level"):
+            if arg == 'DEBUG':
+                desired_log_level = logging.DEBUG
+            elif arg == 'INFO':
+                desired_log_level = logging.INFO
+            elif arg == 'WARNING':
+                desired_log_level = logging.WARNING
+            elif arg == 'ERROR':
+                desired_log_level = logging.ERROR
+            elif arg == 'CRITICAL':
+                desired_log_level = logging.CRITICAL
+            else:
+                print("Error, " + arg + " is not a valid value for log_level option, use [" + LOG_LEVEL_STRING + "]")
+                sys.exit(2)
         options_list["cmd"]=cmd
+
+    if logger is not None:    
+        logger.setLevel(desired_log_level)
+
     if verbose == "2":
         locale.setlocale(locale.LC_ALL, '')
 
