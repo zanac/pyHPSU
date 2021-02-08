@@ -45,12 +45,13 @@ class HPSU(object):
             hpsuDict = {}
             
             # read the translation file. if it doesn't exist, take the english one
-            commands_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, LANG_CODE)
-            if not os.path.isfile(commands_hpsu):
-                commands_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, "EN")
+            command_translations_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, LANG_CODE)
+            if not os.path.isfile(command_translations_hpsu):
+                command_translations_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, "EN")
+            self.printd("info", "loading command traslations file: "+command_translations_hpsu)
             # check, if commands are json or csv
             # read all known commands
-            with open(commands_hpsu, 'rU',encoding='utf-8') as csvfile:
+            with open(command_translations_hpsu, 'rU',encoding='utf-8') as csvfile:
                 pyHPSUCSV = csv.reader(csvfile, delimiter=';', quotechar='"')
                 next(pyHPSUCSV, None) # skip the header
                 for row in pyHPSUCSV:
@@ -60,8 +61,9 @@ class HPSU(object):
                     hpsuDict.update({name:{"label":label, "desc":desc}})
 
             # read all known commands
-
-            with open('%s/commands_hpsu.json' % self.pathCOMMANDS, 'rU',encoding='utf-8') as jsonfile:
+            command_details_hpsu = '%s/commands_hpsu.json' % self.pathCOMMANDS
+            self.printd("info", "loading command details file: "+command_details_hpsu)
+            with open(command_details_hpsu, 'rU',encoding='utf-8') as jsonfile:
                 self.all_commands = json.load(jsonfile)
                 self.command_dict=self.all_commands["commands"]
                 for single_command in self.command_dict:
@@ -89,14 +91,16 @@ class HPSU(object):
 
     def printd(self, level, msg):        
         if self.logger:
+            if level == 'debug':
+                self.logger.debug(msg)
+            elif level == 'info':
+                self.logger.info(msg)
             if level == 'warning':
                 self.logger.warning(msg)
             elif level == 'error':
                 self.logger.error(msg)
-            elif level == 'info':
-                self.logger.info(msg)
-            elif level == 'exception':
-                self.logger.exception(msg)
+            elif level == 'critical':
+                self.logger.critical(msg)
         else:
             if self.driver != "HPSUD":
                 print("%s - %s" % (level, msg))
