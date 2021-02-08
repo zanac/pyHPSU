@@ -28,8 +28,8 @@ tliq2;Tliq2 [C];Temperatura corrente del refrigerante (tliq2).
 tr2;TR2 [C];Temperatura di ritorno attuale riscaldamento, sensore secondario (tR2).
 ta2;TA2 [C];Temperatura esterna attuale (misurata dalla sonda della pompa di calore esterna).
 tdhw2;Tdhw2 [C];Temperatura dell'acqua calda attuale nel bollitore dell'acqua calda, sensore secondario (tDHW2).
-quiet;quiet;Indica lo stato di funzionamento silenzioso.
-mode;Mode;Modalita' attuale della pompa di calore:\n: riscaldare\n: Raffreddare\n: Produzione di acqua calda\n: Funzione scongelamento attiva
+quiet;Modalità silenziosa;Modalità per funzionamento silenzioso Esistono due modalità. In determinati casi, il funzionamento silenzioso si nota a causa della riduzione della potenza. 0: disattivato 1: attivato 2: Intervallo (funzionamento notturno fra le ore 22:00 e le ore 5:00 in modalità silenziosa)
+mode;Mode;Modalita' attuale della pompa di calore: 0: not active 1: riscaldare 2: Raffreddare 3: Funzione scongelamento attiva (Defrost) 4: Produzione di acqua calda (ACS)
 pump;Pump;Potenza attuale della pompa di circolazione per riscaldamento interna in %.
 ext;Ext;Modalita' energetica attuale della pompa di calore:\nLT: Funzione EVU attiva e tariffa ridotta.\nHT: Funzione EVU attiva e tariffa normale.\nSGN: SMART GRID - Funzione attiva, funzionamento\nnormale.\nSG1: SMART GRID - Funzione attiva, lancio,\ncorrente piu' cara.\nSG2: SMART GRID - Funzione attiva, funzionamento\naumentato, corrente piu' conveniente.\nSG3: SMART GRID - Funzione attiva, comando di attivazione e funzionamento aumentato, corrente piu' conveniente. '- - -': Nessuna modalita' esterna attiva, la pompa di calore funziona in modo normale.
 ehs;EHS;Potenza attuale del Backup-Heater (BUH) in kW.
