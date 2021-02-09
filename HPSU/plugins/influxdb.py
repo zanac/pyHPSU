@@ -65,7 +65,7 @@ class export():
                
         except:
             rc = "ko"
-            self.hpsu.printd("exception", "Error : Cannot connect to database")
+            self.hpsu.logger.exception("Error : Cannot connect to database")
 
 
         self.client.switch_database(self.influxdbname)

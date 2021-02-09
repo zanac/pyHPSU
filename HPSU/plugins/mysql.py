@@ -49,19 +49,19 @@ class db():
         if db_config.has_option('MYSQL','DB_NAME'):
             db_name=db_config['MYSQL']['DB_NAME'] 
         else:
-            print("No database name defined in config file .")
+            self.hpsu.logger.error("No database name defined in config file .")
             sys.exit(9)
 
         if db_config.has_option('MYSQL','DB_USER'):
             db_user=db_config['MYSQL']['DB_USER']
         else: 
-            print("No database user defined in config file.")
+            self.hpsu.logger.error(("No database user defined in config file.")
             sys.exit(9)
 
         if db_config.has_option('MYSQL','DB_PASSWORD'):
             db_password=db_config['MYSQL']['DB_PASSWORD']
         else:
-            print("No password for the database user defined in config file")
+            self.hpsu.logger.error("No password for the database user defined in config file")
             sys.exit(9)
         
         self.db_params={ 'host':db_host, 'port':db_port, 'user':db_user, 'password':db_password, 'database':db_name } 
@@ -70,14 +70,14 @@ class db():
             self.db_conn= mysql.connector.connect(**self.db_params)
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-                print("Username or password wrong")
+                self.hpsu.logger.error("Username or password wrong")
                 sys.exit(9)
             elif err.errno == errorcode.ER_BAD_DB_ERROR:
-                print("Database does not exist")
+                self.hpsu.logger.error("Database does not exist")
                 sys.exit(9)
         else:
             self.db_conn.close()
-            #print("Closed")
+            #self.hpsu.logger.debug("Closed")
         self.check_commands_db()
 
     def check_commands_db(self):

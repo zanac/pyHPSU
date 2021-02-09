@@ -55,7 +55,7 @@ class export():
             self.username = self.config['MQTT']['USERNAME']
         else:
             self.username = None
-            print("Username not set!!!!!")
+            self.hpsu.logger.error("Username not set!!!!!")
 
         #MQTT Password
         if self.config.has_option('MQTT', "PASSWORD"):
@@ -84,7 +84,7 @@ class export():
     
         
     #def on_publish(self,client,userdata,mid):
-    #   print("data published, mid: " + str(mid) + "\n")
+    #   self.hpsu.logger.debug("data published, mid: " + str(mid) + "\n")
     #    pass
 
 

@@ -53,7 +53,7 @@ class export():
             urllib.request.urlopen(req)
         except urllib.error.URLError as e:
             rc = "ko"
-            self.hpsu.printd("exception", "Error " + str(e.code) + ": " + str(e.reason))
+            self.hpsu.logger.exception("Error " + str(e.code) + ": " + str(e.reason))
 
     def pushValues(self, vars=None):
         if self.method == "xmlapi":

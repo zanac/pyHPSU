@@ -64,14 +64,14 @@ class export():
                             if c == j["name"]:
                                 InCommand = False
                         if InCommand:
-                            self.hpsu.printd("warning", "command %s defined in emoncms but not as commandline option" % c)
+                            self.hpsu.logger.warning("command %s defined in emoncms but not as commandline option" % c)
 
                 except:
                     self.listNodes[option] = None
         
         for r in self.hpsu.commands:
             if r["name"] not in self.listCmd:
-                self.hpsu.printd("warning", "command %s defined as commandline option but not in emoncms" % r["name"])
+                self.hpsu.logger.warning("command %s defined as commandline option but not in emoncms" % r["name"])
 
     def pushValues(self, vars):
         #if self.plugin == "EMONCMS":
@@ -103,11 +103,11 @@ class export():
                     rc = r.text
                 except (requests.exceptions.Timeout):
                     rc = "ko"
-                    self.hpsu.printd("exception", "Connection timeout during get %s" % _urlNoApi)
+                    self.hpsu.logger.exception("Connection timeout during get %s" % _urlNoApi)
                 except (requests.exceptions.ConnectionError):
-                    self.hpsu.printd("exception", "Failed to establish a new connection to %s" % _urlNoApi)
+                    self.hpsu.logger.exception("Failed to establish a new connection to %s" % _urlNoApi)
                 except Exception:
                     rc = "ko"
-                    self.hpsu.printd("exception", "Exception on get %s" % _urlNoApi)
+                    self.hpsu.logger.exception("Exception on get %s" % _urlNoApi)
                     
         return True

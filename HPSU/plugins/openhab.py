@@ -51,7 +51,7 @@ class export():
             r = requests.put(url, data=str(value))
         except requests.exceptions.RequestException as e:
             rc = "ko"
-            self.hpsu.printd("exception", "Error " + str(e.code) + ": " + str(e.reason))
+            self.hpsu.logger.exception("Error " + str(e.code) + ": " + str(e.reason))
 
     def pushValues(self, vars=None):
         for r in vars:
