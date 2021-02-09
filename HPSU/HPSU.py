@@ -14,6 +14,7 @@ import csv
 import json
 import os.path
 import time
+import logging
 
 class HPSU(object):
     commands = []
@@ -48,7 +49,7 @@ class HPSU(object):
             command_translations_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, LANG_CODE)
             if not os.path.isfile(command_translations_hpsu):
                 command_translations_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, "EN")
-            self.printd("info", "loading command traslations file: "+command_translations_hpsu)
+            self.logger.info("loading command traslations file: "+command_translations_hpsu)
             # check, if commands are json or csv
             # read all known commands
             with open(command_translations_hpsu, 'rU',encoding='utf-8') as csvfile:
@@ -62,7 +63,7 @@ class HPSU(object):
 
             # read all known commands
             command_details_hpsu = '%s/commands_hpsu.json' % self.pathCOMMANDS
-            self.printd("info", "loading command details file: "+command_details_hpsu)
+            self.logger.info("loading command details file: "+command_details_hpsu)
             with open(command_details_hpsu, 'rU',encoding='utf-8') as jsonfile:
                 self.all_commands = json.load(jsonfile)
                 self.command_dict=self.all_commands["commands"]
@@ -84,26 +85,10 @@ class HPSU(object):
         elif self.driver == "HPSUD":
             self.can = CanTCP(self)
         else:
-            print("Error selecting driver %s" % self.driver)
+            logger.error("Error selecting driver %s" % self.driver)
             sys.exit(9)
 
         self.initInterface(port)
-
-    def printd(self, level, msg):        
-        if self.logger:
-            if level == 'debug':
-                self.logger.debug(msg)
-            elif level == 'info':
-                self.logger.info(msg)
-            if level == 'warning':
-                self.logger.warning(msg)
-            elif level == 'error':
-                self.logger.error(msg)
-            elif level == 'critical':
-                self.logger.critical(msg)
-        else:
-            if self.driver != "HPSUD":
-                print("%s - %s" % (level, msg))
     
     def sendCommandWithParse(self, cmd, setValue=None, priority=1):
         response = None

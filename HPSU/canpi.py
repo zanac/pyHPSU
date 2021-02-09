@@ -21,7 +21,7 @@ class CanPI(object):
         try:
             self.bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
         except Exception:
-            self.hpsu.printd('exception', 'Error opening bus can0')
+            self.hpsu.logger.exception('Error opening bus can0')
             sys.exit(9)
             
         config = configparser.ConfigParser()
@@ -45,7 +45,7 @@ class CanPI(object):
         """try:
             self.bus.shutdown()
         except Exception:
-            self.hpsu.printd('exception', 'Error shutdown canbus')"""
+            self.hpsu.logger.exception('Error shutdown canbus')"""
     
     def sendCommandWithID(self, cmd, setValue=None, priority=1):
         if setValue:
@@ -88,7 +88,7 @@ class CanPI(object):
             self.bus.send(msg)
 
         except Exception:
-            self.hpsu.printd('exception', 'Error sending msg')
+            self.hpsu.logger.exception('Error sending msg')
 
         if setValue:
             return "OK"
@@ -101,7 +101,7 @@ class CanPI(object):
                 rcBUS = self.bus.recv(timeout)
                 
             except Exception:
-                self.hpsu.printd('exception', 'Error recv')
+                self.hpsu.logger.exception('Error recv')
 
             if rcBUS:
                 if (msg_data[2] == 0xfa and msg_data[3] == rcBUS.data[3] and msg_data[4] == rcBUS.data[4]) or (msg_data[2] != 0xfa and msg_data[2] == rcBUS.data[2]):
@@ -109,15 +109,15 @@ class CanPI(object):
                     notTimeout = False
                     #print("got:  " + str(rc))
                 else:
-                    self.hpsu.printd('error', 'SEND:%s' % (str(msg_data)))
-                    self.hpsu.printd('error', 'RECV:%s' % (str(rcBUS.data)))
+                    self.hpsu.logger.error('SEND:%s' % (str(msg_data)))
+                    self.hpsu.logger.error('RECV:%s' % (str(rcBUS.data)))
             else:
-                self.hpsu.printd('error', 'Not aquired bus')
+                self.hpsu.logger.error('Not aquired bus')
 
             if notTimeout:
-                self.hpsu.printd('warning', 'msg not sync, retry: %s' % i)
+                self.hpsu.logger.warning('msg not sync, retry: %s' % i)
                 if i >= self.retry:
-                    self.hpsu.printd('error', 'msg not sync, timeout')
+                    self.hpsu.logger.error('msg not sync, timeout')
                     notTimeout = False
                     rc = "KO"
         

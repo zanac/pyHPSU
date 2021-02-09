@@ -30,7 +30,7 @@ class CanELM327(object):
             self.ser.flushInput()  #flush input buffer, discarding all its contents
             self.ser.flushOutput() #flush output buffer, aborting current output and discard all that is in buffer
         except serial.SerialException:
-            self.hpsu.printd("error", "Error opening serial %s" % portstr)
+            self.hpsu.logger.error("Error opening serial %s" % portstr)
             sys.exit(9)
 
         if init:
@@ -38,31 +38,31 @@ class CanELM327(object):
                         
             rc = self.sendCommand("AT PP 2F ON")
             """ if rc != "OK":
-                self.hpsu.printd("error", "Error sending AT PP 2F ON (rc:%s)" % rc)
+                self.hpsu.logger.error("Error sending AT PP 2F ON (rc:%s)" % rc)
                 sys.exit(9) """
             count_1=0
             while rc != "OK":
                 if count_1==15:
-                    self.hpsu.printd("error", "can adapter not responding: (rc:%s)" % rc)
+                    self.hpsu.logger.error("can adapter not responding: (rc:%s)" % rc)
                     sys.exit(9)
                 else:
-                    self.hpsu.printd("error", "Error sending AT PP 2F ON (rc:%s)" % rc)
+                    self.hpsu.logger.error("Error sending AT PP 2F ON (rc:%s)" % rc)
                     count_1+=1
                     time.sleep(1)
 
             """rc = self.sendCommand("AT D")
             if rc != "OK":
-                print "Error sending AT D (rc:%s)" % rc
+                self.hpsu.logger.error("Error sending AT D (rc:%s)" % rc)
                 sys.exit(9)"""
             
             rc = self.sendCommand("AT SP C")
             count_2=0
             while rc != "OK":
                 if count_2==15:
-                    self.hpsu.printd("error", "can adapter not responding: (rc:%s)" % rc)
+                    self.hpsu.logger.error("can adapter not responding: (rc:%s)" % rc)
                     sys.exit(9)
                 else:  
-                    self.hpsu.printd("error", "Error sending AT SP C (rc:%s)" % rc)
+                    self.hpsu.logger.error("Error sending AT SP C (rc:%s)" % rc)
                     count_2+=1
                     time.sleep(1)
 
@@ -90,7 +90,7 @@ class CanELM327(object):
                 setValue = int(setValue)
                 command = command+" 00 %02X" % (setValue)
 
-            #self.hpsu.printd("info", "cmd: %s cmdMod: %s" % (cmd, command))
+            #self.hpsu.logger.info("cmd: %s cmdMod: %s" % (cmd, command))
             cmd = command
 
         self.ser.write(bytes(str("%s\r\n" % cmd).encode('utf-8')))
@@ -110,7 +110,7 @@ class CanELM327(object):
             rc = self.sendCommand("ATSH"+cmd["id"])
         if rc != "OK":
             self.resetInterface()
-            self.hpsu.printd('warning', "Error setting ID %s (rc:%s)" % (cmd["id"], rc))
+            self.hpsu.logger.warning("Error setting ID %s (rc:%s)" % (cmd["id"], rc))
             return "KO"
         
         rc = self.sendCommand(cmd["command"], setValue, cmd["type"])
@@ -119,7 +119,7 @@ class CanELM327(object):
 
         if rc[0:1] != cmd["command"][0:1]:
             self.resetInterface()
-            self.hpsu.printd('warning', 'sending cmd %s (rc:%s)' % (cmd["command"], rc))
+            self.hpsu.logger.warning('sending cmd %s (rc:%s)' % (cmd["command"], rc))
             return "KO"
         
         return rc

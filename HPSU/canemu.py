@@ -56,7 +56,7 @@ class CanEMU(object):
 
         if cmd["name"] == "runtime_pump":
             #self.eprint("Error sending %s" % (cmd["name"]))
-            self.hpsu.printd('warning', 'sending cmd %s (rc:%s)' % (cmd["name"], "ko"))
+            self.hpsu.logger.warning('sending cmd %s (rc:%s)' % (cmd["name"], "ko"))
             return "KO"
         
         #time.sleep(2.0)
