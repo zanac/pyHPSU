@@ -247,14 +247,14 @@ def main(argv):
             print("%20s---%-10s" % ('------------', '----------'))
             for cmd in sorted(n_hpsu.command_dict) :
                 try:
-                    print("%20s - %-10s" % (n_hpsu.command_dict[cmd]['name'], n_hpsu.command_dict[cmd]['label']))
+                    print("%20s - %-10s" % (n_hpsu.command_dict[cmd]['name'], (n_hpsu.command_dict[cmd]['label']) + ('' if n_hpsu.command_dict[cmd]['writable']=='true' else ' (readonly)')))
                 except KeyError:
                     print("""!!!!!! No translation for "%12s" !!!!!!!""" % (n_hpsu.command_dict[cmd]['name']))
         else:
             print("%12s - %-10s - %s" % ('COMMAND', 'LABEL', 'DESCRIPTION'))
             print("%12s---%-10s---%s" % ('------------', '----------', '---------------------------------------------------'))
             for c in n_hpsu.commands:
-                print("%12s - %-10s - %s" % (c['name'], c['label'], c['desc']))
+                print("%12s - %-10s - %s" % (c['name'], c['label'] + ('' if c['writable']=='true' else ' (readonly)'), c['desc']))
         sys.exit(0)
 
         #
