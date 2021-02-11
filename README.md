@@ -49,6 +49,7 @@ pyHPSU only runs on unix/linux based systems.
 - python3-mysql.connector (used by the db plugin)
 - python3-urllib3 (used by the homematic plugin)
 - python3-paho-mqtt (used by the mqtt plugin)
+- python3-influxdb (used by the influxdb plugn)
 
 2. git clone https://github.com/Spanni26/pyHPSU
 3. cd pyHPSU

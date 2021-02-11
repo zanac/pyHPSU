@@ -158,18 +158,18 @@ def main(argv):
         else:
             try:
                 with open(conf_file) as f:
-                    config.readfp(f)
+                    config.read_file(f)
             except IOError:
                 print("Error: config file not found")
                 sys.exit(9)
         config.read(conf_file)
-        if config.has_option('PYHPSU','PYHPSU_DEVICE'):
+        if driver=="" and config.has_option('PYHPSU','PYHPSU_DEVICE'):
             driver=config['PYHPSU']['PYHPSU_DEVICE']
-        if config.has_option('PYHPSU','PYHPSU_PORT'):
+        if port=="" and config.has_option('PYHPSU','PYHPSU_PORT'):
             port=config['PYHPSU']['PYHPSU_PORT']
-        if config.has_option('PYHPSU','PYHPSU_LANG'):
+        if lg_code=="" and config.has_option('PYHPSU','PYHPSU_LANG'):
             lg_code=config['PYHPSU']['PYHPSU_LANG']
-        if config.has_option('PYHPSU','OUTPUT_TYPE'):
+        if output_type=="" and config.has_option('PYHPSU','OUTPUT_TYPE'):
             output_type=config['PYHPSU']['OUTPUT_TYPE']
 
     else:
