@@ -484,9 +484,9 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
             print(error_message)
             logger.error(error_message)
             sys.exit(1)
-    elif output_type == "MQTT":
+    elif output_type == "MQTTDAEMON":
         for r in arrResponse:
-            mqtt_client.publish(mqtt_prefix + "/" + mqttdaemon_status_topic + "/" + r["name"], r["resp"])
+            mqtt_client.publish(mqtt_prefix + "/" + mqttdaemon_status_topic + "/" + r["name"], r["resp"], qos=0, retain=True)
     else:
         module_name=output_type.lower()
         module = importlib.import_module("HPSU.plugins." + module_name)
@@ -514,8 +514,8 @@ def on_mqtt_message(client, userdata, message):
     hpsu_command_list = [hpsu_command_string]
     logger.info("setup HPSU to accept commands")
     n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=hpsu_command_list, lg_code=lg_code)
-    logger.info("send command to hpsu: hpsu_command_string")
-    read_can(driver, logger, port, hpsu_command_list, lg_code,verbose,"MQTT")
+    logger.info("send command to hpsu: " + hpsu_command_string)
+    read_can(driver, logger, port, hpsu_command_list, lg_code,verbose,"MQTTDAEMON")
  
 if __name__ == "__main__":
     main(sys.argv[1:])
