@@ -2,6 +2,15 @@
 #
 # -*- coding: utf-8 -*-
 
+# config inf conf_file for MQTT Daemon mode (defaults):
+# [MQTT]
+# BROKER = localhost
+# PORT = 1883
+# USERNAME = 
+# PASSWORD = 
+# CLIENTNAME = rotex_hpsu
+# PREFIX = rotex
+# COMMANDTOPIC = command
 
 import serial
 import sys
@@ -79,7 +88,7 @@ def main(argv):
     global options_list
     options_list={}
     mqttdaemon_option_present = False
-    mqttdaemon_subscribe_topic = "command"
+    mqttdaemon_command_topic = "command"
     #
     # get all plugins
     #
@@ -265,6 +274,13 @@ def main(argv):
         else:
             prefix = ""
 
+        #MQTT MQTT Daemon command topic
+        if config.has_option('MQTT', "COMMAND"):
+            mqttdaemon_command_topic = config['MQTT']['COMMAND']
+# default already set
+#        else:
+#            mqttdaemon_command_topic = ""
+
         #MQTT QOS
         if config.has_option('MQTT', "QOS"):
             qos = config['MQTT']['QOS']
@@ -352,7 +368,7 @@ def main(argv):
         client.connect(brokerhost)
 
         logger.info("Subscribing to command topic")
-        client.subscribe(prefix + "/" + mqttdaemon_subscribe_topic + "/+")
+        client.subscribe(prefix + "/" + mqttdaemon_command_topic + "/+")
 
         client.loop_forever()
     elif auto and not backup_mode:
