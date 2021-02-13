@@ -11,6 +11,7 @@
 # CLIENTNAME = rotex_hpsu
 # PREFIX = rotex
 # COMMANDTOPIC = command
+# STATUSTOPIC = status
 
 import serial
 import sys
@@ -39,6 +40,11 @@ port = None
 lg_code = None
 verbose = None
 output_type = None
+mqtt_client = None
+mqtt_prefix = None
+mqttdaemon_command_topic = "command"
+mqttdaemon_status_topic = "status"
+
 
 def main(argv):
     global logger
@@ -48,6 +54,10 @@ def main(argv):
     global lg_code
     global verbose
     global output_type
+    global mqtt_client
+    global mqtt_prefix
+    global mqttdaemon_command_topic
+    global mqttdaemon_status_topic
 
     cmd = []
     port = None
@@ -88,7 +98,6 @@ def main(argv):
     global options_list
     options_list={}
     mqttdaemon_option_present = False
-    mqttdaemon_command_topic = "command"
     #
     # get all plugins
     #
@@ -240,39 +249,39 @@ def main(argv):
 
         # MQTT hostname or IP
         if config.has_option('MQTT', 'BROKER'):
-            brokerhost = config['MQTT']['BROKER']
+            mqtt_brokerhost = config['MQTT']['BROKER']
         else:
-            brokerhost = 'localhost'
+            mqtt_brokerhost = 'localhost'
 
         # MQTT broker port
         if config.has_option('MQTT', 'PORT'):
-            brokerport = int(config['MQTT']['PORT'])
+            mqtt_brokerport = int(config['MQTT']['PORT'])
         else:
-            brokerport = 1883
+            mqtt_brokerport = 1883
 
         # MQTT client name
         if config.has_option('MQTT', 'CLIENTNAME'):
-            clientname = config['MQTT']['CLIENTNAME']
+            mqtt_clientname = config['MQTT']['CLIENTNAME']
         else:
-            clientname = 'rotex'
+            mqtt_clientname = 'rotex'
         # MQTT Username
         if config.has_option('MQTT', 'USERNAME'):
-            username = config['MQTT']['USERNAME']
+            mqtt_username = config['MQTT']['USERNAME']
         else:
-            username = None
+            mqtt_username = None
             logger.error("Username not set!!!!!")
 
         #MQTT Password
         if config.has_option('MQTT', "PASSWORD"):
-            password = config['MQTT']['PASSWORD']
+            mqtt_password = config['MQTT']['PASSWORD']
         else:
-            password="None"
+            mqtt_password="None"
 
         #MQTT Prefix
         if config.has_option('MQTT', "PREFIX"):
-            prefix = config['MQTT']['PREFIX']
+            mqtt_prefix = config['MQTT']['PREFIX']
         else:
-            prefix = ""
+            mqtt_prefix = ""
 
         #MQTT MQTT Daemon command topic
         if config.has_option('MQTT', "COMMAND"):
@@ -280,6 +289,13 @@ def main(argv):
 # default already set
 #        else:
 #            mqttdaemon_command_topic = ""
+
+        #MQTT MQTT Daemon status topic
+        if config.has_option('MQTT', "STATUS"):
+            mqttdaemon_status_topic = config['MQTT']['STATUS']
+# default already set
+#        else:
+#            mqttdaemon_status_topic = ""
 
         #MQTT QOS
         if config.has_option('MQTT', "QOS"):
@@ -357,20 +373,20 @@ def main(argv):
         # and handle the data as configured
         #
     if mqttdaemon_option_present:
-        logger.info("creating new mqtt client instance: " + clientname)
-        client=mqtt.Client(clientname)
-        if username:
-            client.username_pw_set(username, password=password)
-            client.enable_logger()
+        logger.info("creating new mqtt client instance: " + mqtt_clientname)
+        mqtt_client = mqtt.Client(mqtt_clientname)
+        if mqtt_username:
+            mqtt_client.username_pw_set(mqtt_username, password=mqtt_password)
+            mqtt_client.enable_logger()
 
-        client.on_message=on_mqtt_message
+        mqtt_client.on_message=on_mqtt_message
         logger.info("connecting to broker")
-        client.connect(brokerhost)
+        mqtt_client.connect(mqtt_brokerhost)
 
         logger.info("Subscribing to command topic")
-        client.subscribe(prefix + "/" + mqttdaemon_command_topic + "/+")
+        mqtt_client.subscribe(mqtt_prefix + "/" + mqttdaemon_command_topic + "/+")
 
-        client.loop_forever()
+        mqtt_client.loop_forever()
     elif auto and not backup_mode:
         while loop:
             ticker+=1
@@ -407,6 +423,10 @@ def main(argv):
 
 def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
     global backup_file
+    global mqtt_prefix
+    global mqttdaemon_status_topic
+    global mqtt_client
+
     # really needed? Driver is checked above
     #if not driver:
     #    logger.critical("Error, please specify driver [ELM327 or PYCAN, EMU, HPSUD]")
@@ -464,6 +484,9 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
             print(error_message)
             logger.error(error_message)
             sys.exit(1)
+    elif output_type == "MQTT":
+        for r in arrResponse:
+            mqtt_client.publish(mqtt_prefix + "/" + mqttdaemon_status_topic + "/" + r["name"], r["resp"])
     else:
         module_name=output_type.lower()
         module = importlib.import_module("HPSU.plugins." + module_name)
@@ -478,17 +501,21 @@ def on_mqtt_message(client, userdata, message):
     global verbose
     global output_type
     global n_hpsu
+
     logger.debug("complete topic: " + message.topic)
     mqtt_command = message.topic.split('/')[-1]
     logger.debug("command topic: " + mqtt_command)
     mqtt_value = str(message.payload.decode("utf-8"))
     logger.debug("value: " + mqtt_value)
-    hpsu_command_string = mqtt_command + ":" + mqtt_value
+    if mqtt_value == '' or mqtt_value == None or mqtt_value == "read":
+        hpsu_command_string = mqtt_command
+    else:
+        hpsu_command_string = mqtt_command + ":" + mqtt_value
     hpsu_command_list = [hpsu_command_string]
     logger.info("setup HPSU to accept commands")
     n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=hpsu_command_list, lg_code=lg_code)
     logger.info("send command to hpsu: hpsu_command_string")
-    read_can(driver, logger, port, hpsu_command_list, lg_code,verbose,output_type)
+    read_can(driver, logger, port, hpsu_command_list, lg_code,verbose,"MQTT")
  
 if __name__ == "__main__":
     main(sys.argv[1:])
