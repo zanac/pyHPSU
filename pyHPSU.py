@@ -399,8 +399,11 @@ def main(argv):
         # this blocks execution
         #mqtt_client.loop_forever()
         mqtt_client.loop_start()
-        
-    if auto and not backup_mode:
+
+    if backup_mode:
+        n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
+        read_can(driver, logger, port, n_hpsu.backup_commands, lg_code,verbose,output_type)
+    elif auto:
         while loop:
             ticker+=1
             collected_cmds=[]
@@ -414,9 +417,6 @@ def main(argv):
                 exec('thread_%s = threading.Thread(target=read_can, args=(driver,logger,port,collected_cmds,lg_code,verbose,output_type))' % (period))
                 exec('thread_%s.start()' % (period))
             time.sleep(1)
-    elif backup_mode:
-        n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
-        read_can(driver, logger, port, n_hpsu.backup_commands, lg_code,verbose,output_type)
     elif restore_mode:
         restore_commands=[]
         try:
