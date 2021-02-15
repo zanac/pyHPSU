@@ -547,6 +547,8 @@ def on_mqtt_message(client, userdata, message):
         #exec('thread_mqttdaemon_reread = threading.Thread(target=read_can(driver, logger, port, hpsu_command_string_reread_after_write_list, lg_code,verbose,["MQTTDAEMON"]))')
         #exec('thread_mqttdaemon_reread.start()')
         read_can(driver, logger, port, hpsu_command_string_reread_after_write_list, lg_code,verbose,["MQTTDAEMON"])
- 
+    # restarts the loop
+    mqtt_client.loop_start()
+
 if __name__ == "__main__":
     main(sys.argv[1:])
