@@ -11,7 +11,9 @@
 # CLIENTNAME = rotex_hpsu
 # PREFIX = rotex
 # COMMANDTOPIC = command
-# STATUSTOPIC = status
+# STATUSTOPIC = status ...for future use
+# QOS = 0
+# ADDTIMESTAMP = False ...whether or not to add timestamp to published values
 
 import serial
 import sys
@@ -42,6 +44,9 @@ verbose = None
 output_type = None
 mqtt_client = None
 mqtt_prefix = None
+mqtt_qos = 0
+mqtt_retain = False
+mqtt_addtimestamp = False
 mqttdaemon_command_topic = "command"
 mqttdaemon_status_topic = "status"
 
@@ -56,6 +61,9 @@ def main(argv):
     global output_type
     global mqtt_client
     global mqtt_prefix
+    global mqtt_qos
+    global mqtt_retain
+    global mqtt_addtimestamp
     global mqttdaemon_command_topic
     global mqttdaemon_status_topic
 
@@ -298,14 +306,21 @@ def main(argv):
 #            mqttdaemon_status_topic = ""
 
         if config.has_option('MQTT', "QOS"):
-            mqtt_qos = config['MQTT']['QOS']
+            mqtt_qos = int(config['MQTT']['QOS'])
         else:
-            mqtt_qos = "0"
+            mqtt_qos = 0
 
         if config.has_option('MQTT', "RETAIN"):
-            mqtt_retain = config['MQTT']['RETAIN']
+            # every other value implies false
+            mqtt_retain = config['MQTT']['RETAIN'] == "True"
         else:
-            mqtt_retain = "False"
+            mqtt_retain = False
+
+        if config.has_option('MQTT', "ADDTIMESTAMP"):
+            # every other value implies false
+            mqtt_addtimestamp = config['MQTT']['ADDTIMESTAMP'] == "True"
+        else:
+            mqtt_addtimestamp = False
 
         logger.info("configuration parsing complete")   
 
@@ -500,10 +515,12 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
                 sys.exit(1)
         elif output_type_name == "MQTTDAEMON":
             for r in arrResponse:
-                # retain=False to conform to usual mqtt plugin output
-                mqtt_client.publish(mqtt_prefix + "/" + r["name"], r["resp"], qos=0, retain=False)
-                # variant with timestamp and on "status" topic, not conforming with usual mqtt plugin output
-                #mqtt_client.publish(mqtt_prefix + "/" + mqttdaemon_status_topic + "/" + r["name"], "{'name': '%s', 'resp': '%s', 'timestamp': %s}" % (r["name"], r["resp"], r["timestamp"]), qos=0, retain=True)
+                if mqtt_addtimestamp:
+                    # use the same format as JSON output
+                    # with timestamp included, retain=true become more interesting
+                    mqtt_client.publish(mqtt_prefix + "/" + r["name"], "{'name': '%s', 'resp': '%s', 'timestamp': %s}" % (r["name"], r["resp"], r["timestamp"]), qos=mqtt_qos, retain=mqtt_retain)
+                else:
+                    mqtt_client.publish(mqtt_prefix + "/" + r["name"], r["resp"], qos=mqtt_qos, retain=mqtt_retain)
 
         else:
             module_name=output_type_name.lower()
@@ -546,6 +563,7 @@ def on_mqtt_message(client, userdata, message):
         hpsu_command_string_reread_after_write_list = [hpsu_command_string_reread_after_write]
         #exec('thread_mqttdaemon_reread = threading.Thread(target=read_can(driver, logger, port, hpsu_command_string_reread_after_write_list, lg_code,verbose,["MQTTDAEMON"]))')
         #exec('thread_mqttdaemon_reread.start()')
+        logger.info("send same command in read mode to hpsu: " + hpsu_command_string)
         read_can(driver, logger, port, hpsu_command_string_reread_after_write_list, lg_code,verbose,["MQTTDAEMON"])
     # restarts the loop
     mqtt_client.loop_start()
