@@ -64,7 +64,8 @@ def main(argv):
     driver = "PYCAN"
     verbose = "1"
     show_help = False
-    output_type = "JSON"
+    # empty list, if none is specified with options and configuration, JSON default will be used
+    output_type = []
     upload = False
     lg_code = "EN"
     languages = ["EN", "IT", "DE"]
@@ -144,7 +145,7 @@ def main(argv):
         if opt in ("-b", "--backup"):
             backup_mode=True
             backup_file = arg
-            output_type = "BACKUP"
+            output_type.append("BACKUP")
             options_list["backup"]=arg
 
         if opt in ("-r", "--restore"):
@@ -172,8 +173,12 @@ def main(argv):
             options_list["verbose"]=""
 
         elif opt in ("-o", "--output_type"):
-            output_type = arg.upper()
-            options_list["output_type"]=arg.upper()
+            if arg.upper() not in output_type:
+                output_type.append(arg.upper())
+            if not "output_type" in options_list or options_list["output_type"] is None or options_list["output_type"]=="":
+                options_list["output_type"]=arg.upper()
+            else:
+                options_list["output_type"]+=", " + arg.upper()
 
         elif opt in ("-l", "--language"):
             lg_code = arg.upper()
@@ -243,41 +248,35 @@ def main(argv):
             port=config['PYHPSU']['PYHPSU_PORT']
         if lg_code=="" and config.has_option('PYHPSU','PYHPSU_LANG'):
             lg_code=config['PYHPSU']['PYHPSU_LANG']
-        if output_type=="" and config.has_option('PYHPSU','OUTPUT_TYPE'):
-            output_type=config['PYHPSU']['OUTPUT_TYPE']
-        # added for mqttd daemon
+        if len(output_type)==0 and config.has_option('PYHPSU','OUTPUT_TYPE'):
+            output_type.append(config['PYHPSU']['OUTPUT_TYPE'])
 
-        # MQTT hostname or IP
         if config.has_option('MQTT', 'BROKER'):
             mqtt_brokerhost = config['MQTT']['BROKER']
         else:
             mqtt_brokerhost = 'localhost'
 
-        # MQTT broker port
         if config.has_option('MQTT', 'PORT'):
             mqtt_brokerport = int(config['MQTT']['PORT'])
         else:
             mqtt_brokerport = 1883
 
-        # MQTT client name
         if config.has_option('MQTT', 'CLIENTNAME'):
             mqtt_clientname = config['MQTT']['CLIENTNAME']
         else:
             mqtt_clientname = 'rotex'
-        # MQTT Username
+
         if config.has_option('MQTT', 'USERNAME'):
             mqtt_username = config['MQTT']['USERNAME']
         else:
             mqtt_username = None
             logger.error("Username not set!!!!!")
 
-        #MQTT Password
         if config.has_option('MQTT', "PASSWORD"):
             mqtt_password = config['MQTT']['PASSWORD']
         else:
             mqtt_password="None"
 
-        #MQTT Prefix
         if config.has_option('MQTT', "PREFIX"):
             mqtt_prefix = config['MQTT']['PREFIX']
         else:
@@ -291,19 +290,28 @@ def main(argv):
 #            mqttdaemon_command_topic = ""
 
         #MQTT MQTT Daemon status topic
+        # FIXME to be used for pyHPSU status, including MQTTDAEMON mode, not for actual parameter reading
         if config.has_option('MQTT', "STATUS"):
             mqttdaemon_status_topic = config['MQTT']['STATUS']
 # default already set
 #        else:
 #            mqttdaemon_status_topic = ""
 
-        #MQTT QOS
         if config.has_option('MQTT', "QOS"):
-            qos = config['MQTT']['QOS']
+            mqtt_qos = config['MQTT']['QOS']
         else:
-            qos = "0"
+            mqtt_qos = "0"
+
+        if config.has_option('MQTT', "RETAIN"):
+            mqtt_retain = config['MQTT']['RETAIN']
+        else:
+            mqtt_retain = "False"
 
         logger.info("configuration parsing complete")   
+
+    # default output_type if not specified
+    if len(output_type)==0:
+        output_type.append("JSON")
 
     #
     # now we should have all options...let's check them
@@ -318,9 +326,10 @@ def main(argv):
         sys.exit(9)
 
     # Check output type
-    if output_type not in PLUGIN_LIST:
-        logger.critical("please specify a correct output_type [" + PLUGIN_STRING + "]")
-        sys.exit(9)
+    for plugin in output_type:
+        if plugin not in PLUGIN_LIST:
+            logger.critical("please specify a correct output_type [" + PLUGIN_STRING + "], " + plugin + " does not exist")
+            sys.exit(9)
 
     # Check Language
     if lg_code not in languages:
@@ -380,11 +389,12 @@ def main(argv):
             mqtt_client.enable_logger()
 
         mqtt_client.on_message=on_mqtt_message
-        logger.info("connecting to broker")
+        logger.info("connecting to broker: " + mqtt_brokerhost)
         mqtt_client.connect(mqtt_brokerhost)
 
-        logger.info("Subscribing to command topic")
-        mqtt_client.subscribe(mqtt_prefix + "/" + mqttdaemon_command_topic + "/+")
+        command_topic = mqtt_prefix + "/" + mqttdaemon_command_topic + "/+"
+        logger.info("Subscribing to command topic: " + command_topic)
+        mqtt_client.subscribe(command_topic)
 
         mqtt_client.loop_forever()
     elif auto and not backup_mode:
@@ -465,33 +475,38 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
                     if i == 4:
                         logger.error('command %s failed' % (c["name"]))
 
-    if output_type == "JSON":
-        if len(arrResponse)!=0:
-            print(arrResponse)
-    elif output_type == "CSV":
-        for r in arrResponse:
-            print("%s,%s,%s" % (r["timestamp"], r["name"], r["resp"]))
-    elif output_type == "BACKUP":
-        error_message = "Writing Backup to " + str(backup_file)
-        print(error_message)
-        logger.info(error_message)
-        
-        try:
-            with open(backup_file, 'w') as outfile:
-                json.dump(arrResponse, outfile, sort_keys = True, indent = 4, ensure_ascii = False)
-        except FileNotFoundError:
-            error_message = "No such file or directory!!!"
+    for output_type_name in output_type: 
+        if output_type_name == "JSON":
+            if len(arrResponse)!=0:
+                print(arrResponse)
+        elif output_type_name == "CSV":
+            for r in arrResponse:
+                print("%s,%s,%s" % (r["timestamp"], r["name"], r["resp"]))
+        elif output_type_name == "BACKUP":
+            error_message = "Writing Backup to " + str(backup_file)
             print(error_message)
-            logger.error(error_message)
-            sys.exit(1)
-    elif output_type == "MQTTDAEMON":
-        for r in arrResponse:
-            mqtt_client.publish(mqtt_prefix + "/" + mqttdaemon_status_topic + "/" + r["name"], r["resp"], qos=0, retain=True)
-    else:
-        module_name=output_type.lower()
-        module = importlib.import_module("HPSU.plugins." + module_name)
-        hpsu_plugin = module.export(hpsu=n_hpsu, logger=logger, config_file=conf_file)
-        hpsu_plugin.pushValues(vars=arrResponse)
+            logger.info(error_message)
+            
+            try:
+                with open(backup_file, 'w') as outfile:
+                    json.dump(arrResponse, outfile, sort_keys = True, indent = 4, ensure_ascii = False)
+            except FileNotFoundError:
+                error_message = "No such file or directory!!!"
+                print(error_message)
+                logger.error(error_message)
+                sys.exit(1)
+        elif output_type_name == "MQTTDAEMON":
+            for r in arrResponse:
+                # retain=False to conform to usual mqtt plugin output
+                mqtt_client.publish(mqtt_prefix + "/" + r["name"], r["resp"], qos=0, retain=False)
+                # variant with timestamp and on "status" topic, not conforming with usual mqtt plugin output
+                #mqtt_client.publish(mqtt_prefix + "/" + mqttdaemon_status_topic + "/" + r["name"], "{'name': '%s', 'resp': '%s', 'timestamp': %s}" % (r["name"], r["resp"], r["timestamp"]), qos=0, retain=True)
+
+        else:
+            module_name=output_type_name.lower()
+            module = importlib.import_module("HPSU.plugins." + module_name)
+            hpsu_plugin = module.export(hpsu=n_hpsu, logger=logger, config_file=conf_file)
+            hpsu_plugin.pushValues(vars=arrResponse)
 
 def on_mqtt_message(client, userdata, message):
     global logger
@@ -515,7 +530,16 @@ def on_mqtt_message(client, userdata, message):
     logger.info("setup HPSU to accept commands")
     n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=hpsu_command_list, lg_code=lg_code)
     logger.info("send command to hpsu: " + hpsu_command_string)
-    read_can(driver, logger, port, hpsu_command_list, lg_code,verbose,"MQTTDAEMON")
+    #exec('thread_mqttdaemon = threading.Thread(target=read_can(driver, logger, port, hpsu_command_list, lg_code,verbose,["MQTTDAEMON"]))')
+    #exec('thread_mqttdaemon.start()')
+    read_can(driver, logger, port, hpsu_command_list, lg_code,verbose,["MQTTDAEMON"])
+    # if command was a write, re-read the value from HPSU and publish to MQTT
+    if ":" in hpsu_command_string:
+        hpsu_command_string_reread_after_write = hpsu_command_string.split(":")[0]
+        hpsu_command_string_reread_after_write_list = [hpsu_command_string_reread_after_write]
+        #exec('thread_mqttdaemon_reread = threading.Thread(target=read_can(driver, logger, port, hpsu_command_string_reread_after_write_list, lg_code,verbose,["MQTTDAEMON"]))')
+        #exec('thread_mqttdaemon_reread.start()')
+        read_can(driver, logger, port, hpsu_command_string_reread_after_write_list, lg_code,verbose,["MQTTDAEMON"])
  
 if __name__ == "__main__":
     main(sys.argv[1:])
