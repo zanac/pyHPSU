@@ -396,8 +396,11 @@ def main(argv):
         logger.info("Subscribing to command topic: " + command_topic)
         mqtt_client.subscribe(command_topic)
 
-        mqtt_client.loop_forever()
-    elif auto and not backup_mode:
+        # this blocks execution
+        #mqtt_client.loop_forever()
+        mqtt_client.loop_start()
+        
+    if auto and not backup_mode:
         while loop:
             ticker+=1
             collected_cmds=[]
@@ -508,6 +511,10 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
             hpsu_plugin = module.export(hpsu=n_hpsu, logger=logger, config_file=conf_file)
             hpsu_plugin.pushValues(vars=arrResponse)
 
+def on_disconnect(client, userdata,rc=0):
+    logger.debug("mqtt disConnected: result code " + str(rc))
+    client.loop_stop()
+    
 def on_mqtt_message(client, userdata, message):
     global logger
     global driver
