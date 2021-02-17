@@ -49,7 +49,7 @@ class HPSU(object):
             command_translations_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, LANG_CODE)
             if not os.path.isfile(command_translations_hpsu):
                 command_translations_hpsu = '%s/commands_hpsu_%s.csv' % (self.pathCOMMANDS, "EN")
-            self.logger.info("loading command traslations file: "+command_translations_hpsu)
+            self.logger.info("HPSU %s, loading command traslations file: %s" % (cmd, command_translations_hpsu))
             # check, if commands are json or csv
             # read all known commands
             with open(command_translations_hpsu, 'rU',encoding='utf-8') as csvfile:
@@ -63,7 +63,7 @@ class HPSU(object):
 
             # read all known commands
             command_details_hpsu = '%s/commands_hpsu.json' % self.pathCOMMANDS
-            self.logger.info("loading command details file: "+command_details_hpsu)
+            self.logger.info("HPSU %s loading command details file: %s" % (cmd, command_details_hpsu))
             with open(command_details_hpsu, 'rU',encoding='utf-8') as jsonfile:
                 self.all_commands = json.load(jsonfile)
                 self.command_dict=self.all_commands["commands"]

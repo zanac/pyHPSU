@@ -17,6 +17,7 @@
 
 import serial
 import sys
+import traceback
 #sys.path.append('/usr/share/pyHPSU/HPSU')
 #sys.path.append('/usr/share/pyHPSU/plugins')
 import os
@@ -580,5 +581,6 @@ if __name__ == "__main__":
     try:
         main(sys.argv[1:])
     except Exception as e:
-        print("Exception: {}".format(type(e).__name__))
-        print("Exception message: {}".format(e))
+        traceback.print_exc()
+        #print("Exception: {}".format(type(e).__name__))
+        #print("Exception message: {}".format(e))
