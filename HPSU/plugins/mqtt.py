@@ -76,17 +76,14 @@ class export():
             self.qos = "0"
 
         self.client=mqtt.Client(self.clientname)
-        #self.client.on_publish = self.on_publish()
+        self.client.on_publish = self.on_publish
         if self.username:
            self.client.username_pw_set(self.username, password=self.password)
         self.client.enable_logger()
 
     
-        
-    #def on_publish(self,client,userdata,mid):
-    #   self.hpsu.logger.debug("data published, mid: " + str(mid) + "\n")
-    #    pass
-
+    def on_publish(self,client,userdata,mid):
+        self.hpsu.logger.debug("mqtt output plugin data published, mid: " + str(mid))
 
     def pushValues(self, vars=None):
         

@@ -398,7 +398,8 @@ def main(argv):
         #
     if mqttdaemon_option_present:
         logger.info("creating new mqtt client instance: " + mqtt_clientname)
-        mqtt_client = mqtt.Client(mqtt_clientname)
+        # a different client name because otherwise mqtt output plugin closes this connection, too
+        mqtt_client = mqtt.Client(mqtt_clientname+"-mqttdaemon")
         if mqtt_username:
             mqtt_client.username_pw_set(mqtt_username, password=mqtt_password)
             mqtt_client.enable_logger()

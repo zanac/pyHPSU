@@ -107,10 +107,10 @@ class CanPI(object):
                 if (msg_data[2] == 0xfa and msg_data[3] == rcBUS.data[3] and msg_data[4] == rcBUS.data[4]) or (msg_data[2] != 0xfa and msg_data[2] == rcBUS.data[2]):
                     rc = "%02X %02X %02X %02X %02X %02X %02X" % (rcBUS.data[0], rcBUS.data[1], rcBUS.data[2], rcBUS.data[3], rcBUS.data[4], rcBUS.data[5], rcBUS.data[6])
                     notTimeout = False
-                    #print("got:  " + str(rc))
+                    self.hpsu.logger.debug("CanPI, got:  " + str(rc))
                 else:
-                    self.hpsu.logger.error('SEND:%s' % (str(msg_data)))
-                    self.hpsu.logger.error('RECV:%s' % (str(rcBUS.data)))
+                    self.hpsu.logger.error('CanPI, SEND:%s' % (str(msg_data)))
+                    self.hpsu.logger.error('CanPI, RECV:%s' % (str(rcBUS.data)))
             else:
                 self.hpsu.logger.error('Not aquired bus')
 
