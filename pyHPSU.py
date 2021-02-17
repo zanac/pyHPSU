@@ -50,6 +50,11 @@ mqtt_addtimestamp = False
 mqttdaemon_command_topic = "command"
 mqttdaemon_status_topic = "status"
 
+def my_except_hook(exctype, value, traceback):
+    if exctype == KeyboardInterrupt:
+        print("Interrupted by user")
+    else:
+        sys.__excepthook__(exctype, value, traceback)
 
 def main(argv):
     global logger
@@ -67,6 +72,7 @@ def main(argv):
     global mqttdaemon_command_topic
     global mqttdaemon_status_topic
 
+    sys.excepthook = my_except_hook
     cmd = []
     port = None
     driver = "PYCAN"
@@ -200,15 +206,16 @@ def main(argv):
             options_list["log_file"]=arg
 
         elif opt in ("--log_level"):
-            if arg == 'DEBUG':
+            level = arg.upper()
+            if level == 'DEBUG':
                 desired_log_level = logging.DEBUG
-            elif arg == 'INFO':
+            elif level == 'INFO':
                 desired_log_level = logging.INFO
-            elif arg == 'WARNING':
+            elif level == 'WARNING':
                 desired_log_level = logging.WARNING
-            elif arg == 'ERROR':
+            elif level == 'ERROR':
                 desired_log_level = logging.ERROR
-            elif arg == 'CRITICAL':
+            elif level == 'CRITICAL':
                 desired_log_level = logging.CRITICAL
             else:
                 print("Error, " + arg + " is not a valid value for log_level option, use [" + LOG_LEVEL_STRING + "]")
@@ -570,4 +577,8 @@ def on_mqtt_message(client, userdata, message):
     mqtt_client.loop_start()
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    try:
+        main(sys.argv[1:])
+    except Exception as e:
+        print("Exception: {}".format(type(e).__name__))
+        print("Exception message: {}".format(e))

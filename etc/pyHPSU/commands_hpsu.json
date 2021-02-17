@@ -1452,7 +1452,7 @@
 		},
 		"t_room" :{
 			"name" : "t_room",
-			"command" : "81 00 FA 00 11 00 00",
+			"command" : "31 00 FA 00 11 00 00",
 			"id" : "190",
 			"divisor" : "10",
 			"writable" : "false",
