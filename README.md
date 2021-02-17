@@ -160,10 +160,10 @@ The daemon subscribe to the topic
 
 and publish to the topic
 
-  PREFIX / STATUSTOPIC / <hpsu-command-name>
+  PREFIX / <hpsu-command-name>
 
-publishing to COMMANDTOPIC with value '' or 'read' results in property red from hpsu and published to STATUSTOPIC
-publishing to COMMANDTOPIC with another value results in pyHPSU trying to change that value on specified hpsu property
+publishing to COMMANDTOPIC with value '' or 'read' results in property red from hpsu and published to mqtt (same topics used by mqtt output plugin)
+publishing to COMMANDTOPIC with another value results in pyHPSU trying to change that value on specified hpsu property and than re-reading the same property and publishing the obtained value
 
 e.g.
   configuration file (e.g. /etc/pyHPSU/pyhpsu.conf)
@@ -172,23 +172,24 @@ e.g.
   BROKER = 192.168.1.94
   PREFIX = myhpsu
   COMMANDTOPIC = command
-  STATUSTOPIC = status
   ...
-
-  root@rotex:# pyHPSU.py --mqttdaemon
-
-  user@anothersystem:# mosquitto_pub -h 192.168.1.94 -t "myhpsu/command/t_flow_day" -m 29
-
-  set the parameter t_flow_day to 29°C
-
-e.g.
-  same config 
 
   root@rotex:# pyHPSU.py --mqttdaemon
 
   user@anothersystem:# mosquitto_pub -h 192.168.1.94 -t "myhpsu/command/t_dhw" -m read
 
-  publish the current value of t_dhw red from hpsu into this topic
+  publish the current value of t_dhw red from hpsu into the following topic
+
+  myhpsu/status/t_dhw
+
+e.g.
+  (with same config)
+
+  root@rotex:# pyHPSU.py --mqttdaemon -a -o mqtt
+
+  user@anothersystem:# mosquitto_pub -h 192.168.1.94 -t "myhpsu/command/t_flow_day" -m 29
+
+  set the parameter t_flow_day to 29°C, meanwhile pyHPSU is running in automatic mode and publishing periodically to the appopriate mqtt topics
 
   myhpsu/status/t_dhw
 
