@@ -95,7 +95,7 @@ def main(argv):
     ticker=0
     loop=True
     auto=False
-    LOG_LEVEL_STRING = 'DEBUG, INFO, WARNING, ERROR, CRITICAL'
+    LOG_LEVEL_LIST = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
     # default to loggin.error if --log_level option not present
     desired_log_level = logging.ERROR
     # default log to stdout if no file specified
@@ -135,7 +135,7 @@ def main(argv):
         print('           -f  --config          Configfile, overrides given commandline arguments')
         print('           -d  --driver          driver name: [ELM327, PYCAN, EMU, HPSUD], Default: PYCAN')
         print('           -p  --port            port (eg COM or /dev/tty*, only for ELM327 driver)')
-        print('           -o  --output_type     output type: [' + PLUGIN_STRING + '] default JSON')
+        print('           -o  --output_type     output type: [' + ", ".join(PLUGIN_LIST) + '] default JSON')
         print('           -c  --cmd             command: [see commands domain]')
         print('           -v  --verbose         verbosity: [1, 2]   default 1')
         print('           -l  --language        set the language to use [%s], default is \"EN\" ' % " ".join(languages))
@@ -143,7 +143,7 @@ def main(argv):
         print('           -r  --restore         restore HPSU settings from file [filename]')
         print('           --mqtt_daemon         set up an mqtt daemon that subscribe to a command topic and executes received command on HPSU')
         print('           -g  --log             set the log to file [filename]')
-        print('           --log_level           set the log level to [' + LOG_LEVEL_STRING + ']')
+        print('           --log_level           set the log level to [' + ", ".join(LOG_LEVEL_LIST) + ']')
         print('           -h  --help            show help')
         sys.exit(2)
 
@@ -207,19 +207,9 @@ def main(argv):
             options_list["log_file"]=arg
 
         elif opt in ("--log_level"):
-            level = arg.upper()
-            if level == 'DEBUG':
-                desired_log_level = logging.DEBUG
-            elif level == 'INFO':
-                desired_log_level = logging.INFO
-            elif level == 'WARNING':
-                desired_log_level = logging.WARNING
-            elif level == 'ERROR':
-                desired_log_level = logging.ERROR
-            elif level == 'CRITICAL':
-                desired_log_level = logging.CRITICAL
-            else:
-                print("Error, " + arg + " is not a valid value for log_level option, use [" + LOG_LEVEL_STRING + "]")
+            desired_log_level = arg.upper()
+            if not desired_log_level in LOG_LEVEL_LIST:
+                print("Error, " + arg + " is not a valid value for log_level option, use [" + ", ".join(LOG_LEVEL_LIST)+ "]")
                 sys.exit(2)
         options_list["cmd"]=cmd
         
@@ -422,7 +412,8 @@ def main(argv):
 
         # this blocks execution
         #mqtt_client.loop_forever()
-        mqtt_client.loop_start()
+        if auto:
+            mqtt_client.loop_start()
 
     if backup_mode:
         n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
@@ -454,9 +445,13 @@ def main(argv):
             logger.error("No such file or directory!!!")
             sys.exit(1)
 
-    else:
+    # FIXME if no command is specified and mqttdaemon mode is active, don't query all the commands (this has to be discussed)
+    elif not (len(cmd)==0 and mqttdaemon_option_present):
         n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
         read_can(driver, logger, port, cmd, lg_code,verbose,output_type)
+
+    # if we reach this point (the end), we are not in auto mode so the loop is not started
+    mqtt_client.loop_forever()
 
 def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
     global backup_file
@@ -575,12 +570,14 @@ def on_mqtt_message(client, userdata, message):
         logger.info("send same command in read mode to hpsu: " + hpsu_command_string)
         read_can(driver, logger, port, hpsu_command_string_reread_after_write_list, lg_code,verbose,["MQTTDAEMON"])
     # restarts the loop
-    mqtt_client.loop_start()
+    if auto:
+        mqtt_client.loop_start()
 
 if __name__ == "__main__":
     try:
         main(sys.argv[1:])
     except Exception as e:
+        # print complete information
         traceback.print_exc()
         #print("Exception: {}".format(type(e).__name__))
         #print("Exception message: {}".format(e))
