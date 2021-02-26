@@ -19,6 +19,7 @@ class CanPI(object):
     def __init__(self, hpsu=None):
         self.hpsu = hpsu
         try:
+            # TODO evaluate can.ThreadSafeBus
             self.bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
         except Exception:
             self.hpsu.logger.exception('Error opening bus can0')

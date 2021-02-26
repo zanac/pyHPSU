@@ -1458,6 +1458,50 @@
 			"writable" : "false",
 			"unit" : "deg",
 			"type" : "float"
+		},
+		"comp_active" : {
+			"name" : "comp_active",
+			"command" : "A1 00 61 00 00 00 00",
+			"id" : "190",
+			"divisor" : "1",
+			"writable" : "false",
+			"unit" : "",
+			"type" : "longint",
+			"value_code" : {
+				"0" : "off",
+				"256" : "on"
+			}
+		},
+		"pump_active" :{
+			"name" : "pump_active",
+			"command" : "A1 00 FA FD AC 00 00",
+			"id" : "190",
+			"divisor" : "1",
+			"writable" : "false",
+			"unit" : "",
+			"type" : "longint",
+			"value_code" : {
+				"0" : "off",
+				"256" : "on"
+			}
+		},
+		"temperature_spread_pwm" : {
+			"name" : "temperature_spread_pwm",
+			"command" : "A1 00 FA 06 DB 00 00",
+			"id" : "190",
+			"divisor" : "10",
+			"writable" : "true",
+			"unit" : "deg",
+			"type" : "float"
+		},
+		"offset_t_flow" : {
+			"name" : "offset_t_flow",
+			"command" : "A1 00 FA 06 E2 00 00",
+			"id" : "190",
+			"divisor" : "10",
+			"writable" : "true",
+			"unit" : "deg",
+			"type" : "float"
 		}
 	}
 }

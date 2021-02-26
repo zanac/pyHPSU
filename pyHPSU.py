@@ -451,7 +451,8 @@ def main(argv):
         read_can(driver, logger, port, cmd, lg_code,verbose,output_type)
 
     # if we reach this point (the end), we are not in auto mode so the loop is not started
-    mqtt_client.loop_forever()
+    if mqtt_client is not None:
+        mqtt_client.loop_forever()
 
 def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
     global backup_file
