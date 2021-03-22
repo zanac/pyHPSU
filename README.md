@@ -170,7 +170,7 @@ e.g.
   COMMANDTOPIC = command
   ...
 
-  root@rotex:# pyHPSU.py --mqttdaemon
+  root@rotex:# pyHPSU.py --mqtt_daemon
 
   user@anothersystem:# mosquitto_pub -h 192.168.1.94 -t "myhpsu/command/t_dhw" -m read
 
@@ -181,7 +181,7 @@ e.g.
 e.g.
   (with same config)
 
-  root@rotex:# pyHPSU.py --mqttdaemon -a -o mqtt
+  root@rotex:# pyHPSU.py --mqtt_daemon -a -o mqtt
 
   user@anothersystem:# mosquitto_pub -h 192.168.1.94 -t "myhpsu/command/t_flow_day" -m 29
 
