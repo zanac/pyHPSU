@@ -100,8 +100,8 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "off",
-				"1" : "on"
+				"off" : "0",
+				"on" : "off"
 			}
 		},
 		"runtime_comp" : { 
@@ -221,13 +221,13 @@
 			"unit" : "",
 			"type" : "int",
 			"value_code" : {
-				"1" : "standby",
-				"3" : "heat",
-				"4" : "sink", 
-				"5" : "summer",
-				"17" : "cool",
-				"11" : "auto 1",
-				"12" : "auto 2"
+				"standby" : "1",
+				"heat" : "3",
+				"sink" : "4", 
+				"summer" : "5",
+				"cool" : "17",
+				"auto 1" : "11",
+				"auto 2" : "12"
 			}
 		},
 		"tvbh2" : { 
@@ -284,9 +284,9 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "off",
-				"1" : "activated",
-				"2" : "only at night"
+				"off" : "0",
+				"activated" :"1",
+				"only at night" : "2"
 			}
 		},
 		"mode" : { 
@@ -298,10 +298,10 @@
 			"unit" : "longint",
 			"type" : "longint",
 			"value_code" : {
-				"0" : "standby",
-				"1" : "heating",
-				"2" : "cooling", 
-				"3" : "3"
+				"standby" :"0",
+				"heating" : "1",
+				"cooling" : "2", 
+				"3": "3"
 			}
 		},
 		"pump" : { 
@@ -502,13 +502,13 @@
 			"unit" : "KW",
 			"type" : "value",
 			"value_code" : {
-				"0" : " ",
-				"1" : "4",
-				"2" : "6",
-				"3" : "8", 
-				"4" : "11",
-				"5" : "14",
-				"6" : "16"
+				" " : "0",
+				"4" : "1",
+				"6" : "2",
+				"8" : "3", 
+				"11" : "4",
+				"14" : "5",
+				"16" : "6"
 			}
 		},
 		"indoor_unit" : { 
@@ -520,11 +520,11 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : " ",
-				"1" : "304",
-				"2" : "308",
-				"3"	: "508",
-				"4" : "516"
+				" " : "0",
+				"304" : "1",
+				"308" : "2",
+				"508" : "3",
+				"516" : "4"
 			}
 		},
 		"func_heating" : { 
@@ -545,8 +545,8 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "off",
-				"1" : "on"
+				"off" : "0",
+				"on" : "1"
 			}
 		},
 		"equi_func" : { 
@@ -558,8 +558,8 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "off",
-				"1" : "on"
+				"off" :"0",
+				"on" : "1"
 			}
 		},
 		"smart_grid" : { 
@@ -571,8 +571,8 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "off",
-				"1" : "on"
+				"off" : "0",
+				"on" : "1"
 			}
 		},
 		"modus_sg" : { 
@@ -584,9 +584,9 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "comfort",
-				"1" : "standard",
-				"2" : "eco"
+				"comfort" : "0",
+				"standard" : "1",
+				"eco" : "2"
 			}
 		},
 		"ht_nt_func" : { 
@@ -598,10 +598,10 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "deactivated",
-				"1" : "compressor off",
-				"2" : "compressor off, reserve heating off",
-				"3" : "all off"
+				"deactivated" : "0",
+				"compressor off" : "1",
+				"compressor off, reserve heating off" : "2",
+				"all off" : "3"
 			}
 		},
 		"ht_nt_contact" : { 
@@ -613,8 +613,8 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "NO",
-				"1" : "NC"
+				"NO" : "0",
+				"NC" : "1"
 			}
 		},
 		"room_therm" : { 
@@ -626,8 +626,8 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "off",
-				"1" : "on"
+				"off" : "0",
+				"on" : "1"
 			}
 		},
 		"interlink" : { 
@@ -639,8 +639,8 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "off",
-				"1" : "on"
+				"off" : "0",
+				"on" : "1"
 			}
 		},
 		"air_purge" : { 
@@ -652,8 +652,8 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "off",
-				"1" : "on"
+				"off": "0",
+				"on" : "1"
 			}
 		},
 		"max_perf_pump" : { 
@@ -683,8 +683,8 @@
 			"unit" : "sval",
 			"type" : "value",
 			"value_code" : {
-				"4" : "off",
-				"5" : "on"
+				"off" : "4",
+				"on" : "5"
 			}
 		},
 		"storage_conf" : { 
@@ -696,9 +696,9 @@
 			"unit" : "sval",
 			"type" : "value",
 			"value_code" : {
-				"0" : "off",
-				"2" : "thermostat",
-				"4" : "sensor"
+				"off" : "0",
+				"thermostat" : "2",
+				"sensor" : "4"
 			}
 		},
 		"pres_conf" : { 
@@ -710,8 +710,8 @@
 			"unit" : "sval",
 			"type" : "value",
 			"value_code" : {
-				"10244" : "off",
-				"26628" : "on"
+				"off" : "10244",
+				"on" : "26628"
 			}
 		},
 		"out_temp_adapt" : { 
@@ -795,9 +795,9 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "off",
-				"1" : "on",
-				"2" : "only at night"
+				"off" : "0",
+				"on" : "1",
+				"only at night" : "2"
 			}
 		},
 		"aux_fct" : { 
@@ -908,8 +908,8 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "weather controlled",
-				"1" : "fixed value"
+				"weather controlled" : "0",
+				"fixed value" : "1"
 			}
 		},
 		"t_frost_protect" : { 
@@ -930,11 +930,11 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "off",
-				"512" : "low",
-				"1024" : "normal",
-				"2048" : "good",
-				"3072" : "very good"
+				"off" : "0",
+				"low" : "512",
+				"normal" : "1024",
+				"good" : "2048",
+				"very good" : "3072"
 			}
 		},
 		"screed" : { 
@@ -946,8 +946,8 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "off",
-				"256" : "on"
+				"off" : "0",
+				"on" : "256"
 			}
 		},
 		"t_screed_day1" : { 
@@ -1265,8 +1265,8 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "off",
-				"256" : "on"
+				"off" : "0",
+				"on" :"256"
 			}
 		},
 		"start_tout_cool" : { 
@@ -1341,8 +1341,8 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "off",
-				"1" : "on"
+				"off" : "0",
+				"on" : "1"
 			}
 		},
 		"circ_pump_interval" : { 
@@ -1363,15 +1363,15 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "off",
-				"256" : "Monday",
-				"512" : "Tuesday",
-				"768" : "Wednesday",
-				"1024" : "Thursday",
-				"1280" : "Friday",
-				"1536" : "Saturday",
-				"1792" : "Sunday",
-				"2048" : "Everyday"
+				"off" : "0",
+				"monday" : "256",
+				"tuesday" : "512",
+				"wednesday" : "768",
+				"thursday" : "1024",
+				"friday" : "1280",
+				"saturday" : "1536",
+				"sunday" : "1792",
+				"everyday" : "2048"
 			}
 		},
 		"anti_leg_time" : { 
@@ -1419,8 +1419,8 @@
 			"unit" : "longint",
 			"type" : "value",
 			"value_code" : {
-				"0" : "off",
-				"1" : "on"
+				"off": "0",
+				"on" : "1"
 			}
 		},
 		"timer_boh" : { 
@@ -1468,8 +1468,8 @@
 			"unit" : "",
 			"type" : "longint",
 			"value_code" : {
-				"0" : "off",
-				"256" : "on"
+				"off" : "0",
+				"on" : "256"
 			}
 		},
 		"pump_active" :{
@@ -1481,8 +1481,8 @@
 			"unit" : "",
 			"type" : "longint",
 			"value_code" : {
-				"0" : "off",
-				"256" : "on"
+				"off" : "0",
+				"on" : "256"
 			}
 		},
 		"temperature_spread_pwm" : {
