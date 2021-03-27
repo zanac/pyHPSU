@@ -802,7 +802,7 @@
 		},
 		"aux_fct" : { 
 			"name" : "aux_fct", 
-			"command" : "31 00 FA 06 96 00 00", 
+			"command" : "31 00 FA 06 71 00 00", 
 			"id" : "190", 
 			"divisor" : "1", 
 			"writable" : "true", 
@@ -1006,7 +1006,7 @@
 		},
 		"t_screed_day7" : { 
 			"name" : "screed_day7", 
-			"command" : "61 00 FA 0B BD 00 00", 
+			"command" : "61 00 FA 0B BF 00 00", 
 			"id" : "190", 
 			"divisor" : "10", 
 			"writable" : "true", 
@@ -1141,7 +1141,7 @@
 		},
 		"t_screed_day22" : { 
 			"name" : "screed_day22", 
-			"command" : "61 00 FA 0B CD 00 00", 
+			"command" : "61 00 FA 0B CE 00 00", 
 			"id" : "190", 
 			"divisor" : "10", 
 			"writable" : "true", 
