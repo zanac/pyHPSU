@@ -21,13 +21,14 @@ import traceback
 #sys.path.append('/usr/share/pyHPSU/HPSU')
 #sys.path.append('/usr/share/pyHPSU/plugins')
 import os
-import getopt
 import time
 import locale
+import uuid
 import importlib
 import logging
 from HPSU.HPSU import HPSU
 import configparser
+import argparse
 import threading
 import csv
 import json
@@ -38,11 +39,14 @@ import paho.mqtt.client as mqtt
 SocketPort = 7060
 logger = None
 n_hpsu = None
+# global options object
+options = None
+# TODO remove in favor or options.driver
 driver = None
+# TODO remove in favor or options.port
 port = None
 lg_code = None
 verbose = None
-output_type = None
 mqtt_client = None
 mqtt_prefix = None
 mqtt_qos = 0
@@ -50,6 +54,8 @@ mqtt_retain = False
 mqtt_addtimestamp = False
 mqttdaemon_command_topic = "command"
 mqttdaemon_status_topic = "status"
+# unique randomized value per program execution that can be used where needed
+execution_uuid = str(uuid.uuid4())[:8]
 
 def my_except_hook(exctype, value, traceback):
     if exctype == KeyboardInterrupt:
@@ -58,13 +64,13 @@ def my_except_hook(exctype, value, traceback):
         sys.__excepthook__(exctype, value, traceback)
 
 def main(argv):
+    global options
     global logger
     global n_hpsu
     global driver
     global port
     global lg_code
     global verbose
-    global output_type
     global mqtt_client
     global mqtt_prefix
     global mqtt_qos
@@ -74,46 +80,26 @@ def main(argv):
     global mqttdaemon_status_topic
 
     sys.excepthook = my_except_hook
-    cmd = []
-    port = None
-    driver = "PYCAN"
-    verbose = "1"
-    show_help = False
-    # empty list, if none is specified with options and configuration, JSON default will be used
-    output_type = []
-    upload = False
-    lg_code = "EN"
+    cmd = None
     languages = ["EN", "IT", "DE"]
-    pathCOMMANDS = "/etc/pyHPSU"
-    global conf_file
-    conf_file = None
     global default_conf_file
     default_conf_file = "/etc/pyHPSU/pyhpsu.conf"
     read_from_conf_file=False
-    global auto
     global ticker
     ticker=0
     loop=True
-    auto=False
     LOG_LEVEL_LIST = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
-    # default to loggin.error if --log_level option not present
-    desired_log_level = logging.ERROR
-    # default log to stdout if no file specified
-    log_handler = logging.StreamHandler()
     # default log formatter
     log_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     #commands = []
     #listCommands = []
     global config
     config = configparser.ConfigParser()
-    env_encoding=sys.stdout.encoding
     PLUGIN_PATH="/usr/lib/python3/dist-packages/HPSU/plugins"
     backup_mode=False
-    global backup_file
     restore_mode=False
     global options_list
     options_list={}
-    mqttdaemon_option_present = False
     #
     # get all plugins
     #
@@ -126,101 +112,62 @@ def main(argv):
             PLUGIN_STRING+=PLUGIN
             PLUGIN_LIST.append(PLUGIN)
 
+    parser = argparse.ArgumentParser(description="pyHPSU is a set of python scripts and other files to read and modify the values\nof the Rotex® HPSU (possibly) also identical heating pumps from Daikin®).",
+    formatter_class=argparse.RawDescriptionHelpFormatter,
+    epilog="- If no command is specified, all commands in dictionary are executed\n- To set a value use <command>:<value>")
+    parser.add_argument("--dictionary", action="store_true", dest="show_help", help="show complete command dictionary or specific command help")
+    parser.add_argument('--version', action='version', version='%(prog)s 1.0-BETA1')
+    parser.add_argument("-a", "--auto", action="store_true", help="do automatic queries")
+    parser.add_argument("-f", "--config", dest="conf_file", help="Configfile, overrides given commandline arguments")
+    backup_restore_group = parser.add_mutually_exclusive_group()
+    backup_restore_group.add_argument("-b", "--backup", dest="backup_file", help="backup configurable settings to file [filename]")
+    backup_restore_group.add_argument("-r", "--restore", dest="restore_file", help="restore HPSU settings from file [filename]")
+    parser.add_argument("-g", "--log", dest="log_file", help="set the log to file [filename]")
+    parser.add_argument("--log_level", choices=LOG_LEVEL_LIST, type=str.upper, default="ERROR", help="set the log level to [" + ", ".join(LOG_LEVEL_LIST) + "]")
+    parser.add_argument("-l", "--language", choices=languages, default="EN", help="set the language to use [%s], default is \"EN\" " % " ".join(languages))
+    parser.add_argument("-d", "--driver", type=str.upper, default="PYCAN", help="driver name: [ELM327, PYCAN, EMU, HPSUD], Default: PYCAN")
+    parser.add_argument("-c", "--cmd", action="append", help="command: [see commands dictionary]")
+    parser.add_argument("-o", "--output_type", action="append", type=str.upper, choices=PLUGIN_LIST, help="output type: [" + ", ".join(PLUGIN_LIST) + "] default JSON")
+    parser.add_argument("-v", "--verbose", default="1", help="verbosity: [1, 2] default 1")
+    parser.add_argument("-p", "--port", help="port (eg COM or /dev/tty*, only for ELM327 driver)")
+    parser.add_argument("--mqtt_daemon", action="store_true", help="set up an mqtt daemon that subscribe to a command topic and executes received command on HPSU")
+
     try:
-        opts, args = getopt.getopt(argv,"ahc:p:d:v:o:l:g:f:b:r:", ["help", "cmd=", "port=", "driver=", "verbose=", "output_type=", "upload=", "language=", "log=", "log_level=", "config_file=", "mqtt_daemon"])
-    except getopt.GetoptError:
-        print('pyHPSU.py -d DRIVER -c COMMAND')
-        print(' ')
-        print('           -a  --auto            do automatic queries')
-        print('           -f  --config          Configfile, overrides given commandline arguments')
-        print('           -d  --driver          driver name: [ELM327, PYCAN, EMU, HPSUD], Default: PYCAN')
-        print('           -p  --port            port (eg COM or /dev/tty*, only for ELM327 driver)')
-        print('           -o  --output_type     output type: [' + ", ".join(PLUGIN_LIST) + '] default JSON')
-        print('           -c  --cmd             command: [see commands domain]')
-        print('           -v  --verbose         verbosity: [1, 2]   default 1')
-        print('           -l  --language        set the language to use [%s], default is \"EN\" ' % " ".join(languages))
-        print('           -b  --backup          backup configurable settings to file [filename]')
-        print('           -r  --restore         restore HPSU settings from file [filename]')
-        print('           --mqtt_daemon         set up an mqtt daemon that subscribe to a command topic and executes received command on HPSU')
-        print('           -g  --log             set the log to file [filename]')
-        print('           --log_level           set the log level to [' + ", ".join(LOG_LEVEL_LIST) + ']')
-        print('           -h  --help            show help')
-        sys.exit(2)
+        options = parser.parse_args()
+    except IOError as e:
+        parser.error(e)
+    if (options == None):
+        print(parser.usage)
+        exit(0)
+    else:
+        cmd = [] if options.cmd is None else options.cmd
+        driver = options.driver
+        backup_mode = options.backup_file is not None
+        if backup_mode:
+            options.output_type.append("BACKUP")
+        restore_mode = options.restore_file is not None
+        # set the default value if no output_type is chosen (not possible with add_argument() because it does
+        # not detect duplication e.g. when JSON is also chosen)
+        if options.output_type is None:
+            options.output_type.append("JSON")
+        read_from_conf_file = options.conf_file is not None
+        lg_code = options.language.upper()
+        port = options.port
+        verbose = options.verbose
+        # if no log file has been specified and driver is HPSUD then log nothing
+        if options.log_file is None and driver == "HPSUD":
+            _log_handler = logging.NullHandler
+        elif options.log_file is not None:
+            _log_handler = logging.FileHandler(options.log_file)
+        else:
+            # default log to stdout if no file specified
+            _log_handler = logging.StreamHandler()
 
-    for opt, arg in opts:
-        if opt in ("-a", "--auto"):
-            auto = True
-            options_list["auto"]=""
-
-        if opt in ("-f", "--config"):
-            read_from_conf_file = True
-            conf_file = arg
-            options_list["config"]=arg
-
-        if opt in ("-b", "--backup"):
-            backup_mode=True
-            backup_file = arg
-            output_type.append("BACKUP")
-            options_list["backup"]=arg
-
-        if opt in ("-r", "--restore"):
-            restore_mode=True
-            backup_file = arg
-            options_list["restore"]=arg
-
-        if opt in ("-h", "--help"):
-            show_help = True
-            options_list["help"]=""
-
-        elif opt in ("-d", "--driver"):
-            driver = arg.upper()
-            options_list["driver"]=arg.upper()
-
-        elif opt in ("-p", "--port"):
-            port = arg
-            options_list["port"]=arg
-
-        elif opt in ("-c", "--cmd"):
-            cmd.append(arg)
-
-        elif opt in ("-v", "--verbose"):
-            verbose = arg
-            options_list["verbose"]=""
-
-        elif opt in ("-o", "--output_type"):
-            if arg.upper() not in output_type:
-                output_type.append(arg.upper())
-            if not "output_type" in options_list or options_list["output_type"] is None or options_list["output_type"]=="":
-                options_list["output_type"]=arg.upper()
-            else:
-                options_list["output_type"]+=", " + arg.upper()
-
-        elif opt in ("-l", "--language"):
-            lg_code = arg.upper()
-            options_list["language"]=arg.upper()
-
-        elif opt in ("--mqtt_daemon"):
-            mqttdaemon_option_present = True
-
-        elif opt in ("-g", "--log"):
-            log_handler = logging.FileHandler(arg)
-            options_list["log_file"]=arg
-
-        elif opt in ("--log_level"):
-            desired_log_level = arg.upper()
-            if not desired_log_level in LOG_LEVEL_LIST:
-                print("Error, " + arg + " is not a valid value for log_level option, use [" + ", ".join(LOG_LEVEL_LIST)+ "]")
-                sys.exit(2)
-        options_list["cmd"]=cmd
-        
-    # if no log file has been specified and driver is HPSUD then log nothing
-    if options_list.get("log_file") is None and driver == "HPSUD":
-        log_handler = logging.NullHandler
 
     logger = logging.getLogger('pyhpsu')
-    log_handler.setFormatter(log_formatter)
-    logger.addHandler(log_handler)
-    logger.setLevel(desired_log_level)
+    _log_handler.setFormatter(log_formatter)
+    logger.addHandler(_log_handler)
+    logger.setLevel(options.log_level)
 
     if verbose == "2":
         locale.setlocale(locale.LC_ALL, '')
@@ -229,33 +176,29 @@ def main(argv):
     if not read_from_conf_file:
         # ...set the default one...
         # NOTE: other modules may need to load it later
-        conf_file=default_conf_file
+        options.conf_file=default_conf_file
         # ...but auto or mqttdaemon mode needs it loaded...
-        if auto or mqttdaemon_option_present:
+        if options.auto or options.mqtt_daemon:
             # ...read it
             read_from_conf_file=True
 
     # get config from file if given....
     if read_from_conf_file:
-        if conf_file==None:
-            logger.critical("please provide a config file")
+        try:
+            with open(options.conf_file) as f:
+                config.read_file(f)
+        except IOError:
+            logger.critical("config file not found")
             sys.exit(9)
-        else:
-            try:
-                with open(conf_file) as f:
-                    config.read_file(f)
-            except IOError:
-                logger.critical("config file not found")
-                sys.exit(9)
-        config.read(conf_file)
+        config.read(options.conf_file)
         if driver=="" and config.has_option('PYHPSU','PYHPSU_DEVICE'):
             driver=config['PYHPSU']['PYHPSU_DEVICE']
         if port=="" and config.has_option('PYHPSU','PYHPSU_PORT'):
             port=config['PYHPSU']['PYHPSU_PORT']
         if lg_code=="" and config.has_option('PYHPSU','PYHPSU_LANG'):
             lg_code=config['PYHPSU']['PYHPSU_LANG']
-        if len(output_type)==0 and config.has_option('PYHPSU','OUTPUT_TYPE'):
-            output_type.append(config['PYHPSU']['OUTPUT_TYPE'])
+        if len(options.output_type)==0 and config.has_option('PYHPSU','OUTPUT_TYPE'):
+            options.output_type.append(config['PYHPSU']['OUTPUT_TYPE'])
 
         if config.has_option('MQTT', 'BROKER'):
             mqtt_brokerhost = config['MQTT']['BROKER']
@@ -322,38 +265,19 @@ def main(argv):
 
         logger.info("configuration parsing complete")   
 
-    # default output_type if not specified
-    if len(output_type)==0:
-        output_type.append("JSON")
-
     #
     # now we should have all options...let's check them
     #
-    # Check driver
-    if driver not in ["ELM327", "PYCAN", "EMU", "HPSUD"]:
-        logger.critical("please specify a correct driver [ELM327, PYCAN, EMU, HPSUD] ")
-        sys.exit(9)
-
     if driver == "ELM327" and port == "":
         logger.critical("please specify a correct port for the ELM327 device ")
         sys.exit(9)
 
-    # Check output type
-    for plugin in output_type:
-        if plugin not in PLUGIN_LIST:
-            logger.critical("please specify a correct output_type [" + PLUGIN_STRING + "], " + plugin + " does not exist")
-            sys.exit(9)
-
-    # Check Language
-    if lg_code not in languages:
-        logger.critical("please specify a correct language [%s]" % " ".join(languages))
-        sys.exit(9)
     # ------------------------------------
     # try to query different commands in different periods
     # Read them from config and group them
     #
     # create dictionary for the jobs
-    if auto:
+    if options.auto:
         timed_jobs=dict()
         if read_from_conf_file:                                         # if config is read from file
             if len(config.options('JOBS')):                             # if there are configured jobs
@@ -370,16 +294,16 @@ def main(argv):
     #
     # Print help
     #
-    if show_help:
+    if options.show_help:
         n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
         if len(cmd) == 0:
             print("List available commands:")
             print("%20s - %-10s" % ('COMMAND', 'LABEL'))
             print("%20s---%-10s" % ('------------', '----------'))
             for cmd in sorted(n_hpsu.command_dict) :
-                try:
+                if 'label' in n_hpsu.command_dict[cmd]:
                     print("%20s - %-10s" % (n_hpsu.command_dict[cmd]['name'], (n_hpsu.command_dict[cmd]['label']) + ('' if n_hpsu.command_dict[cmd]['writable']=='true' else ' (readonly)')))
-                except KeyError:
+                else:
                     error_message = """!!!!!! No translation for "%12s" !!!!!!!""" % (n_hpsu.command_dict[cmd]['name'])
                     print(error_message)
                     logger.error(error_message)
@@ -394,10 +318,11 @@ def main(argv):
         # now its time to call the hpsu and do the REAL can query
         # and handle the data as configured
         #
-    if mqttdaemon_option_present:
-        logger.info("creating new mqtt client instance: " + mqtt_clientname)
+    if options.mqtt_daemon:
+        _mqttdaemon_clientname = mqtt_clientname + "-mqttdaemon-" + execution_uuid
+        logger.info("creating new mqtt client instance: " + _mqttdaemon_clientname)
         # a different client name because otherwise mqtt output plugin closes this connection, too
-        mqtt_client = mqtt.Client(mqtt_clientname+"-mqttdaemon")
+        mqtt_client = mqtt.Client(_mqttdaemon_clientname)
         if mqtt_username:
             mqtt_client.username_pw_set(mqtt_username, password=mqtt_password)
             mqtt_client.enable_logger()
@@ -412,13 +337,13 @@ def main(argv):
 
         # this blocks execution
         #mqtt_client.loop_forever()
-        if auto:
+        if options.auto:
             mqtt_client.loop_start()
 
     if backup_mode:
         n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
-        read_can(driver, logger, port, n_hpsu.backup_commands, lg_code,verbose,output_type)
-    elif auto:
+        read_can(n_hpsu.backup_commands, verbose, options.output_type)
+    elif options.auto:
         while loop:
             ticker+=1
             collected_cmds=[]
@@ -429,41 +354,38 @@ def main(argv):
                         collected_cmds.append(str(job))
             if len(collected_cmds):
                 n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=collected_cmds, lg_code=lg_code)
-                exec('thread_%s = threading.Thread(target=read_can, args=(driver,logger,port,collected_cmds,lg_code,verbose,output_type))' % (period))
+                exec('thread_%s = threading.Thread(target=read_can, args=(collected_cmds,verbose,options.output_type))' % (period))
                 exec('thread_%s.start()' % (period))
             time.sleep(1)
     elif restore_mode:
         restore_commands=[]
         try:
-            with open(backup_file, 'rU') as jsonfile:
+            with open(options.restore_file, 'rU') as jsonfile:
                 restore_settings=json.load(jsonfile)
                 for command in restore_settings:
                     restore_commands.append(str(command["name"]) + ":" + str(command["resp"]))
                 n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=restore_commands, lg_code=lg_code)
-                read_can(driver, logger, port, restore_commands, lg_code,verbose,output_type)
+                read_can(restore_commands, verbose, options.output_type)
         except FileNotFoundError:
             logger.error("No such file or directory!!!")
             sys.exit(1)
 
     # FIXME if no command is specified and mqttdaemon mode is active, don't query all the commands (this has to be discussed)
-    elif not (len(cmd)==0 and mqttdaemon_option_present):
+    elif not (len(cmd)==0 and options.mqtt_daemon):
         n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=cmd, lg_code=lg_code)
-        read_can(driver, logger, port, cmd, lg_code,verbose,output_type)
+        read_can(cmd, verbose, options.output_type)
 
     # if we reach this point (the end), we are not in auto mode so the loop is not started
     if mqtt_client is not None:
         mqtt_client.loop_forever()
 
-def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
-    global backup_file
+
+def read_can(cmd, verbose, output_type):
+    global options
+    global logger
     global mqtt_prefix
     global mqttdaemon_status_topic
     global mqtt_client
-
-    # really needed? Driver is checked above
-    #if not driver:
-    #    logger.critical("Error, please specify driver [ELM327 or PYCAN, EMU, HPSUD]")
-    #    sys.exit(9)
 
     arrResponse = []
 
@@ -480,7 +402,7 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
                     else:
                         if not setValue.isdigit():
                             key=str(setValue)
-                            setValue=c["value_code"][str(setValue)]
+                            setValue=c["value_code"][key]
 
             i = 0
             while i <= 3:
@@ -491,7 +413,19 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
                         response = n_hpsu.parseCommand(cmd=c, response=rc, verbose=verbose)
                         resp = n_hpsu.umConversion(cmd=c, response=response, verbose=verbose)
 
-                        arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"]})
+                        if "value_code" in c:
+                            # FIXME special treatment is needed for commands sharing the same byte 'ouside_conf' and 'storage' conf
+                            #       while not fixed a warning is raised
+                            # e.g. HPSU returns a value of 26628 for both of them and the two values have to be extracted from
+                            #      different part of the number
+                            if resp in dict(map(reversed, c["value_code"].items())):
+                                _resp_description = dict(map(reversed, c["value_code"].items()))[resp]
+                            else:
+                                _resp_description = 'unable to decode value ' + resp
+                                logger.warning("command \"" + c["name"] + "\" " + _resp_description)
+                            arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"], "desc":_resp_description})
+                        else:
+                            arrResponse.append({"name":c["name"], "resp":resp, "timestamp":response["timestamp"]})
                 else:
                     i += 1
                     time.sleep(2.0)
@@ -507,12 +441,12 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
             for r in arrResponse:
                 print("%s,%s,%s" % (r["timestamp"], r["name"], r["resp"]))
         elif output_type_name == "BACKUP":
-            error_message = "Writing Backup to " + str(backup_file)
+            error_message = "Writing Backup to " + str(options.backup_file)
             print(error_message)
             logger.info(error_message)
             
             try:
-                with open(backup_file, 'w') as outfile:
+                with open(options.backup_file, 'w') as outfile:
                     json.dump(arrResponse, outfile, sort_keys = True, indent = 4, ensure_ascii = False)
             except FileNotFoundError:
                 error_message = "No such file or directory!!!"
@@ -524,14 +458,17 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
                 if mqtt_addtimestamp:
                     # use the same format as JSON output
                     # with timestamp included, retain=true become more interesting
-                    mqtt_client.publish(mqtt_prefix + "/" + r["name"], "{'name': '%s', 'resp': '%s', 'timestamp': %s}" % (r["name"], r["resp"], r["timestamp"]), qos=mqtt_qos, retain=mqtt_retain)
+                    if "desc" in r:
+                        mqtt_client.publish(mqtt_prefix + "/" + r["name"], "{'name': '%s', 'resp': '%s', 'timestamp': %s, 'desc': '%s'}" % (r["name"], r["resp"], r["timestamp"], r["desc"]), qos=mqtt_qos, retain=mqtt_retain)
+                    else:
+                        mqtt_client.publish(mqtt_prefix + "/" + r["name"], "{'name': '%s', 'resp': '%s', 'timestamp': %s}" % (r["name"], r["resp"], r["timestamp"]), qos=mqtt_qos, retain=mqtt_retain)
                 else:
                     mqtt_client.publish(mqtt_prefix + "/" + r["name"], r["resp"], qos=mqtt_qos, retain=mqtt_retain)
 
         else:
             module_name=output_type_name.lower()
             module = importlib.import_module("HPSU.plugins." + module_name)
-            hpsu_plugin = module.export(hpsu=n_hpsu, logger=logger, config_file=conf_file)
+            hpsu_plugin = module.export(hpsu=n_hpsu, logger=logger, config_file=options.conf_file)
             hpsu_plugin.pushValues(vars=arrResponse)
 
 def on_disconnect(client, userdata,rc=0):
@@ -539,12 +476,12 @@ def on_disconnect(client, userdata,rc=0):
     client.loop_stop()
     
 def on_mqtt_message(client, userdata, message):
+    global options
     global logger
     global driver
     global port
     global lg_code
     global verbose
-    global output_type
     global n_hpsu
 
     logger.debug("complete topic: " + message.topic)
@@ -560,19 +497,19 @@ def on_mqtt_message(client, userdata, message):
     logger.info("setup HPSU to accept commands")
     n_hpsu = HPSU(driver=driver, logger=logger, port=port, cmd=hpsu_command_list, lg_code=lg_code)
     logger.info("send command to hpsu: " + hpsu_command_string)
-    #exec('thread_mqttdaemon = threading.Thread(target=read_can(driver, logger, port, hpsu_command_list, lg_code,verbose,["MQTTDAEMON"]))')
+    #exec('thread_mqttdaemon = threading.Thread(target=read_can(hpsu_command_list, verbose, ["MQTTDAEMON"]))')
     #exec('thread_mqttdaemon.start()')
-    read_can(driver, logger, port, hpsu_command_list, lg_code,verbose,["MQTTDAEMON"])
+    read_can(hpsu_command_list, verbose, ["MQTTDAEMON"])
     # if command was a write, re-read the value from HPSU and publish to MQTT
     if ":" in hpsu_command_string:
         hpsu_command_string_reread_after_write = hpsu_command_string.split(":")[0]
         hpsu_command_string_reread_after_write_list = [hpsu_command_string_reread_after_write]
-        #exec('thread_mqttdaemon_reread = threading.Thread(target=read_can(driver, logger, port, hpsu_command_string_reread_after_write_list, lg_code,verbose,["MQTTDAEMON"]))')
+        #exec('thread_mqttdaemon_reread = threading.Thread(target=read_can(hpsu_command_string_reread_after_write_list, verbose, ["MQTTDAEMON"]))')
         #exec('thread_mqttdaemon_reread.start()')
         logger.info("send same command in read mode to hpsu: " + hpsu_command_string)
-        read_can(driver, logger, port, hpsu_command_string_reread_after_write_list, lg_code,verbose,["MQTTDAEMON"])
+        read_can(hpsu_command_string_reread_after_write_list, verbose, ["MQTTDAEMON"])
     # restarts the loop
-    if auto:
+    if options.auto:
         mqtt_client.loop_start()
 
 if __name__ == "__main__":

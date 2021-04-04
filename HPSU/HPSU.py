@@ -63,7 +63,7 @@ class HPSU(object):
 
             # read all known commands
             command_details_hpsu = '%s/commands_hpsu.json' % self.pathCOMMANDS
-            self.logger.info("HPSU %s loading command details file: %s" % (cmd, command_details_hpsu))
+            self.logger.info("HPSU %s, loading command details file: %s" % (cmd, command_details_hpsu))
             with open(command_details_hpsu, 'rU',encoding='utf-8') as jsonfile:
                 self.all_commands = json.load(jsonfile)
                 self.command_dict=self.all_commands["commands"]

@@ -78,7 +78,7 @@ class CanPI(object):
                 command = command+" %02X %02X" % (setValue >> 8, setValue & 0xff)
             if cmd["type"] == "value":
                 setValue = int(setValue)
-                command = command+" 00 %02X" % (setValue)
+                command = command+" %02X %02X" % (setValue >> 8, setValue & 0xff)
             
         msg_data = [int(r, 16) for r in command.split(" ")]
         notTimeout = True

@@ -75,6 +75,8 @@ class export():
         else:
             self.qos = "0"
 
+        # no need to create a different client name every time, because it only publish
+        logger.info("creating new mqtt client instance: " + self.clientname)
         self.client=mqtt.Client(self.clientname)
         self.client.on_publish = self.on_publish
         if self.username:
