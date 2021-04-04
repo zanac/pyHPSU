@@ -42,7 +42,7 @@ class HPSU(object):
         if not self.listCommands: #if we don't get a dict with commands
 
             # get language, if non given, take it from the system
-            LANG_CODE = lg_code.upper()[0:2] if lg_code else locale.getdefaultlocale()[0].split('_')[0].upper()
+            LANG_CODE = lg_code[0:2] if lg_code else locale.getdefaultlocale()[0].split('_')[0].upper()
             hpsuDict = {}
             
             # read the translation file. if it doesn't exist, take the english one
@@ -220,6 +220,8 @@ class HPSU(object):
             resp = str(response["resp"])
         else:
             resp = str(response["resp"])
+        # TODO replaces resp with the decoded value, major breaking change to be discussed
+        #      meanwhile, a 'desc' field is added to the output json
         #if cmd["value_code"]:
         #    resp=cmd["value_code"][resp]
         return resp
