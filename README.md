@@ -8,9 +8,9 @@ More information at: http://cercaenergia.forumcommunity.net/?t=58409485
 
 A possible HW set-up guide (italian language):
 
-* [Pompa di calore Rotex HPSU Compact hack: prima parte](https://lamiacasaelettrica.com/daikin-hpsu-compact-hack-prima-parte/)
-* [Pompa di calore Rotex HPSU Compact hack: seconda parte](https://lamiacasaelettrica.com/daikin-hpsu-compact-hack-seconda-parte/)
-* [Pompa di calore Rotex HPSU Compact hack: terza parte](https://lamiacasaelettrica.com/daikin-hpsu-compact-hack-terza-parte/)
+* [Pompa di calore Daikin HPSU Compact hack: prima parte](https://lamiacasaelettrica.com/daikin-hpsu-compact-hack-prima-parte/)
+* [Pompa di calore Daikin HPSU Compact hack: seconda parte](https://lamiacasaelettrica.com/daikin-hpsu-compact-hack-seconda-parte/)
+* [Pompa di calore Daikin HPSU Compact hack: terza parte](https://lamiacasaelettrica.com/daikin-hpsu-compact-hack-terza-parte/)
 
 Dependencies:
 - python
