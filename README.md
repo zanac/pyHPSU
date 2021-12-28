@@ -151,6 +151,45 @@ The pyHPSUD.py is started via systemd:
 root@rotex:# systemctl enable hpsud.service  
 root@rotex:# systemctl start hpsud.service  
 
+4. MQTT Daemon mode
+pyHPSU starts in daemon mode, it subscribe an MQTT topic and listen forever waiting for commands.
+MQTT coordinates are specified through configuration file: the same property used by mqtt output plugin plus additional COMMANDTOPIC and STATUSTOPIC.
+The daemon subscribe to the topic
+`  PREFIX / COMMANDTOPIC / +`
+and publish to the topic
+`  PREFIX / <hpsu-command-name>`
+publishing to COMMANDTOPIC with value '' or 'read' results in property red from hpsu and published to mqtt (same topics used by mqtt output plugin)
+publishing to COMMANDTOPIC with another value results in pyHPSU trying to change that value on specified hpsu property and than re-reading the same property and publishing the obtained value
+```
+e.g.
+  configuration file (e.g. /etc/pyHPSU/pyhpsu.conf)
+  ...
+  [MQTT]
+  BROKER = 192.168.1.94
+  PREFIX = myhpsu
+  COMMANDTOPIC = command
+  ...
+
+  root@rotex:# pyHPSU.py --mqtt_daemon
+
+  user@anothersystem:# mosquitto_pub -h 192.168.1.94 -t "myhpsu/command/t_dhw" -m read
+
+  publish the current value of t_dhw red from hpsu into the following topic
+
+  myhpsu/status/t_dhw
+
+e.g.
+  (with same config)
+
+  root@rotex:# pyHPSU.py --mqtt_daemon -a -o mqtt
+
+  user@anothersystem:# mosquitto_pub -h 192.168.1.94 -t "myhpsu/command/t_flow_day" -m 29
+
+  set the parameter t_flow_day to 29°C, meanwhile pyHPSU is running in automatic mode and publishing periodically to the appopriate mqtt topics
+
+  myhpsu/status/t_dhw
+```
+
 Now, you can query multiple values or run multiple pyHPSU.py processes. Simply set as driver HPSUD ("CANTCP") via commandline or the config file (PYHPSU section)
 i.e. root@rotex:# pyHPSU.py -d HPSUD -c t_dhw_setpoint1
 

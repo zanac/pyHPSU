@@ -19,10 +19,11 @@ class CanPI(object):
     def __init__(self, hpsu=None):
         self.hpsu = hpsu
         try:
+            # TODO evaluate can.ThreadSafeBus
             self.bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
         except Exception:
             self.hpsu.logger.exception('Error opening bus can0')
-            sys.exit(9)
+            sys.exit(os.EX_CONFIG)
             
         config = configparser.ConfigParser()
         iniFile = '%s/%s.conf' % (self.hpsu.pathCOMMANDS, "pyhpsu")
@@ -77,7 +78,7 @@ class CanPI(object):
                 command = command+" %02X %02X" % (setValue >> 8, setValue & 0xff)
             if cmd["type"] == "value":
                 setValue = int(setValue)
-                command = command+" 00 %02X" % (setValue)
+                command = command+" %02X %02X" % (setValue >> 8, setValue & 0xff)
             
         msg_data = [int(r, 16) for r in command.split(" ")]
         notTimeout = True
@@ -86,6 +87,7 @@ class CanPI(object):
         try:
             msg = can.Message(arbitration_id=receiver_id, data=msg_data, extended_id=False, dlc=7)
             self.bus.send(msg)
+            self.hpsu.logger.debug("CanPI, %s sent: %s" % (cmd['name'], msg))
 
         except Exception:
             self.hpsu.logger.exception('Error sending msg')
@@ -107,17 +109,17 @@ class CanPI(object):
                 if (msg_data[2] == 0xfa and msg_data[3] == rcBUS.data[3] and msg_data[4] == rcBUS.data[4]) or (msg_data[2] != 0xfa and msg_data[2] == rcBUS.data[2]):
                     rc = "%02X %02X %02X %02X %02X %02X %02X" % (rcBUS.data[0], rcBUS.data[1], rcBUS.data[2], rcBUS.data[3], rcBUS.data[4], rcBUS.data[5], rcBUS.data[6])
                     notTimeout = False
-                    #print("got:  " + str(rc))
+                    self.hpsu.logger.debug("CanPI %s, got: %s" % (cmd['name'], str(rc)))
                 else:
-                    self.hpsu.logger.error('SEND:%s' % (str(msg_data)))
-                    self.hpsu.logger.error('RECV:%s' % (str(rcBUS.data)))
+                    self.hpsu.logger.warning('CanPI %s, SEND: %s' % (cmd['name'], str(msg_data)))
+                    self.hpsu.logger.warning('CanPI %s, RECV: %s' % (cmd['name'], str(rcBUS.data)))
             else:
-                self.hpsu.logger.error('Not aquired bus')
+                self.hpsu.logger.warning('CanPI %s, Not aquired bus' % cmd['name'])
 
             if notTimeout:
-                self.hpsu.logger.warning('msg not sync, retry: %s' % i)
+                self.hpsu.logger.warning('CanPI %s, msg not sync, retry: %s' % (cmd['name'], i))
                 if i >= self.retry:
-                    self.hpsu.logger.error('msg not sync, timeout')
+                    self.hpsu.logger.error('CanPI %s, msg not sync, timeout' % cmd['name'])
                     notTimeout = False
                     rc = "KO"
         

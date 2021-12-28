@@ -31,67 +31,47 @@ class export():
         if os.path.isfile(self.config_file):
             self.config.read(self.config_file)
         else:
-            sys.exit(9)
+            sys.exit(os.EX_CONFIG)
 
-        # MQTT hostname or IP
-        if self.config.has_option('MQTT', 'BROKER'):
-            self.brokerhost = self.config['MQTT']['BROKER']
-        else:
-            self.brokerhost = 'localhost'
+        # object to store entire MQTT config section
+        self.mqtt_config = self.config['MQTT']
+        self.brokerhost = self.mqtt_config.get('BROKER', 'localhost')
+        self.brokerport = self.mqtt_config.getint('PORT', 1883)
+        self.clientname = self.mqtt_config.get('CLIENTNAME', 'rotex')
+        self.username = self.mqtt_config.get('USERNAME', None)
+        if self.username is None:
+            self.logger.error("Username not set!!!!!")
+        self.password = self.mqtt_config.get('PASSWORD', "NoPasswordSpecified")
+        self.prefix = self.mqtt_config.get('PREFIX', "")
+        self.qos = self.mqtt_config.getint('QOS', 0)
+        # every other value implies false
+        self.retain = self.mqtt_config.get('RETAIN', "NOT TRUE") == "True"
+        # every other value implies false
+        self.addtimestamp = self.mqtt_config.get('ADDTIMESTAMP', "NOT TRUE") == "True"
 
-        # MQTT broker port
-        if self.config.has_option('MQTT', 'PORT'):
-            self.brokerport = int(self.config['MQTT']['PORT'])
-        else:
-            self.brokerport = 1883
+        self.logger.info("configuration parsing complete")   
 
-        # MQTT client name
-        if self.config.has_option('MQTT', 'CLIENTNAME'):
-            self.clientname = self.config['MQTT']['CLIENTNAME']
-        else:
-            self.clientname = 'rotex'
-        # MQTT Username
-        if self.config.has_option('MQTT', 'USERNAME'):
-            self.username = self.config['MQTT']['USERNAME']
-        else:
-            self.username = None
-            self.hpsu.logger.error("Username not set!!!!!")
+        # no need to create a different client name every time, because it only publish
+        # so adding the PID at the end of the client name ensures every process have a
+        # different client name only for readability on broker and troubleshooting
+        self.clientname += "-" + str(os.getpid())
 
-        #MQTT Password
-        if self.config.has_option('MQTT', "PASSWORD"):
-            self.password = self.config['MQTT']['PASSWORD']
-        else:
-            self.password="None"
-
-        #MQTT Prefix
-        if self.config.has_option('MQTT', "PREFIX"):
-            self.prefix = self.config['MQTT']['PREFIX']
-        else:
-            self.prefix = ""
-
-        #MQTT QOS
-        if self.config.has_option('MQTT', "QOS"):
-            self.qos = self.config['MQTT']['QOS']
-        else:
-            self.qos = "0"
-
+        self.logger.info("creating new mqtt client instance: " + self.clientname)
         self.client=mqtt.Client(self.clientname)
-        #self.client.on_publish = self.on_publish()
+        self.client.on_publish = self.on_publish
         if self.username:
            self.client.username_pw_set(self.username, password=self.password)
         self.client.enable_logger()
 
     
-        
-    #def on_publish(self,client,userdata,mid):
-    #   self.hpsu.logger.debug("data published, mid: " + str(mid) + "\n")
-    #    pass
-
+    def on_publish(self,client,userdata,mid):
+        self.hpsu.logger.debug("mqtt output plugin data published, mid: " + str(mid))
 
     def pushValues(self, vars=None):
-        
+
         #self.msgs=[]
         for r in vars:
+            self.logger.info("connecting to broker: " + self.brokerhost + ", port: " + str(self.brokerport))
             self.client.connect(self.brokerhost, port=self.brokerport)
             msgs=[]
             if self.prefix:
@@ -102,9 +82,3 @@ class export():
                 topic=r['name']
             msg={'topic':topic,'payload':r['resp'], 'qos':self.qos, 'retain':False}
             self.client.disconnect()
-
-       
-
-
-
-   

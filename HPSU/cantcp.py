@@ -9,8 +9,6 @@ import pika
 import uuid
 import json
 
-SocketPort = 7060
-
 class CanTCP(object):
     sock = None
     hpsu = None

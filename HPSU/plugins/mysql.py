@@ -55,7 +55,7 @@ class db():
         if db_config.has_option('MYSQL','DB_USER'):
             db_user=db_config['MYSQL']['DB_USER']
         else: 
-            self.hpsu.logger.error(("No database user defined in config file.")
+            self.hpsu.logger.error("No database user defined in config file.")
             sys.exit(9)
 
         if db_config.has_option('MYSQL','DB_PASSWORD'):
