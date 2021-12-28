@@ -23,7 +23,7 @@ class CanPI(object):
             self.bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
         except Exception:
             self.hpsu.logger.exception('Error opening bus can0')
-            sys.exit(9)
+            sys.exit(os.EX_CONFIG)
             
         config = configparser.ConfigParser()
         iniFile = '%s/%s.conf' % (self.hpsu.pathCOMMANDS, "pyhpsu")

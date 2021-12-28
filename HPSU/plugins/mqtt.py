@@ -31,7 +31,7 @@ class export():
         if os.path.isfile(self.config_file):
             self.config.read(self.config_file)
         else:
-            sys.exit(9)
+            sys.exit(os.EX_CONFIG)
 
         # object to store entire MQTT config section
         self.mqtt_config = self.config['MQTT']
@@ -52,6 +52,10 @@ class export():
         self.logger.info("configuration parsing complete")   
 
         # no need to create a different client name every time, because it only publish
+        # so adding the PID at the end of the client name ensures every process have a
+        # different client name only for readability on broker and troubleshooting
+        self.clientname += "-" + str(os.getpid())
+
         self.logger.info("creating new mqtt client instance: " + self.clientname)
         self.client=mqtt.Client(self.clientname)
         self.client.on_publish = self.on_publish

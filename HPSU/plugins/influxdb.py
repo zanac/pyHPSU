@@ -27,7 +27,7 @@ class export():
         if os.path.isfile(self.config_file):
             self.config.read(self.config_file)
         else:
-            sys.exit(9)
+            sys.exit(os.EX_CONFIG)
 
         # influxdb hostname or IP
         if self.config.has_option('INFLUXDB', 'HOST'):

@@ -46,8 +46,6 @@ mqtt_retain = False
 mqtt_addtimestamp = False
 mqttdaemon_command_topic = "command"
 mqttdaemon_status_topic = "status"
-# unique randomized value per program execution that can be used where needed
-execution_uuid = str(uuid.uuid4())[:8]
 
 def my_except_hook(exctype, value, traceback):
     if exctype == KeyboardInterrupt:
@@ -122,7 +120,7 @@ def main(argv):
         parser.error(e)
     if (options == None):
         print(parser.usage)
-        exit(0)
+        sys.exit(os.EX_USAGE)
     else:
         # set the default value if no output_type is chosen (not possible with add_argument() because it does
         # not detect duplication e.g. when JSON is also chosen)
@@ -167,7 +165,7 @@ def main(argv):
                 config.read_file(f)
         except IOError:
             logger.critical("config file not found")
-            sys.exit(9)
+            sys.exit(os.EX_CONFIG)
         config.read(options.conf_file)
         if options.driver=="" and config.has_option('PYHPSU','PYHPSU_DEVICE'):
             options.driver=config['PYHPSU']['PYHPSU_DEVICE']
@@ -206,7 +204,7 @@ def main(argv):
     #
     if options.driver == "ELM327" and options.port == "":
         logger.critical("please specify a correct port for the ELM327 device ")
-        sys.exit(9)
+        sys.exit(os.EX_CONFIG)
 
     # ------------------------------------
     # try to query different commands in different periods
@@ -225,7 +223,7 @@ def main(argv):
                 wanted_periods=list(timed_jobs.keys())
             else:
                 logger.critical("please specify a value to query in config file ")
-                sys.exit(9)
+                sys.exit(os.EX_CONFIG)
 
     #
     # Print help
@@ -248,14 +246,15 @@ def main(argv):
             print("%12s---%-10s---%s" % ('------------', '----------', '---------------------------------------------------'))
             for c in n_hpsu.commands:
                 print("%12s - %-10s - %s" % (c['name'], c['label'] + ('' if c['writable']=='true' else ' (readonly)'), c['desc']))
-        sys.exit(0)
+        sys.exit(os.EX_USAGE)
 
         #
         # now its time to call the hpsu and do the REAL can query
         # and handle the data as configured
         #
     if options.mqtt_daemon:
-        _mqttdaemon_clientname = mqtt_clientname + "-mqttdaemon-" + execution_uuid
+        # adding the PID at the end of the client name ensures every process have a different client name
+        _mqttdaemon_clientname = mqtt_clientname + "-mqttdaemon-" + str(os.getpid())
         logger.info("creating new mqtt client instance: " + _mqttdaemon_clientname)
         # a different client name because otherwise mqtt output plugin closes this connection, too
         mqtt_client = mqtt.Client(_mqttdaemon_clientname)
@@ -306,7 +305,7 @@ def main(argv):
                 read_can(restore_commands, options.verbose, options.output_type)
         except FileNotFoundError:
             logger.error("No such file or directory!!!")
-            sys.exit(1)
+            sys.exit(os.EX_NOINPUT)
 
     # FIXME if no command is specified and mqttdaemon mode is active, don't query all the commands (this has to be discussed)
     elif not (len(cmd)==0 and options.mqtt_daemon):
@@ -334,7 +333,7 @@ def read_can(cmd, verbose, output_type):
                     setValue = i.split(":")[1]
                     if c["writable"] != "true":
                         logger.critical(c["name"] + " is a readonly command")
-                        sys.exit(9)
+                        sys.exit(os.EX_CONFIG)
                     if not c["type"] == "value":
                         setValue = float(setValue)*float(c["divisor"])
                     else:
@@ -390,7 +389,7 @@ def read_can(cmd, verbose, output_type):
                 error_message = "No such file or directory!!!"
                 print(error_message)
                 logger.error(error_message)
-                sys.exit(1)
+                sys.exit(os.EX_NOINPUT)
         elif output_type_name == "MQTTDAEMON":
             for r in arrResponse:
                 if mqtt_addtimestamp:
@@ -454,3 +453,4 @@ if __name__ == "__main__":
         traceback.print_exc()
         #print("Exception: {}".format(type(e).__name__))
         #print("Exception message: {}".format(e))
+        sys.exit(os.SOFTWARE)
