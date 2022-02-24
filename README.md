@@ -40,16 +40,15 @@ The advantage of SocketCan: it can handle multiple instances or programs talking
 # Software setup
 
 pyHPSU only runs on unix/linux based systems.
-1. To run pyHPSU you need:
-- python3
-- python3-can
-- python3-serial
-- python3-pika
-- python3-requests
-- python3-mysql.connector (used by the db plugin)
-- python3-urllib3 (used by the homematic plugin)
-- python3-paho-mqtt (used by the mqtt plugin)
-- python3-influxdb (used by the influxdb plugn)
+1. To run pyHPSU you need python3 and these python packages:
+- python-can==3.3.4
+- serial
+- pika
+- requests
+- mysql.connector (used by the db plugin)
+- urllib3 (used by the homematic plugin)
+- paho-mqtt (used by the mqtt plugin)
+- influxdb (used by the influxdb plugn)
 
 2. git clone https://github.com/Spanni26/pyHPSU
 3. cd pyHPSU
