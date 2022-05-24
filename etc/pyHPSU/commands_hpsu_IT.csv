@@ -22,7 +22,7 @@ qdhw;Qdhw;Viene visualizzata la quantità di calore per l'approntamento di acqua
 sw_vers_01;Numero Software CUI;Viene visualizzato il software e la versione dell'unità di comando.
 sw_vers_02;Num Software Regolat;Viene visualizzato il numero di software e la versione della scheda di regolazione.
 sw_vers_03;SW Nr. RTX RT;Viene visualizzato il numero di software e la versione della scheda modbus.
-mode_01;Modo operativo;Parametro per l'impostazione della modalità di funzionamento del circuito di riscaldamento interno. Per l'impostazione "- - - -" per questo circuito di riscaldamento si utilizza l'interruttore rotante della regolazione. Con l'impostazione della modalità di funzionamento "Standby/OFF", e "Estate" dell'interruttore rotante della centralina, si ottiene la riduzione di potenza di tutti i circuiti di riscaldamento o di consumo di tutto l'impianto. 0: --- 1: Standby 2: Riduzione 3: Riscaldamento 4: Raffrescamento 5: Estate 6: Automatico 1 7: Automatico 2
+mode_01;Modo operativo;Parametro per l'impostazione della modalità di funzionamento del circuito di riscaldamento interno. Per l'impostazione "- - - -" per questo circuito di riscaldamento si utilizza l'interruttore rotante della regolazione. Con l'impostazione della modalità di funzionamento "Standby/OFF", e "Estate" dell'interruttore rotante della centralina, si ottiene la riduzione di potenza di tutti i circuiti di riscaldamento o di consumo di tutto l'impianto. 0: --- 1: Standby 2: Riduzione 3: Riscaldamento 4: Raffrescamento 5: Estate 11: Automatico 1 12: Automatico 2
 tvbh2;TVBH2 [C];Temperatura di mandata attuale riscaldamento (tV,BH).
 tliq2;Tliq2 [C];Temperatura corrente del refrigerante (tliq2).
 tr2;TR2 [C];Temperatura di ritorno attuale riscaldamento, sensore secondario (tR2).
