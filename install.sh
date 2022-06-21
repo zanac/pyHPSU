@@ -45,8 +45,8 @@ cp -r HPSU/* $DIST_DIR
 cp -r contrib $DIST_DIR
 
 # copy service file
-cp systemd/* $SERVICE_DIR
-systemctl --system daemon-reload
+#cp systemd/* $SERVICE_DIR
+#systemctl --system daemon-reload
 
 # copy binarys
 cp pyHPSU.py $BIN_DIR
