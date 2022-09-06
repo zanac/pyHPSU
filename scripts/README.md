@@ -3,12 +3,15 @@
 ## Capture-Publish
 
 Set of useful scripts to automatically read from HPSU Compact and publish them on the cloud ([emoncms.org](http://emoncms.org)) a configurable list of variables.
+
 Copy the
 <code>*.service
 *.timer</code>
 to
 <code>/etc/systemd/system</code>
-and enable and start it via systemctl. Examples:
+and enable and start it via systemctl.
+
+Examples:
 <code>sudo systemctl enable hpsu.fast.timer
 sudo systemctl start hpsu.fast.timer</code>
 
