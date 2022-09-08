@@ -4,9 +4,9 @@
 
 Set of useful scripts to automatically read from HPSU Compact and publish them on the cloud ([emoncms.org](http://emoncms.org)) a configurable list of variables.
 
-Copy the
-<code>*.service
-*.timer</code>
+Copy the files
+<code>*.service</code> and
+<code>*.timer</code>
 to
 <code>/etc/systemd/system</code>
 and enable and start it via systemctl.
