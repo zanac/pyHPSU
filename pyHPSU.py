@@ -27,7 +27,7 @@ def main(argv):
     driver = "PYCAN"
     verbose = "1"
     show_help = False
-    output_type = "JSON"
+    output_type = ""
     upload = False
     lg_code = "EN"
     languages = ["EN", "IT", "DE"]
@@ -174,7 +174,8 @@ def main(argv):
 
     else:
         conf_file=default_conf_file
-
+    if output_type=="":
+        output_type="JSON"
     #
     # now we should have all options...let's check them
     #
