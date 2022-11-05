@@ -28,13 +28,13 @@ The advantage of SocketCan: it can handle multiple instances or programs talking
 2. SocketCan
 - connect the Pins from the HPSU mainboards "J13" connector to the pins of your can interface. Needed are canH, canL and ground.
 - for debian (and other systems) and the following to /etc/network/interfaces:
-
+```
   auto can0  
   iface can0 inet manual  
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pre-up /sbin/ip link set $IFACE type can bitrate 20000 triple-sampling on  
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;up /sbin/ifconfig $IFACE up  
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;down /sbin/ifconfig $IFACE down
-
+    pre-up /sbin/ip link set $IFACE type can bitrate 20000 triple-sampling on  
+    up /sbin/ifconfig $IFACE up  
+    down /sbin/ifconfig $IFACE down
+```
 
 
 # Software setup
