@@ -916,7 +916,7 @@
 			"name" : "t_frost_protect", 
 			"command" : "61 00 FA 0A 00 00 00", 
 			"id" : "190", 
-			"divisor" : "1", 
+			"divisor" : "10", 
 			"writable" : "true", 
 			"unit" : "deg",
 			"type" : "longint"
