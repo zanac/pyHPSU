@@ -919,7 +919,7 @@
 			"divisor" : "10", 
 			"writable" : "true", 
 			"unit" : "deg",
-			"type" : "longint"
+			"type" : "float"
 		},
 		"insulation" : { 
 			"name" : "insulation", 
