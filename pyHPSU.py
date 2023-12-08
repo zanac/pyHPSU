@@ -315,6 +315,7 @@ def read_can(driver,logger,port,cmd,lg_code,verbose,output_type):
 
     if output_type == "JSON":
         if len(arrResponse)!=0:
+            arrResponse = json.dumps(arrResponse)
             print(arrResponse)
     elif output_type == "CSV":
         for r in arrResponse:
