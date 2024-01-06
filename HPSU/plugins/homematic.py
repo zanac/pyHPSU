@@ -7,6 +7,7 @@
 # METHOD = xmlapi
 # HOST = HOSTNAME_OR_IP_CCU
 # PORT = 80
+# TOKEN = <muat be acquired by CCU. Got to the Web Gui of the CCU --> XML-API and call tokenregister.py. Copy the resulting token.
 
 import socket
 import configparser
@@ -27,7 +28,12 @@ class export():
             self.config.read(self.config_file)
         else:
             sys.exit(9)
-
+        # homematic's token
+        if self.config.has_option('HOMEMATIC', 'TOKEN'):
+            self.token = self.config['HOMEMATIC']['TOKEN']
+        else:
+            self.token = ''
+        
         # homematic's hostname or IP
         if self.config.has_option('HOMEMATIC', 'HOST'):
             self.homematichost = self.config['HOMEMATIC']['HOST']
@@ -59,7 +65,10 @@ class export():
         if self.method == "xmlapi":
             for r in vars:
                 self.ISE_ID=self.config['HOMEMATIC'][r['name']]
-                self.url_string="http://" + str(self.homematichost) + ":" + str(self.homematicport) + "/config/xmlapi/statechange.cgi?ise_id=" + self.ISE_ID + "&new_value=" + str(r['resp'])
+
+                # The XML-API version >=2.0 requires an token like 'sdfhlskdjfng'. To add this token use the following line:
+                
+                self.url_string="http://" + str(self.homematichost) + ":" + str(self.homematicport) + "/config/xmlapi/statechange.cgi?sid=" + self.token + "&ise_id=" + self.ISE_ID + "&new_value=" + str(r['resp'])
                 self.xmlapi_send(self.url_string) 
 
     #if __name__ == '__main__':
