@@ -491,7 +491,7 @@
 			"divisor" : "1", 
 			"writable" : "false", 
 			"unit" : "",
-			"type" : "value"
+			"type" : "longint"
 		},
 		"outdoor_type" : { 
 			"name" : "outdoor_type", 
