@@ -22,7 +22,7 @@ qdhw;Qdhw;The quantity of heat for hot water generation is displayed in kWh.
 sw_vers_01;Version SW 1;Version SW 1
 sw_vers_02;Version SW 2;Version SW 2
 sw_vers_03;Version SW 3;Version SW 3
-mode_01;Modo ?;Modo Rotex
+mode_01;Operating mode; Parameter for setting the operating mode of the internal heating circuit. For the setting "- - - -" for this heating circuit the rotary switch of the setting is used. By setting the operating mode "Standby / OFF" and "Summer" of the rotary switch of the control unit, the power reduction of all the heating or consumption circuits of the whole system is obtained. 0: --- 1: Standby 2: Reduce 3: Heating 4: Cooling 5: Summer 11: Automatic 1 12: Automatic 2
 tvbh2;TVBH2 [C];Current heating inflow temperature or temp. after heating support heat exchanger (tV,BH).
 tliq2;Tliq2 [C];Current coolant temperature (tliq2).
 tr2;TR2 [C];Current heating return flow temperature, secondary sensor (tR2).
